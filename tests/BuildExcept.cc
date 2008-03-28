@@ -6,12 +6,13 @@
 
 #include <string>
 #include <iostream>
-#include "lsst/mwi/exceptions.h"
-#include "lsst/mwi/data.h"
+#include "lsst/pex/exceptions.h"
+#include "lsst/pex/logging/Trace.h"
+#include "lsst/daf/data.h"
 
-using namespace lsst::mwi::data;
-using namespace lsst::mwi::utils;
-using namespace lsst::mwi::exceptions;
+using namespace lsst::daf::data;
+using namespace lsst::pex::logging;
+using namespace lsst::pex::exceptions;
 using boost::any_cast;
 using boost::shared_ptr;
 using boost::regex;

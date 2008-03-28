@@ -4,8 +4,8 @@
   * This include file contains include definitions of classes from the 
   * exception sub-module typically needed for using standard LSST exceptions.
   */
-#ifndef LSST_EXCEPTIONS_H
-#define LSST_EXCEPTIONS_H
-#include "lsst/mwi/exceptions/Exception.h"
-#include "lsst/mwi/exceptions/Runtime.h"
+#ifndef LSST_PEX_EXCEPTIONS_H
+#define LSST_PEX_EXCEPTIONS_H
+#include "lsst/pex/exceptions/Exception.h"
+#include "lsst/pex/exceptions/Runtime.h"
 #endif

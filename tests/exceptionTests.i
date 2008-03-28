@@ -9,15 +9,15 @@ Tests for throwing exceptions from C++ to Python
 %module(docstring=exceptionTests_DOCSTRING) exceptionTests
 
 %{
-#include "lsst/mwi/exceptions.h"
+#include "lsst/pex/exceptions.h"
 %}
 
-%include "lsst/mwi/p_lsstSwig.i"
+%include "lsst/utils/p_lsstSwig.i"
 
 %define %lsst_throw(Type)
     %inline %{
     void throw##Type() {
-        throw lsst::mwi::exceptions::Type("Error Message");
+        throw lsst::pex::exceptions::Type("Error Message");
     }
     %}
 %enddef
@@ -36,24 +36,24 @@ Tests for throwing exceptions from C++ to Python
 
 %inline %{
 void throwFirst() {
-    throw lsst::mwi::exceptions::Overflow("bang");
+    throw lsst::pex::exceptions::Overflow("bang");
 }
 
 void throwSecond(const char * const name) {
-    using namespace lsst::mwi::data;
-    using namespace lsst::mwi::exceptions;
+    using namespace lsst::daf::data;
+    using namespace lsst::pex::exceptions;
     try {
         throwFirst();
     } catch (ExceptionStack & e) {
         ExceptionData ed(name);
         ed << DataProperty::PtrType(new DataProperty("do not", boost::any(std::string("panic"))));
         e << ed;
-        throw lsst::mwi::exceptions::OutOfRange(e, "boom");
+        throw lsst::pex::exceptions::OutOfRange(e, "boom");
     }
 }
 
 void throwChain(const char * const name) {
-    using namespace lsst::mwi::exceptions;
+    using namespace lsst::pex::exceptions;
     try {
         throwSecond(name);
     } catch (ExceptionStack & e) {

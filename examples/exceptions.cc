@@ -5,11 +5,11 @@
   */
 
 #include <iostream>
-#include "lsst/mwi/exceptions.h"
+#include "lsst/pex/exceptions.h"
 
-using namespace lsst::mwi::data;
-using namespace lsst::mwi::utils;
-using namespace lsst::mwi::exceptions;
+using namespace lsst::daf::data;
+using namespace lsst::pex::logging;
+using namespace lsst::pex::exceptions;
 
 void doSecondFunction() { 
 

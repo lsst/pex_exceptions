@@ -27,7 +27,9 @@
   * additional information.
   *
   *
-  * \ingroup mwi
+  * \defgroup pex_exceptions Pipeline Execution Exceptions
+  *
+  * \ingroup pex_exceptions
   *
   * \author Roberta Allsman
   */
@@ -35,14 +37,14 @@
 #include <exception>
 #include <boost/format.hpp>
 #include <boost/shared_ptr.hpp>
-#include "lsst/mwi/data.h"
-#include "lsst/mwi/utils/Utils.h"
-#include "lsst/mwi/data/SupportFactory.h"
-#include "lsst/mwi/exceptions/Exception.h"
-#include "lsst/mwi/exceptions/Runtime.h"
+#include "lsst/daf/data.h"
+#include "lsst/pex/logging/Trace.h"
+#include "lsst/daf/data/SupportFactory.h"
+#include "lsst/pex/exceptions/Exception.h"
+#include "lsst/pex/exceptions/Runtime.h"
 
-using namespace lsst::mwi::data;
-using namespace lsst::mwi::utils;
+using namespace lsst::daf::data;
+using namespace lsst::pex::logging;
 
 const std::string nullExceptionMsg("Null exception message");
 
@@ -55,7 +57,7 @@ const std::string nullExceptionMsg("Null exception message");
   * \param  name  The default root node name of the ExceptionData object.
   * See DataProperty for more information.
   */
-lsst::mwi::exceptions::ExceptionData::ExceptionData( const std::string name ) 
+lsst::pex::exceptions::ExceptionData::ExceptionData( const std::string name ) 
     throw() :
     _exception( SupportFactory::createPropertyNode(name) ) {
     Trace("ExceptionData",20,boost::str(boost::format( "ExceptionData() stack:\n%s\n" )
@@ -67,7 +69,7 @@ lsst::mwi::exceptions::ExceptionData::ExceptionData( const std::string name )
   * \param name   The default root node name of the ExceptionData object.
   * See DataProperty for more information.
   */
-lsst::mwi::exceptions::ExceptionData::ExceptionData( const boost::format name ) 
+lsst::pex::exceptions::ExceptionData::ExceptionData( const boost::format name ) 
     throw() :
     _exception(SupportFactory::createPropertyNode(name.str() )) {
     Trace("ExceptionData",20,boost::str(boost::format( "ExceptionData() stack:\n%s\n" )
@@ -81,7 +83,7 @@ lsst::mwi::exceptions::ExceptionData::ExceptionData( const boost::format name )
   *
   * \param orig A reference to the ExceptionStack to clone.
   */
-lsst::mwi::exceptions::ExceptionData::ExceptionData( ExceptionData const& orig ) 
+lsst::pex::exceptions::ExceptionData::ExceptionData( ExceptionData const& orig ) 
     throw() :
     _exception(DataProperty::PtrType( new DataProperty(*orig._exception) ) ) {
     Trace("ExceptionData",20,boost::str(boost::format(
@@ -98,7 +100,7 @@ lsst::mwi::exceptions::ExceptionData::ExceptionData( ExceptionData const& orig )
   *
   * \return A shared pointer to the ExceptionData.
   */
-DataProperty::PtrType lsst::mwi::exceptions::ExceptionData::getExceptionData() throw() {
+DataProperty::PtrType lsst::pex::exceptions::ExceptionData::getExceptionData() throw() {
     return _exception;
 }
 
@@ -107,7 +109,7 @@ DataProperty::PtrType lsst::mwi::exceptions::ExceptionData::getExceptionData() t
   *
   * \param rhs A shared pointer to the DataProperty attribute.
   */
-void lsst::mwi::exceptions::ExceptionData::add( lsst::mwi::data::DataProperty::PtrType  rhs) 
+void lsst::pex::exceptions::ExceptionData::add( lsst::daf::data::DataProperty::PtrType  rhs) 
     throw() { 
     _exception->addProperty(rhs);
 }
@@ -116,7 +118,7 @@ void lsst::mwi::exceptions::ExceptionData::add( lsst::mwi::data::DataProperty::P
   *
   * \param rhs A shared pointer to the DataProperty attribute.
   */
-lsst::mwi::exceptions::ExceptionData &lsst::mwi::exceptions::ExceptionData::operator<< (PtrType  const rhs) 
+lsst::pex::exceptions::ExceptionData &lsst::pex::exceptions::ExceptionData::operator<< (PtrType  const rhs) 
     throw() { 
     _exception->addProperty(rhs);
     return *this;
@@ -134,7 +136,7 @@ lsst::mwi::exceptions::ExceptionData &lsst::mwi::exceptions::ExceptionData::oper
   * \note   Default runtime_error comment is: "Null exception message".
   * \note   Default root node name of the ExceptionStack object is: "eStack".
   */
-lsst::mwi::exceptions::ExceptionStack::ExceptionStack() 
+lsst::pex::exceptions::ExceptionStack::ExceptionStack() 
     throw() : 
     std::runtime_error(nullExceptionMsg) {
     _exceptionStack = SupportFactory::createPropertyNode("eStack" );
@@ -143,13 +145,13 @@ lsst::mwi::exceptions::ExceptionStack::ExceptionStack()
 /** Construct a new ExceptionStack object.
   *
   * \param stackName The name of the object. 
-  *                  Syntax conforms to lsst::mwi::DataProperty(name) 
+  *                  Syntax conforms to lsst::daf::DataProperty(name) 
   *                  specification; any '.' characters in the stackName are 
   *                  disallowed and will be replaced with '@' characters.
   * \param comment   The string used to initialize std::runtime_error.what() 
   *                  return. Default comment is: "Null exception message".
   */
-lsst::mwi::exceptions::ExceptionStack::ExceptionStack(std::string const& stackName, 
+lsst::pex::exceptions::ExceptionStack::ExceptionStack(std::string const& stackName, 
                                                       std::string const& comment) 
     throw() : 
     std::runtime_error(comment) {
@@ -159,7 +161,7 @@ lsst::mwi::exceptions::ExceptionStack::ExceptionStack(std::string const& stackNa
   *
   * \param orig      A reference to the ExceptionStack to clone.
   * \param stackName Label for the ExceptionStack root node. 
-  *                  Syntax conforms to lsst::mwi::DataProperty(name) 
+  *                  Syntax conforms to lsst::daf::DataProperty(name) 
   *                  specification; any '.' characters in the stackName are 
   *                  disallowed and will be replaced with '@' characters.
   * \param comment   The string used to initialize std::runtime_error.what() 
@@ -168,7 +170,7 @@ lsst::mwi::exceptions::ExceptionStack::ExceptionStack(std::string const& stackNa
   * TBD:  When nodes can be renamed in place, rename the cloned node to
   *       stackName .  DataProperty being updated to allow this. 21 Aug 07
   */
-lsst::mwi::exceptions::ExceptionStack::ExceptionStack( ExceptionStack const& orig,
+lsst::pex::exceptions::ExceptionStack::ExceptionStack( ExceptionStack const& orig,
                                                        std::string const& stackName, 
                                                        std::string const& comment ) 
     throw() : 
@@ -181,7 +183,7 @@ lsst::mwi::exceptions::ExceptionStack::ExceptionStack( ExceptionStack const& ori
   *
   * \param orig      A reference to the ExceptionData to clone.
   * \param stackName Label for the ExceptionStack root node. 
-  *                  Syntax conforms to lsst::mwi::DataProperty(name) 
+  *                  Syntax conforms to lsst::daf::DataProperty(name) 
   *                  specification; any '.' characters in the stackName are 
   *                  disallowed and will be replaced with '@' characters.
   * \param comment   The string used to initialize std::runtime_error.what() 
@@ -190,7 +192,7 @@ lsst::mwi::exceptions::ExceptionStack::ExceptionStack( ExceptionStack const& ori
   * TBD:  When nodes can be renamed in place, rename the cloned node to
   *       stackName .  DataProperty being updated to allow this. 21 Aug 07
   */
-lsst::mwi::exceptions::ExceptionStack::ExceptionStack( ExceptionData & orig,
+lsst::pex::exceptions::ExceptionStack::ExceptionStack( ExceptionData & orig,
                                                        std::string const& stackName, 
                                                        std::string const& comment ) 
     throw() : 
@@ -208,7 +210,7 @@ lsst::mwi::exceptions::ExceptionStack::ExceptionStack( ExceptionData & orig,
   * \param orig      A reference to the ExceptionStack to clone.
   *
   */
-lsst::mwi::exceptions::ExceptionStack::ExceptionStack( ExceptionStack const& orig  ) 
+lsst::pex::exceptions::ExceptionStack::ExceptionStack( ExceptionStack const& orig  ) 
     throw() :
     std::runtime_error(orig.what() ) {
     _exceptionStack = DataProperty::PtrType( new DataProperty(*orig._exceptionStack) );
@@ -225,7 +227,7 @@ lsst::mwi::exceptions::ExceptionStack::ExceptionStack( ExceptionStack const& ori
   *                  clone.
   *
   */
-void lsst::mwi::exceptions::ExceptionStack::cloneCollection(ExceptionStack const& orig  ) 
+void lsst::pex::exceptions::ExceptionStack::cloneCollection(ExceptionStack const& orig  ) 
     throw()  {
     _exceptionStack = DataProperty::PtrType( new DataProperty(*(orig._exceptionStack )));
 }
@@ -237,7 +239,7 @@ void lsst::mwi::exceptions::ExceptionStack::cloneCollection(ExceptionStack const
 /** Add an ExceptionData to ExceptionStack.
   *
   */
-void lsst::mwi::exceptions::ExceptionStack::addExceptionData( ExceptionData & orig) 
+void lsst::pex::exceptions::ExceptionStack::addExceptionData( ExceptionData & orig) 
     throw() {
     _exceptionStack->addProperty(*(orig.getExceptionData()));
 }
@@ -246,7 +248,7 @@ void lsst::mwi::exceptions::ExceptionStack::addExceptionData( ExceptionData & or
   *
   * \return A PtrTYpe containing a reference to a collection of ExceptionData.
   */
-DataProperty::PtrType lsst::mwi::exceptions::ExceptionStack::getStack() 
+DataProperty::PtrType lsst::pex::exceptions::ExceptionStack::getStack() 
     throw() {
     return _exceptionStack;
 }
@@ -256,10 +258,10 @@ DataProperty::PtrType lsst::mwi::exceptions::ExceptionStack::getStack()
   * \return   a PtrType containing a reference to an ExceptionData object which 
   *           itself is a collection of DataProperties
   *
-  * \throw Throws lsst::mwi::exception::Runtime if this ExceptionStack does 
+  * \throw Throws lsst::pex::exception::Runtime if this ExceptionStack does 
   *         not contain a least one ExceptionData object.
   */
-DataProperty::PtrType lsst::mwi::exceptions::ExceptionStack::getLast() 
+DataProperty::PtrType lsst::pex::exceptions::ExceptionStack::getLast() 
     throw() {
     ExceptionStack::iteratorRangeType rangeExceptions = 
                                 _exceptionStack->getChildren();
@@ -278,7 +280,7 @@ DataProperty::PtrType lsst::mwi::exceptions::ExceptionStack::getLast()
   *
   * \param rhs The ExceptionData to add to the ExceptionStack 
   */
-lsst::mwi::exceptions::ExceptionStack &lsst::mwi::exceptions::ExceptionStack::operator<< ( ExceptionData rhs) 
+lsst::pex::exceptions::ExceptionStack &lsst::pex::exceptions::ExceptionStack::operator<< ( ExceptionData rhs) 
     throw() { 
     _exceptionStack->addProperty(rhs.getExceptionData());
     return *this;
@@ -287,13 +289,13 @@ lsst::mwi::exceptions::ExceptionStack &lsst::mwi::exceptions::ExceptionStack::op
 /** Returns the name of the Python module containing the Python class that the
   * ExceptionStack should be translated to when throwing from C++ to Python.
   */
-char const * lsst::mwi::exceptions::ExceptionStack::getPythonModule() const {
-    return "lsst.mwi.exceptions";
+char const * lsst::pex::exceptions::ExceptionStack::getPythonModule() const {
+    return "lsst.pex.exceptions";
 }
 
 /** Returns the name of the Python class that the ExceptionStack
   * should be translated to when throwing from C++ to Python.
   */
-char const * lsst::mwi::exceptions::ExceptionStack::getPythonClass() const {
+char const * lsst::pex::exceptions::ExceptionStack::getPythonClass() const {
     return "LsstExceptionStack";
 }

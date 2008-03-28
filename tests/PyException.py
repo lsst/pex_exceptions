@@ -2,11 +2,10 @@
 import pdb
 import sys
 import unittest
-import lsst.mwi.tests as tests
-import lsst.mwi.utils as mwiu
-import lsst.mwi.exceptions as ex
+import lsst.utils.tests as tests
+import lsst.pex.exceptions as ex
 import exceptionTests
-from lsst.mwi.data import *
+from lsst.daf.data import *
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
