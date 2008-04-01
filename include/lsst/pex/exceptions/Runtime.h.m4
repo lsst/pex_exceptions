@@ -56,11 +56,8 @@ dnl
   *   -  NotFound : Resource not found
   *   -  Memory :  Memory system failure
   *   -  FitsError : Problem in FITS I/O system
-  * - Misplaced Errors
-  *   -  NoMaskPlane : Failure to find specified Mask Plane (to be relocated)
-  *   -  OutOfPlaneSpace :  Insufficient Plane allocation (to be relocated)
   *
-  * \ingroup mwi
+  * \ingroup pex
   *
   * \ author Robert Lupton
   * \ author Roberta Allsman
@@ -68,14 +65,12 @@ dnl
 #include <exception>
 #include <boost/format.hpp>
 #include <boost/shared_ptr.hpp>
-#include "lsst/mwi/data/DataProperty.h"
-#include "lsst/mwi/utils/Trace.h"
-#include "lsst/mwi/data/SupportFactory.h"
-#include "lsst/mwi/exceptions/Exception.h"
+#include "lsst/daf/base/DataProperty.h"
+#include "lsst/pex/exceptions/Exception.h"
 
 
 namespace lsst {
-namespace mwi {
+namespace pex {
 namespace exceptions {
 
         dnl
@@ -178,7 +173,7 @@ public:
     *
     * \param rhs     Reference to DataProperty to be added to most recent ExceptionData on ExceptionStack.
     */
-    $1 &operator<< (lsst::mwi::data::DataProperty  const rhs) throw() {
+    $1 &operator<< (lsst::daf::base::DataProperty  const rhs) throw() {
         this->getLast()->addProperty(rhs);
         return *this;
     }
@@ -187,7 +182,7 @@ public:
     *
     * \param rhs     Reference to DataProperty to be added to most recent ExceptionData on ExceptionStack.
     */
-    $1 &operator<< (lsst::mwi::data::DataProperty::PtrType  const rhs) throw() {
+    $1 &operator<< (lsst::daf::base::DataProperty::PtrType  const rhs) throw() {
         this->getLast()->addProperty(rhs);
         return *this;
     }

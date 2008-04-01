@@ -6,8 +6,9 @@
 
 #include <iostream>
 #include "lsst/pex/exceptions.h"
+#include "lsst/pex/logging/Trace.h"
 
-using namespace lsst::daf::data;
+using namespace lsst::daf::base;
 using namespace lsst::pex::logging;
 using namespace lsst::pex::exceptions;
 
@@ -22,10 +23,10 @@ void doSecondFunction() {
     nfNode << dp;
     nfNode << DataProperty::PtrType( new DataProperty( std::string("WHY" ),
                       boost::any( std::string( "nfNode:Why exception message" ))))
-           << SupportFactory::createLeafProperty( std::string("KEY1_1" ),
-                      boost::any( std::string("nfNode:KEY1_attribute" )))
-           << SupportFactory::createLeafProperty( std::string("KEY1_2" ),
-                      boost::any((int) 13 ));
+           << DataProperty::PtrType( new DataProperty( std::string("KEY1_1" ),
+                      boost::any( std::string("nfNode:KEY1_attribute" ))))
+           << DataProperty::PtrType( new DataProperty( std::string("KEY1_2" ),
+                      boost::any((int) 13 )));
 
     Trace( "exceptions",1, boost::str(boost::format(
         "ExceptionData attributes before addition to stack:\n%s\n")
@@ -196,7 +197,7 @@ int main(int ac, char **av) {
         Trace( "exception", 1, "\nTest throw of named exception with no prior setup");
         throw InvalidParameter( "This tested throw without prior setup" );
     }
-    catch (lsst::mwi::exceptions::InvalidParameter &invalidParam) {
+    catch (lsst::pex::exceptions::InvalidParameter &invalidParam) {
         Trace( "exceptions",1, boost::str(boost::format(
                "Caught InvalidParameter \n... error: %s\nFullStack:\n%s\n") 
                 % invalidParam.what() % invalidParam.getStack()->toString("... ",true )));

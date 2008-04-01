@@ -26,7 +26,7 @@
   * See ExceptionStack, ExceptionData and DataProperty classes for 
   * additional information.
   *
-  * \ingroup mwi
+  * \ingroup pex
   *
   * \author Roberta Allsman 
   */
@@ -36,12 +36,10 @@
 #include <exception>
 #include <boost/format.hpp>
 #include <boost/shared_ptr.hpp>
-#include "lsst/mwi/data/DataProperty.h"
-#include "lsst/mwi/utils/Trace.h"
-#include "lsst/mwi/data/SupportFactory.h"
+#include "lsst/daf/base/DataProperty.h"
 
 namespace lsst {
-namespace mwi {
+namespace pex {
 namespace exceptions {
 
         
@@ -54,7 +52,7 @@ namespace exceptions {
   * to Data Property objects.
   *
   * ExceptionData inherits from and is a thin wrapper for 
-  * lsst::mwi::data::DataProperty. The rename assists in tracking the 
+  * lsst::daf::base::DataProperty. The rename assists in tracking the 
   * conceptually distinct DataProperty collections used in LSST 
   * exception management:
   * -     ExceptionStack = sequenced set { ->ExceptionData }
@@ -65,7 +63,7 @@ namespace exceptions {
   */
 class ExceptionData   {
 public:
-   typedef lsst::mwi::data::DataProperty::PtrType PtrType;
+   typedef lsst::daf::base::DataProperty::PtrType PtrType;
    typedef std::list<PtrType> ContainerType;
    typedef std::list<PtrType>::const_iterator ContainerIteratorType;
    typedef std::pair<ContainerIteratorType, ContainerIteratorType> iteratorRangeType;
@@ -74,7 +72,7 @@ public:
    ExceptionData(const boost::format name ) throw();
    ExceptionData(ExceptionData const& orig ) throw();
    PtrType getExceptionData() throw();
-   void add(lsst::mwi::data::DataProperty::PtrType rhs ) throw() ;
+   void add(lsst::daf::base::DataProperty::PtrType rhs ) throw() ;
    ExceptionData &operator<< ( PtrType  rhs ) throw();
 private:
     PtrType _exception;
@@ -98,7 +96,7 @@ private:
   */
 class ExceptionStack : public std::runtime_error  {
 public:
-   typedef lsst::mwi::data::DataProperty::PtrType PtrType;
+   typedef lsst::daf::base::DataProperty::PtrType PtrType;
    typedef std::list<PtrType> ContainerType;
    typedef std::list<PtrType>::const_iterator ContainerIteratorType;
    typedef std::pair<ContainerIteratorType, ContainerIteratorType> iteratorRangeType;

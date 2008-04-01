@@ -1,7 +1,7 @@
 # -*- python -*-
 Import("env")
 
-env.Program(["BuildExcept.cc"], LIBS=env.libs["boost"] + ["pex_exceptions"])
+env.Program(["BuildExcept.cc"], LIBS=env.libs["boost"] + ["utils"] + ["daf_base"] + ["pex_exceptions"])
 
 env.CheckSwig("python", ilang="c++")
 env.Append(SWIGFLAGS=" -Ipython")
@@ -12,7 +12,6 @@ exceptionTests = env.LoadableModuleIncomplete("_exceptionTests", "exceptionTests
 #
 import lsst.tests
 import os
-env['ENV']['SEAL_PLUGINS'] = os.environ['SEAL_PLUGINS']
 
 tests = lsst.tests.Control(env, ignoreList=['exceptionTests.py'], verbose=True)
 

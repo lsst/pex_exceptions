@@ -37,13 +37,11 @@
 #include <exception>
 #include <boost/format.hpp>
 #include <boost/shared_ptr.hpp>
-#include "lsst/daf/data.h"
-#include "lsst/pex/logging/Trace.h"
-#include "lsst/daf/data/SupportFactory.h"
+#include "lsst/daf/base/DataProperty.h"
 #include "lsst/pex/exceptions/Exception.h"
 #include "lsst/pex/exceptions/Runtime.h"
 
-using namespace lsst::daf::data;
+using namespace lsst::daf::base;
 using namespace lsst::pex::logging;
 
 const std::string nullExceptionMsg("Null exception message");
@@ -59,9 +57,7 @@ const std::string nullExceptionMsg("Null exception message");
   */
 lsst::pex::exceptions::ExceptionData::ExceptionData( const std::string name ) 
     throw() :
-    _exception( SupportFactory::createPropertyNode(name) ) {
-    Trace("ExceptionData",20,boost::str(boost::format( "ExceptionData() stack:\n%s\n" )
-        % _exception->toString("",false)) );
+    _exception( DataProperty::createPropertyNode(name) ) {
 };
 
 /** Construct a new ExceptionData object.
@@ -71,9 +67,7 @@ lsst::pex::exceptions::ExceptionData::ExceptionData( const std::string name )
   */
 lsst::pex::exceptions::ExceptionData::ExceptionData( const boost::format name ) 
     throw() :
-    _exception(SupportFactory::createPropertyNode(name.str() )) {
-    Trace("ExceptionData",20,boost::str(boost::format( "ExceptionData() stack:\n%s\n" )
-        % _exception->toString("",false)) );
+    _exception(DataProperty::createPropertyNode(name.str() )) {
 };
 
 /**  ExceptionData copy constructor
@@ -86,9 +80,6 @@ lsst::pex::exceptions::ExceptionData::ExceptionData( const boost::format name )
 lsst::pex::exceptions::ExceptionData::ExceptionData( ExceptionData const& orig ) 
     throw() :
     _exception(DataProperty::PtrType( new DataProperty(*orig._exception) ) ) {
-    Trace("ExceptionData",20,boost::str(boost::format(
-        "ExceptionData(ExceptionData) stack: \n%s\n" )
-        % _exception->toString("",true)) );
 };
 
 
@@ -155,7 +146,7 @@ lsst::pex::exceptions::ExceptionStack::ExceptionStack(std::string const& stackNa
                                                       std::string const& comment) 
     throw() : 
     std::runtime_error(comment) {
-    _exceptionStack = SupportFactory::createPropertyNode(stackName );
+    _exceptionStack = DataProperty::createPropertyNode(stackName );
 }
 /** Construct a new ExceptionStack object.
   *
@@ -197,7 +188,7 @@ lsst::pex::exceptions::ExceptionStack::ExceptionStack( ExceptionData & orig,
                                                        std::string const& comment ) 
     throw() : 
     std::runtime_error(comment ) {
-    _exceptionStack = SupportFactory::createPropertyNode(stackName );
+    _exceptionStack = DataProperty::createPropertyNode(stackName );
     DataProperty::PtrType exception = orig.getExceptionData();
     _exceptionStack->addProperty( *exception );
 }
@@ -266,9 +257,6 @@ DataProperty::PtrType lsst::pex::exceptions::ExceptionStack::getLast()
     ExceptionStack::iteratorRangeType rangeExceptions = 
                                 _exceptionStack->getChildren();
     if ( std::distance(rangeExceptions.first,rangeExceptions.second) == 0) {
-        Trace("ExceptionData",20,boost::str(boost::format( 
-            "getLast(): No ExceptionData in ExceptionStack.\nStack:\n%s\n" )
-            % _exceptionStack->toString("",true)) );
         throw Runtime("Exception Stack contains no ExceptionData");
         }
     ExceptionStack::ContainerType::const_iterator lastExceptionPtr = 

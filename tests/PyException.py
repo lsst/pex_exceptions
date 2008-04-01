@@ -5,7 +5,7 @@ import unittest
 import lsst.utils.tests as tests
 import lsst.pex.exceptions as ex
 import exceptionTests
-from lsst.daf.data import *
+from lsst.daf.base import *
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -20,7 +20,7 @@ class MalformedStackTestCase(unittest.TestCase):
                           DataProperty("name1", "value1"))
 
     def testMalformed3(self):
-        root = SupportFactory.createPropertyNode("root")
+        root = DataProperty.createPropertyNode("root")
         self.assertRaises(RuntimeError, ex.LsstFitsError, "Bad ExceptionStack structure", root)
 
 
@@ -29,8 +29,8 @@ class WellformedStackTestCase(unittest.TestCase):
     """ A test case for PyException - well-formed stacks"""
 
     def testMinimalist(self):
-        root = SupportFactory.createPropertyNode("root")
-        exc1 = SupportFactory.createPropertyNode("exc1")
+        root = DataProperty.createPropertyNode("root")
+        exc1 = DataProperty.createPropertyNode("exc1")
         root.addProperty(exc1)
         exception = ex.LsstFitsError("Error Message", root)
         rootContents = exception.getStack()
@@ -44,14 +44,14 @@ class WellformedStackTestCase(unittest.TestCase):
 
 
     def testSimple(self):
-        root = SupportFactory.createPropertyNode("root")
-        exc1 = SupportFactory.createPropertyNode("exc1")
+        root = DataProperty.createPropertyNode("root")
+        exc1 = DataProperty.createPropertyNode("exc1")
         exc1.addProperty(DataProperty("name1", "value1"))
         root.addProperty(exc1)
-        exc2 = SupportFactory.createPropertyNode("exc2")
+        exc2 = DataProperty.createPropertyNode("exc2")
         exc2.addProperty(DataProperty("name2", 2))
         root.addProperty(exc2)
-        exc3 = SupportFactory.createPropertyNode("exc3")
+        exc3 = DataProperty.createPropertyNode("exc3")
         exc3.addProperty(DataProperty("name3", "value3"))
         root.addProperty(exc3)
         exception = ex.LsstFitsError("Error Message", root)
@@ -66,15 +66,15 @@ class WellformedStackTestCase(unittest.TestCase):
 
 
     def testComplex(self):
-        root = SupportFactory.createPropertyNode("root")
-        exc1 = SupportFactory.createPropertyNode("exc1")
+        root = DataProperty.createPropertyNode("root")
+        exc1 = DataProperty.createPropertyNode("exc1")
         exc1.addProperty(DataProperty("name1", "value1"))
         root.addProperty(exc1)
-        exc2 = SupportFactory.createPropertyNode("exc2")
+        exc2 = DataProperty.createPropertyNode("exc2")
         exc2.addProperty(DataProperty("name2", 2))
         exc2.addProperty(DataProperty("name2a", "value2a"))
         root.addProperty(exc2)
-        exc3 = SupportFactory.createPropertyNode("exc3")
+        exc3 = DataProperty.createPropertyNode("exc3")
         exc3.addProperty(DataProperty("name3", "value3"))
         root.addProperty(exc3)
         exception = ex.LsstFitsError("Error Message", root)
@@ -92,15 +92,15 @@ class StackManipulationTestCase(unittest.TestCase):
     """ A test case for PyException - stack manipulation"""
 
     def testGetLast(self):
-        root = SupportFactory.createPropertyNode("root")
-        exc1 = SupportFactory.createPropertyNode("exc1")
+        root = DataProperty.createPropertyNode("root")
+        exc1 = DataProperty.createPropertyNode("exc1")
         exc1.addProperty(DataProperty("name1", "value1"))
         root.addProperty(exc1)
-        exc2 = SupportFactory.createPropertyNode("exc2")
+        exc2 = DataProperty.createPropertyNode("exc2")
         exc2.addProperty(DataProperty("name2", 2))
         exc2.addProperty(DataProperty("name2a", "value2a"))
         root.addProperty(exc2)
-        exc3 = SupportFactory.createPropertyNode("exc3")
+        exc3 = DataProperty.createPropertyNode("exc3")
         exc3.addProperty(DataProperty("name3", "value3"))
         exc3.addProperty(DataProperty("name3a", "value3a"))
         exc3.addProperty(DataProperty("name3b", "value3b"))
@@ -121,15 +121,15 @@ class RaiseFromPythonTestCase(unittest.TestCase):
     """A test case for PyException - throwing exceptions from Python"""
 
     def testThrow(self):
-        root = SupportFactory.createPropertyNode("root")
-        exc1 = SupportFactory.createPropertyNode("exc1")
+        root = DataProperty.createPropertyNode("root")
+        exc1 = DataProperty.createPropertyNode("exc1")
         exc1.addProperty(DataProperty("name1", "value1"))
         root.addProperty(exc1)
-        exc2 = SupportFactory.createPropertyNode("exc2")
+        exc2 = DataProperty.createPropertyNode("exc2")
         exc2.addProperty(DataProperty("name2", 2))
         exc2.addProperty(DataProperty("name2a", "value2a"))
         root.addProperty(exc2)
-        exc3 = SupportFactory.createPropertyNode("exc3")
+        exc3 = DataProperty.createPropertyNode("exc3")
         exc3.addProperty(DataProperty("name3", "value3"))
         exc3.addProperty(DataProperty("name3a", "value3a"))
         exc3.addProperty(DataProperty("name3b", "value3b"))

@@ -10,7 +10,7 @@
 #include "lsst/pex/logging/Trace.h"
 #include "lsst/daf/data.h"
 
-using namespace lsst::daf::data;
+using namespace lsst::daf::base;
 using namespace lsst::pex::logging;
 using namespace lsst::pex::exceptions;
 using boost::any_cast;
@@ -78,7 +78,7 @@ try {
                  << DataProperty::PtrType(new DataProperty(
                         std::string("NPlane"),(int)5));
         DataProperty::PtrType bNode = 
-                        SupportFactory::createPropertyNode("bNode");
+                        DataProperty::createPropertyNode("bNode");
         DataProperty::PtrType cProperty(new DataProperty(
                         "sonofMaxPlane",(int)12));
         bNode->addProperty(cProperty);
