@@ -1,5 +1,5 @@
 # -*- python -*-
-import lsst.daf.data
+import lsst.daf.base
 
 def _isValidStack(stack):
     """Returns True if the structure of stack (a DataProperty)
@@ -33,8 +33,8 @@ class LsstExceptionStack(Exception):
         if stack is None:
             # Create an exception stack containing a single exception
             name  = self.__class__.__name__
-            stack = lsst.daf.data.SupportFactory.createPropertyNode(name)
-            data  = lsst.daf.data.SupportFactory.createPropertyNode("Node" + name)
+            stack = lsst.daf.data.DataProperty.createPropertyNode(name)
+            data  = lsst.daf.data.DataProperty.createPropertyNode("Node" + name)
             stack.addProperty(data)
             self.stack = stack
         elif not _isValidStack(stack):
