@@ -40,6 +40,7 @@
 #include "lsst/daf/base/DataProperty.h"
 #include "lsst/pex/exceptions/Exception.h"
 #include "lsst/pex/exceptions/Runtime.h"
+#include "lsst/pex/logging/Log.h"
 
 using namespace lsst::daf::base;
 using namespace lsst::pex::logging;
@@ -100,7 +101,7 @@ DataProperty::PtrType lsst::pex::exceptions::ExceptionData::getExceptionData() t
   *
   * \param rhs A shared pointer to the DataProperty attribute.
   */
-void lsst::pex::exceptions::ExceptionData::add( lsst::daf::data::DataProperty::PtrType  rhs) 
+void lsst::pex::exceptions::ExceptionData::add( lsst::daf::base::DataProperty::PtrType  rhs) 
     throw() { 
     _exception->addProperty(rhs);
 }
@@ -130,13 +131,13 @@ lsst::pex::exceptions::ExceptionData &lsst::pex::exceptions::ExceptionData::oper
 lsst::pex::exceptions::ExceptionStack::ExceptionStack() 
     throw() : 
     std::runtime_error(nullExceptionMsg) {
-    _exceptionStack = SupportFactory::createPropertyNode("eStack" );
+    _exceptionStack = DataProperty::createPropertyNode("eStack" );
 }
 
 /** Construct a new ExceptionStack object.
   *
   * \param stackName The name of the object. 
-  *                  Syntax conforms to lsst::daf::DataProperty(name) 
+  *                  Syntax conforms to lsst::daf::base::DataProperty(name) 
   *                  specification; any '.' characters in the stackName are 
   *                  disallowed and will be replaced with '@' characters.
   * \param comment   The string used to initialize std::runtime_error.what() 
@@ -152,7 +153,7 @@ lsst::pex::exceptions::ExceptionStack::ExceptionStack(std::string const& stackNa
   *
   * \param orig      A reference to the ExceptionStack to clone.
   * \param stackName Label for the ExceptionStack root node. 
-  *                  Syntax conforms to lsst::daf::DataProperty(name) 
+  *                  Syntax conforms to lsst::daf::base::DataProperty(name) 
   *                  specification; any '.' characters in the stackName are 
   *                  disallowed and will be replaced with '@' characters.
   * \param comment   The string used to initialize std::runtime_error.what() 
@@ -174,7 +175,7 @@ lsst::pex::exceptions::ExceptionStack::ExceptionStack( ExceptionStack const& ori
   *
   * \param orig      A reference to the ExceptionData to clone.
   * \param stackName Label for the ExceptionStack root node. 
-  *                  Syntax conforms to lsst::daf::DataProperty(name) 
+  *                  Syntax conforms to lsst::daf::base::DataProperty(name) 
   *                  specification; any '.' characters in the stackName are 
   *                  disallowed and will be replaced with '@' characters.
   * \param comment   The string used to initialize std::runtime_error.what() 

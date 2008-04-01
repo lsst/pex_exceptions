@@ -1,7 +1,7 @@
 # -*- python -*-
 Import('env')
 
-env.Program("exceptions", ["exceptions.cc"], LIBS=env.libs["boost"] + ["utils"] + ["daf_base"] + ["pex_exceptions"])
+env.Program("exceptions", ["exceptions.cc"], LIBS=env.libs["boost"] + ["utils"] + ["daf_base"] + ["pex_logging"] + ["pex_exceptions"])
 
 #
 # Tests
