@@ -12,7 +12,9 @@ Tests for throwing exceptions from C++ to Python
 #include "lsst/pex/exceptions.h"
 %}
 
-%include "lsst/utils/p_lsstSwig.i"
+//  this is found: %include "../../utils.trunk/python/lsst/p_lsstSwig.i"
+//  but following is needed for generality
+%include "lsst/p_lsstSwig.i"
 
 %define %lsst_throw(Type)
     %inline %{
@@ -40,7 +42,7 @@ void throwFirst() {
 }
 
 void throwSecond(const char * const name) {
-    using namespace lsst::daf::data;
+    using namespace lsst::daf::base;
     using namespace lsst::pex::exceptions;
     try {
         throwFirst();
