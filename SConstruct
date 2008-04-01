@@ -17,8 +17,7 @@ env = scons.makeEnv("pex_exceptions",
 #
 # Build/install things
 #
-for d in Split("include/lsst/pex/exceptions python/lsst/pex/exceptions examples lib tests doc"):
-#for d in Split("include/lsst/pex/exceptions examples lib tests doc"):
+for d in Split("include/lsst/pex/exceptions examples lib tests doc"):
     SConscript(os.path.join(d, "SConscript"))
 
 env['IgnoreFiles'] = r"(~$|\.pyc$|^\.svn$|\.o$)"
