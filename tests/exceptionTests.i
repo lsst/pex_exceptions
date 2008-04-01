@@ -12,8 +12,6 @@ Tests for throwing exceptions from C++ to Python
 #include "lsst/pex/exceptions.h"
 %}
 
-//  this is found: %include "../../utils.trunk/python/lsst/p_lsstSwig.i"
-//  but following is needed for generality
 %include "lsst/p_lsstSwig.i"
 
 %define %lsst_throw(Type)

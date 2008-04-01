@@ -3,7 +3,7 @@ Import("env")
 
 env.Program(["BuildExcept.cc"], LIBS=env.libs["boost"] + ["utils"] + ["daf_base"] + ["pex_logging"] + ["pex_exceptions"])
 
-env.CheckSwig("python", ilang="c++")
+env.CheckSwig("python", ilang="c++",includedProducts="utils")
 env.Append(SWIGFLAGS=" -Ipython")
 exceptionTests = env.LoadableModuleIncomplete("_exceptionTests", "exceptionTests.i", LIBS=env.libs["utils"] + ["daf_base"] + ["pex_logging"] + ["pex_exceptions"])
 
