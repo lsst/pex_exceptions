@@ -33,8 +33,8 @@ class LsstExceptionStack(Exception):
         if stack is None:
             # Create an exception stack containing a single exception
             name  = self.__class__.__name__
-            stack = lsst.daf.data.DataProperty.createPropertyNode(name)
-            data  = lsst.daf.data.DataProperty.createPropertyNode("Node" + name)
+            stack = lsst.daf.base.DataProperty.createPropertyNode(name)
+            data  = lsst.daf.base.DataProperty.createPropertyNode("Node" + name)
             stack.addProperty(data)
             self.stack = stack
         elif not _isValidStack(stack):
