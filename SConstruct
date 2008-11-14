@@ -11,14 +11,13 @@ env = scons.makeEnv("pex_exceptions",
                      ["boost", "boost/regex.hpp", "boost_regex:C++"],
                      ["python", "Python.h"],
                      ["utils", "lsst/utils/Utils.h", "utils:C++"],
-                     ["daf_base", "lsst/daf/base/DataProperty.h", "daf_base:C++"],
                      ["pex_logging", "lsst/pex/logging/Trace.h", "pex_logging:C++"],
                     ])
 
 #
 # Build/install things
 #
-for d in Split("include/lsst/pex/exceptions examples lib tests doc"):
+for d in Split("examples lib tests doc"):
     SConscript(os.path.join(d, "SConscript"))
 
 env['IgnoreFiles'] = r"(~$|\.pyc$|^\.svn$|\.o$)"
