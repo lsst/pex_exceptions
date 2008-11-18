@@ -12,16 +12,41 @@ namespace lsst {
 namespace pex {
 namespace exceptions {
 
+/** For internal use; constructs a tracepoint from the file, line, and
+  * function.
+  */
 #define LSST_EXCEPT_HERE \
     lsst::pex::exceptions::Exception::Tracepoint( \
         __FILE__, __LINE__, BOOST_CURRENT_FUNCTION)
+
+/** Create an exception with a given type and message and optionally other
+  * arguments (dependent on the type).
+  * \param[in] type C++ type of the exception to be thrown.
+  */
 #define LSST_EXCEPT(type, ...) type(#type, LSST_EXCEPT_HERE, __VA_ARGS__)
+
+/** Add the current location to an existing exception before rethrowing it.
+  */
 #define LSST_EXCEPT_ADD_HERE(e) e.addMessage(LSST_EXCEPT_HERE)
+
+/** Add the current location and a message to an existing exception before
+  * rethrowing it.
+  */
 #define LSST_EXCEPT_ADD_MESSAGE(e, m) e.addMessage(LSST_EXCEPT_HERE, m)
 
+/** The initial arguments required for new exception subclasses.
+  */
 #define LSST_EARGS_TYPED char const* ex_type, lsst::pex::exceptions::Exception::Tracepoint const& ex_trace, std::string const& ex_message
+
+/** The initial arguments to the base class constructor for new subclasses.
+  */
 #define LSST_EARGS_UNTYPED ex_type, ex_trace, ex_message
 
+/** Macro used to define new types of exceptions without additional data.
+  * \param[in] t Type of the exception.
+  * \param[in] b Base class of the exception.
+  * \param[in] p Python class of the exception (fully specified).
+  */
 #define LSST_EXCEPTION_TYPE(t, b, p) \
     class t : public b { \
     public: \
@@ -40,7 +65,10 @@ public:
     typedef std::vector<Tracepoint> Traceback;
 
     // Constructors
-    Exception(LSST_EARGS_TYPED);
+    // Should use LSST_EARGS_TYPED, but that confuses doxygen.
+    Exception(char const* type,
+              lsst::pex::exceptions::Exception::Tracepoint const& trace,
+              std::string const& message);
     virtual ~Exception(void) throw();
 
     // Modifiers
