@@ -25,14 +25,10 @@ namespace exceptions {
   */
 #define LSST_EXCEPT(type, ...) type(#type, LSST_EXCEPT_HERE, __VA_ARGS__)
 
-/** Add the current location to an existing exception before rethrowing it.
-  */
-#define LSST_EXCEPT_ADD_HERE(e) e.addMessage(LSST_EXCEPT_HERE)
-
 /** Add the current location and a message to an existing exception before
   * rethrowing it.
   */
-#define LSST_EXCEPT_ADD_MESSAGE(e, m) e.addMessage(LSST_EXCEPT_HERE, m)
+#define LSST_EXCEPT_ADD(e, m) e.addMessage(LSST_EXCEPT_HERE, m)
 
 /** The initial arguments required for new exception subclasses.
   */
