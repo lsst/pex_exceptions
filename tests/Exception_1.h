@@ -13,7 +13,7 @@ public:
         Exception(LSST_EARGS_UNTYPED), _count(count) { };
     virtual std::ostream& addToStream(std::ostream& stream) const {
         // Booby-trapped to demonstrate what() exception handling.
-        if (_count > 9) throw std::exception();
+        if (_count < 0) throw std::exception();
         // Demonstrates how to add information before and after base class.
         return pexExcept::Exception::addToStream(
             stream << "Begin DetailedException(" << _count <<
