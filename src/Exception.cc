@@ -19,7 +19,6 @@ static char const* SVNid __attribute__((unused)) = "$Id$";
 
 #include "lsst/pex/exceptions/Exception.h"
 
-#include <iomanip>
 #include <sstream>
 
 namespace pexExcept = lsst::pex::exceptions;
@@ -95,23 +94,20 @@ std::ostream& pexExcept::Exception::addToStream(std::ostream& stream) const {
 }
 
 /** Return a character string representing this exception.  Not allowed to
-  * throw any exceptions.  Try to use addToStream(); fall back on underlying
-  * std::exception::what() if that fails.
+  * throw any exceptions.  Try to use addToStream(); fall back on _type
+  * if that fails.
   * \return String representation; does not need to be freed/deleted.
   */
 char const* pexExcept::Exception::what(void) const throw() {
-    static char cstring[4096];
+    static std::string buffer;
     try {
-        std::ostringstream s;
+        buffer.clear();
+        std::ostringstream s(buffer);
         addToStream(s);
-        size_t size = s.str().size(); // not including trailing null
-        if (size >= sizeof(cstring)) size = sizeof(cstring) - 1;
-        strncpy(cstring, s.str().c_str(), size);
-        cstring[size] = '\0';
-        return cstring;
+        return s.str().c_str();
     }
     catch (...) {
-        return std::exception::what();
+        return _type;
     }
 }
 
