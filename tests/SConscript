@@ -1,11 +1,10 @@
 # -*- python -*-
 Import("env")
 
-env.Program(["Exception_1.cc"], LIBS=env.libs["boost"] + ["utils"] + ["pex_logging"] + ["pex_exceptions"])
+env.CheckSwig("python", ilang="c++",includedProducts="utils pex_exceptions")
 
-# env.CheckSwig("python", ilang="c++",includedProducts="utils")
-# env.Append(SWIGFLAGS=" -Ipython")
-# exceptionTests = env.LoadableModuleIncomplete("_exceptionTests", "exceptionTests.i", LIBS=env.libs["utils"] + ["daf_base"] + ["pex_logging"] + ["pex_exceptions"])
+env.Program(["Exception_1.cc"], LIBS=env.libs["boost"] + ["utils"] + ["pex_logging"] + ["pex_exceptions"])
+failerLib = env.LoadableModuleIncomplete("_failer", ["Failer.i", "Failer.cc"], LIBS=env.libs["boost"] + ["utils"] + ["pex_logging"] + ["pex_exceptions"])
 
 #
 # Tests
@@ -16,6 +15,5 @@ import os
 tests = lsst.tests.Control(env, verbose=True)
 
 tests.run("Exception_1.cc")
-
-for target in tests.run("*.py"):
-    env.Depends(target, exceptionTests)
+for target in tests.run("Exception_2.py"):
+    env.Depends(target, failerLib)
