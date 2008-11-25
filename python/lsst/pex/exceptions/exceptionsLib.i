@@ -12,6 +12,16 @@ Access to the classes from the pex_exceptions library
 #include "lsst/pex/exceptions/Exception.h"
 %}
 
+%pythoncode {
+class LsstException(Exception):
+    pass
+
+class LsstCppException(LsstException):
+    def __str__(self):
+        return self.args[0].what()
+
+}
+
 %include "lsst/p_lsstSwig.i"
 
 %include "lsst/pex/exceptions/Exception.h"
