@@ -99,12 +99,12 @@ std::ostream& pexExcept::Exception::addToStream(std::ostream& stream) const {
   * \return String representation; does not need to be freed/deleted.
   */
 char const* pexExcept::Exception::what(void) const throw() {
-    static std::string buffer;
+    static std::string buffer; // static to avoid memory issues
     try {
-        buffer.clear();
-        std::ostringstream s(buffer);
+        std::ostringstream s;
         addToStream(s);
-        return s.str().c_str();
+        buffer = s.str(); // copies underlying string
+        return buffer.c_str();
     }
     catch (...) {
         return _type;
