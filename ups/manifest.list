@@ -2,7 +2,6 @@
 >merge: base
 >merge: boost
 >merge: utils
->merge: pex_logging
 >merge: swig
 >merge: doxygen
 >self
