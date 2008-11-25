@@ -118,6 +118,15 @@ char const* pexExcept::Exception::getType(void) const throw() {
     return _type;
 }
 
+/** Return the fully-specified C++ type of a pointer to the exception.  This
+  * is overridden by derived classes (automatically if the LSST_EXCEPTION_TYPE
+  * macro is used.  It is used by the SWIG interface.
+  * \return String with the C++ type; does not need to be freed/deleted.
+  */
+char const* pexExcept::Exception::ctype(void) const throw() {
+    return "lsst::pex::exceptions::Exception *";
+}
+
 /** Push the text representation of an exception onto a stream.
   * \param[in] stream Reference to an output stream.
   * \param[in] e Exception to output.
