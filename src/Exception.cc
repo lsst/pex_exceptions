@@ -25,14 +25,15 @@ namespace pexExcept = lsst::pex::exceptions;
 
 /** Constructor.
   * \param[in] type Exception's C++ type (automatically passed in by macro).
-  * \param[in] trace File, line, function (automatically passed in by macro).
+  * \param[in] file Filename (automatically passed in by macro).
+  * \param[in] line Line number (automatically passed in by macro).
+  * \param[in] func Function name (automatically passed in by macro).
   * \param[in] message Informational string attached to exception.
   */
-pexExcept::Exception::Exception(
-    char const* type, Tracepoint const& trace, std::string const& message) :
+pexExcept::Exception::Exception(char const* type, char const* file, int line,
+                                char const* func, std::string const& message) :
     _type(type) {
-    _traceback.push_back(trace);
-    _messages.push_back(message);
+    _traceback.push_back(Tracepoint(file, line, func, message));
 }
 
 /** Destructor.
@@ -43,13 +44,14 @@ pexExcept::Exception::~Exception(void) throw() {
 }
 
 /** Add a tracepoint and a message to an exception before rethrowing it.
-  * \param[in] trace File, line, function (automatically passed in by macro).
+  * \param[in] file Filename (automatically passed in by macro).
+  * \param[in] line Line number (automatically passed in by macro).
+  * \param[in] func Function name (automatically passed in by macro).
   * \param[in] message Additional message to associate with this rethrow.
   */
-void pexExcept::Exception::addMessage(Tracepoint const& trace,
-                                      std::string const& message) {
-    _traceback.push_back(trace);
-    _messages.push_back(message);
+void pexExcept::Exception::addMessage(
+    char const* file, int line, char const* func, std::string const& message) {
+    _traceback.push_back(Tracepoint(file, line, func, message));
 }
 
 /** Retrieve the list of tracepoints associated with an exception.
@@ -60,15 +62,7 @@ pexExcept::Exception::Traceback const&
     return _traceback;
 }
 
-/** Retrieve the list of messages associated with an exception.
-  * \return Vector of messages, each associated with a tracepoint.
-  */
-std::vector<std::string> const&
-    pexExcept::Exception::getMessages(void) const throw() {
-    return _messages;
-}
-
-/** Add a text representation of this exception, including its traceback and
+/** Add a text representation of this exception, including its traceback with
   * messages, to a stream.
   * \param[in] stream Reference to an output stream.
   * \return Reference to the output stream after adding the text.
@@ -78,16 +72,12 @@ std::ostream& pexExcept::Exception::addToStream(std::ostream& stream) const {
         stream << "0: " << _type << " thrown at " <<
             _traceback[0]._file << ":" << _traceback[0]._line << " in " <<
             _traceback[0]._func << std::endl;
-        if (_messages[0].size() > 0) {
-            stream << "0: Message: " << _messages[0] << std::endl;
-        }
+        stream << "0: Message: " << _traceback[0]._msg << std::endl;
         for (size_t i = 1; i < _traceback.size(); ++i) {
             stream << i << ": Rethrown at " <<
                 _traceback[i]._file << ":" << _traceback[i]._line << " in " <<
                 _traceback[i]._func << std::endl;
-            if (_messages[i].size() > 0) {
-                stream << i << ": Message: " << _messages[i] << std::endl;
-            }
+            stream << i << ": Message: " << _traceback[i]._msg << std::endl;
         }
     }
     return stream;
@@ -125,6 +115,14 @@ char const* pexExcept::Exception::getType(void) const throw() {
   */
 char const* pexExcept::Exception::ctype(void) const throw() {
     return "lsst::pex::exceptions::Exception *";
+}
+
+/** Return a copy of the exception as an Exception*.  Can be overridden by
+  * derived classes that add data or methods.
+  * \return Exception* pointing to a copy of the exception.
+  */
+pexExcept::Exception* pexExcept::Exception::clone(void) const {
+    return new pexExcept::Exception(*this);
 }
 
 /** Push the text representation of an exception onto a stream.

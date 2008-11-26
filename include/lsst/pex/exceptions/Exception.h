@@ -12,12 +12,9 @@ namespace lsst {
 namespace pex {
 namespace exceptions {
 
-/** For internal use; constructs a tracepoint from the file, line, and
-  * function.
+/** For internal use; gathers the file, line, and function for a tracepoint.
   */
-#define LSST_EXCEPT_HERE \
-    lsst::pex::exceptions::Tracepoint( \
-        __FILE__, __LINE__, BOOST_CURRENT_FUNCTION)
+#define LSST_EXCEPT_HERE __FILE__, __LINE__, BOOST_CURRENT_FUNCTION
 
 /** Create an exception with a given type and message and optionally other
   * arguments (dependent on the type).
@@ -32,11 +29,13 @@ namespace exceptions {
 
 /** The initial arguments required for new exception subclasses.
   */
-#define LSST_EARGS_TYPED char const* ex_type, lsst::pex::exceptions::Tracepoint const& ex_trace, std::string const& ex_message
+#define LSST_EARGS_TYPED \
+    char const* ex_type, char const* ex_file, int ex_line, \
+    char const* ex_func, std::string const& ex_message
 
 /** The initial arguments to the base class constructor for new subclasses.
   */
-#define LSST_EARGS_UNTYPED ex_type, ex_trace, ex_message
+#define LSST_EARGS_UNTYPED ex_type, ex_file, ex_line, ex_func, ex_message
 
 /** Macro used to define new types of exceptions without additional data.
   * \param[in] t Type of the exception.
@@ -48,14 +47,19 @@ namespace exceptions {
     public: \
         t(LSST_EARGS_TYPED) : b(LSST_EARGS_UNTYPED) { }; \
         virtual char const* ctype(void) const throw() { return #c " *"; }; \
+        virtual lsst::pex::exceptions::Exception* clone(void) const { \
+            return new t(*this); \
+        }; \
     };
 
 struct Tracepoint {
-    Tracepoint(char const* file, int line, char const* func) :
-        _file(file), _line(line), _func(func) { };
+    Tracepoint(char const* file, int line, char const* func,
+               std::string const& message) :
+        _file(file), _line(line), _func(func), _msg(message) { };
     char const* _file; // Compiled strings only; does not need deletion
     int _line;
     char const* _func; // Compiled strings only; does not need deletion
+    std::string _msg;
 };
 
 class Exception : public std::exception {
@@ -64,27 +68,25 @@ public:
 
     // Constructors
     // Should use LSST_EARGS_TYPED, but that confuses doxygen.
-    Exception(char const* type,
-              lsst::pex::exceptions::Tracepoint const& trace,
+    Exception(char const* type, char const* file, int line, char const* func,
               std::string const& message);
     virtual ~Exception(void) throw();
 
     // Modifiers
-    void addMessage(Tracepoint const& trace,
-                    std::string const& message = std::string());
+    void addMessage(char const* file, int line, char const* func,
+                    std::string const& message);
 
     // Accessors
     Traceback const& getTraceback(void) const throw();
-    std::vector<std::string> const& getMessages(void) const throw();
     virtual std::ostream& addToStream(std::ostream& stream) const;
     virtual char const* what(void) const throw();
     char const* getType(void) const throw();
     virtual char const* ctype(void) const throw();
+    virtual Exception* clone(void) const;
 
 private:
     char const* _type;
     Traceback _traceback;
-    std::vector<std::string> _messages;
 };
 
 std::ostream& operator<<(std::ostream& stream, Exception const& e);
