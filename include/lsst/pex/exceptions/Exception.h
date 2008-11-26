@@ -1,135 +1,94 @@
-// -*- lsst-c++ -*-
-/** \file Exception.h
-  * \brief Base LSST exception classes
-  *
-  * The LSST base exception classes provide the means to maintain an
-  * exception stack trace as an unresolved error condition is successively 
-  * handed up the exception handler stack.
-  *
-  * Each handler is responsible for adding new information to the exception
-  * stack which the next invoked handler may use to further resolve the issue.
-  * A handler has access to the entire ExceptionStack so it is not
-  * necessary to repeat information determined to already be in the stack.
-  *
-  * The exception stack is an ordered collection of ExceptionDatas which itself
-  * is an ordered collection of (name, value) attributes pairs.
-  *
-  * The conceptually distinct collections used in LSST exception management 
-  * are:
-  * -     ExceptionStack = sequenced set { ->ExceptionData }
-  * -     ExceptionData = sequenced set { ->DataProperty } .
-  * -     DataProperty = leaf(name,value) || node(name, ->DataProperty)
-  *
-  * ExceptionStack and ExceptionData are implemented as wrappers for 
-  * DataProperty collections.
-  *
-  * See ExceptionStack, ExceptionData and DataProperty classes for 
-  * additional information.
-  *
-  * \ingroup pex
-  *
-  * \author Roberta Allsman 
-  */
+#ifndef LSST_PEX_EXCEPTIONS_EXCEPTION_H
+#define LSST_PEX_EXCEPTIONS_EXCEPTION_H
 
-#if !defined(LSST_EXCEPTION)      //! multiple inclusion guard macro
-#define LSST_EXCEPTION 1
 #include <exception>
-#include <boost/format.hpp>
-#include <boost/shared_ptr.hpp>
-#include "lsst/daf/base/DataProperty.h"
+#include <ostream>
+#include <vector>
+
+#include "boost/current_function.hpp"
+
 
 namespace lsst {
 namespace pex {
 namespace exceptions {
 
-        
-/** \brief ExceptionData is an ordered collection of (name,value) attributes.
-
-  * Each ExceptionData is composed of attributes providing additional 
-  * debugging information for the exception handler catching that 
-  * specific exception. Those attributes are defined using the LSST 
-  * DataProperty class.  An ExceptionData is a sequenced collection of pointers
-  * to Data Property objects.
-  *
-  * ExceptionData inherits from and is a thin wrapper for 
-  * lsst::daf::base::DataProperty. The rename assists in tracking the 
-  * conceptually distinct DataProperty collections used in LSST 
-  * exception management:
-  * -     ExceptionStack = sequenced set { ->ExceptionData }
-  * -     ExceptionData = sequenced set { ->DataProperty } .
-  * -     DataProperty = leaf(name,value) || node(name, ->DataProperty)
-  *
-  * See DataProperty class for additional information.
+/** For internal use; gathers the file, line, and function for a tracepoint.
   */
-class ExceptionData   {
-public:
-   typedef lsst::daf::base::DataProperty::PtrType PtrType;
-   typedef std::list<PtrType> ContainerType;
-   typedef std::list<PtrType>::const_iterator ContainerIteratorType;
-   typedef std::pair<ContainerIteratorType, ContainerIteratorType> iteratorRangeType;
+#define LSST_EXCEPT_HERE __FILE__, __LINE__, BOOST_CURRENT_FUNCTION
 
-   ExceptionData(const std::string name ) throw();
-   ExceptionData(const boost::format name ) throw();
-   ExceptionData(ExceptionData const& orig ) throw();
-   PtrType getExceptionData() throw();
-   void add(lsst::daf::base::DataProperty::PtrType rhs ) throw() ;
-   ExceptionData &operator<< ( PtrType  rhs ) throw();
-private:
-    PtrType _exception;
+/** Create an exception with a given type and message and optionally other
+  * arguments (dependent on the type).
+  * \param[in] type C++ type of the exception to be thrown.
+  */
+#define LSST_EXCEPT(type, ...) type(LSST_EXCEPT_HERE, __VA_ARGS__)
+
+/** Add the current location and a message to an existing exception before
+  * rethrowing it.
+  */
+#define LSST_EXCEPT_ADD(e, m) e.addMessage(LSST_EXCEPT_HERE, m)
+
+/** The initial arguments required for new exception subclasses.
+  */
+#define LSST_EARGS_TYPED \
+    char const* ex_file, int ex_line, char const* ex_func, \
+    std::string const& ex_message
+
+/** The initial arguments to the base class constructor for new subclasses.
+  */
+#define LSST_EARGS_UNTYPED ex_file, ex_line, ex_func, ex_message
+
+/** Macro used to define new types of exceptions without additional data.
+  * \param[in] t Type of the exception.
+  * \param[in] b Base class of the exception.
+  * \param[in] c C++ class of the exception (fully specified).
+  */
+#define LSST_EXCEPTION_TYPE(t, b, c) \
+    class t : public b { \
+    public: \
+        t(LSST_EARGS_TYPED) : b(LSST_EARGS_UNTYPED) { }; \
+        virtual char const* getType(void) const throw() { return #c " *"; }; \
+        virtual lsst::pex::exceptions::Exception* clone(void) const { \
+            return new t(*this); \
+        }; \
+    };
+
+struct Tracepoint {
+    Tracepoint(char const* file, int line, char const* func,
+               std::string const& message) :
+        _file(file), _line(line), _func(func), _msg(message) { };
+    char const* _file; // Compiled strings only; does not need deletion
+    int _line;
+    char const* _func; // Compiled strings only; does not need deletion
+    std::string _msg;
 };
 
-
-/** \brief ExceptionStack manages an ordered collection of ExceptionData.
-  *
-  * An ExceptionStack manages a collection of ExceptionData objects using the
-  * DataProperty (tree) paradigm so that the root Node is the exception stack,
-  * second level nodes are ExceptionDatas and all subsequent nodes define
-  * attributes on an exception.
-  *
-  * Providing uniquely named wrappers assists in distinguishing the various
-  * DataProperty collections used in Lsst exception management:
-  * -       ExceptionStack = sequenced set { ->ExceptionData }
-  * -       ExceptionData = sequenced set { ->DataProperty }
-  * -       DataProperty = leaf(name,value) || node(name, ->DataProperty)
-  *
-  * See ExceptionData and DataProperty classes for additional information.
-  */
-class ExceptionStack : public std::runtime_error  {
+class Exception : public std::exception {
 public:
-   typedef lsst::daf::base::DataProperty::PtrType PtrType;
-   typedef std::list<PtrType> ContainerType;
-   typedef std::list<PtrType>::const_iterator ContainerIteratorType;
-   typedef std::pair<ContainerIteratorType, ContainerIteratorType> iteratorRangeType;
+    typedef std::vector<Tracepoint> Traceback;
 
-   ExceptionStack( ) throw();
-   ExceptionStack( std::string const& stackName, 
-                   std::string const& comment=std::string("") )
-                   throw();
-   ExceptionStack( ExceptionStack const& orig,
-                   std::string const& stackName, 
-                   std::string const& comment=std::string("") ) 
-                   throw();
-   ExceptionStack( ExceptionData & orig,
-                   std::string const& stackName, 
-                   std::string const& comment=std::string("") ) 
-                   throw();
-   ExceptionStack( ExceptionStack const& orig ) throw();
-   ExceptionStack &operator<<( ExceptionData rhs ) throw() ;
-   ~ExceptionStack() throw() {};
+    // Constructors
+    // Should use LSST_EARGS_TYPED, but that confuses doxygen.
+    Exception(char const* file, int line, char const* func,
+              std::string const& message);
+    virtual ~Exception(void) throw();
 
-   void            cloneCollection(ExceptionStack const& orig ) throw();
-   void            addExceptionData(ExceptionData & orig) throw();
-   PtrType         getStack() throw();
-   PtrType         getLast() throw();
+    // Modifiers
+    void addMessage(char const* file, int line, char const* func,
+                    std::string const& message);
 
-   virtual char const * getPythonModule() const;
-   virtual char const * getPythonClass() const;
+    // Accessors
+    Traceback const& getTraceback(void) const throw();
+    virtual std::ostream& addToStream(std::ostream& stream) const;
+    virtual char const* what(void) const throw();
+    virtual char const* getType(void) const throw();
+    virtual Exception* clone(void) const;
 
 private:
-   PtrType _exceptionStack;
+    Traceback _traceback;
 };
 
-}
-}
-}
+std::ostream& operator<<(std::ostream& stream, Exception const& e);
+
+}}} // namespace lsst::pex::exceptions
+
 #endif

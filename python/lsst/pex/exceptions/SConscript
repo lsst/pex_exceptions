@@ -1,0 +1,5 @@
+# -*- python -*-
+Import("env")
+
+env.CheckSwig("python", ilang="c++", includedProducts="utils")
+env.LoadableModuleIncomplete("_exceptionsLib", Split("exceptionsLib.i"), LIBS=env.getlibs("pex_exceptions"))

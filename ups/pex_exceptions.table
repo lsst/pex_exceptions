@@ -1,4 +1,4 @@
-setupRequired(pex_logging)
+setupRequired(utils)
 
 envAppend(LD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
 envAppend(DYLD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
