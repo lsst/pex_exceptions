@@ -20,7 +20,7 @@ namespace exceptions {
   * arguments (dependent on the type).
   * \param[in] type C++ type of the exception to be thrown.
   */
-#define LSST_EXCEPT(type, ...) type(#type, LSST_EXCEPT_HERE, __VA_ARGS__)
+#define LSST_EXCEPT(type, ...) type(LSST_EXCEPT_HERE, __VA_ARGS__)
 
 /** Add the current location and a message to an existing exception before
   * rethrowing it.
@@ -30,12 +30,12 @@ namespace exceptions {
 /** The initial arguments required for new exception subclasses.
   */
 #define LSST_EARGS_TYPED \
-    char const* ex_type, char const* ex_file, int ex_line, \
-    char const* ex_func, std::string const& ex_message
+    char const* ex_file, int ex_line, char const* ex_func, \
+    std::string const& ex_message
 
 /** The initial arguments to the base class constructor for new subclasses.
   */
-#define LSST_EARGS_UNTYPED ex_type, ex_file, ex_line, ex_func, ex_message
+#define LSST_EARGS_UNTYPED ex_file, ex_line, ex_func, ex_message
 
 /** Macro used to define new types of exceptions without additional data.
   * \param[in] t Type of the exception.
@@ -46,7 +46,7 @@ namespace exceptions {
     class t : public b { \
     public: \
         t(LSST_EARGS_TYPED) : b(LSST_EARGS_UNTYPED) { }; \
-        virtual char const* ctype(void) const throw() { return #c " *"; }; \
+        virtual char const* getType(void) const throw() { return #c " *"; }; \
         virtual lsst::pex::exceptions::Exception* clone(void) const { \
             return new t(*this); \
         }; \
@@ -68,7 +68,7 @@ public:
 
     // Constructors
     // Should use LSST_EARGS_TYPED, but that confuses doxygen.
-    Exception(char const* type, char const* file, int line, char const* func,
+    Exception(char const* file, int line, char const* func,
               std::string const& message);
     virtual ~Exception(void) throw();
 
@@ -80,12 +80,10 @@ public:
     Traceback const& getTraceback(void) const throw();
     virtual std::ostream& addToStream(std::ostream& stream) const;
     virtual char const* what(void) const throw();
-    char const* getType(void) const throw();
-    virtual char const* ctype(void) const throw();
+    virtual char const* getType(void) const throw();
     virtual Exception* clone(void) const;
 
 private:
-    char const* _type;
     Traceback _traceback;
 };
 

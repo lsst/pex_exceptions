@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(simple) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: pexExcept::Exception thrown at tests/Exception_1.cc:20 in void f1()\n"
+            "0: lsst::pex::exceptions::Exception thrown at tests/Exception_1.cc:20 in void f1()\n"
             "0: Message: In f1\n"));
 }
 
@@ -188,7 +188,7 @@ BOOST_AUTO_TEST_CASE(simple_rethrow) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: pexExcept::Exception thrown at tests/Exception_1.cc:20 in void f1()\n"
+            "0: lsst::pex::exceptions::Exception thrown at tests/Exception_1.cc:20 in void f1()\n"
             "0: Message: In f1\n"
             "1: Rethrown at tests/Exception_1.cc:36 in void f4()\n"
             "1: Message: In f4\n"));
@@ -340,7 +340,7 @@ BOOST_AUTO_TEST_CASE(detailed_what_boobytrap) {
         o << e.what();
     }
     BOOST_CHECK(!o.is_empty(false));
-    BOOST_CHECK(o.is_equal("DetailedException"));
+    BOOST_CHECK(o.is_equal("DetailedException *"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

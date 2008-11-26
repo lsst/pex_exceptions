@@ -3,7 +3,6 @@
 /** \file
  * \brief Implementation of Exception class.
  *
- * \author $Author$
  * \version $Revision$
  * \date $Date$
  *
@@ -19,20 +18,20 @@ static char const* SVNid __attribute__((unused)) = "$Id$";
 
 #include "lsst/pex/exceptions/Exception.h"
 
+#include <cstring>
 #include <sstream>
+#include <string>
 
 namespace pexExcept = lsst::pex::exceptions;
 
 /** Constructor.
-  * \param[in] type Exception's C++ type (automatically passed in by macro).
   * \param[in] file Filename (automatically passed in by macro).
   * \param[in] line Line number (automatically passed in by macro).
   * \param[in] func Function name (automatically passed in by macro).
   * \param[in] message Informational string attached to exception.
   */
-pexExcept::Exception::Exception(char const* type, char const* file, int line,
-                                char const* func, std::string const& message) :
-    _type(type) {
+pexExcept::Exception::Exception(char const* file, int line, char const* func,
+                                std::string const& message) {
     _traceback.push_back(Tracepoint(file, line, func, message));
 }
 
@@ -69,7 +68,8 @@ pexExcept::Exception::Traceback const&
   */
 std::ostream& pexExcept::Exception::addToStream(std::ostream& stream) const {
     if (_traceback.size() > 0) { // Should always be true
-        stream << "0: " << _type << " thrown at " <<
+        std::string type(getType(), 0, std::strlen(getType()) - 2);
+        stream << "0: " << type << " thrown at " <<
             _traceback[0]._file << ":" << _traceback[0]._line << " in " <<
             _traceback[0]._func << std::endl;
         stream << "0: Message: " << _traceback[0]._msg << std::endl;
@@ -84,7 +84,7 @@ std::ostream& pexExcept::Exception::addToStream(std::ostream& stream) const {
 }
 
 /** Return a character string representing this exception.  Not allowed to
-  * throw any exceptions.  Try to use addToStream(); fall back on _type
+  * throw any exceptions.  Try to use addToStream(); fall back on getType()
   * if that fails.
   * \return String representation; does not need to be freed/deleted.
   */
@@ -97,23 +97,16 @@ char const* pexExcept::Exception::what(void) const throw() {
         return buffer.c_str();
     }
     catch (...) {
-        return _type;
+        return getType();
     }
-}
-
-/** Return the C++ type of the exception.
-  * \return String with the C++ type; does not need to be freed/deleted.
-  */
-char const* pexExcept::Exception::getType(void) const throw() {
-    return _type;
 }
 
 /** Return the fully-specified C++ type of a pointer to the exception.  This
   * is overridden by derived classes (automatically if the LSST_EXCEPTION_TYPE
-  * macro is used.  It is used by the SWIG interface.
+  * macro is used).  It is used by the SWIG interface.
   * \return String with the C++ type; does not need to be freed/deleted.
   */
-char const* pexExcept::Exception::ctype(void) const throw() {
+char const* pexExcept::Exception::getType(void) const throw() {
     return "lsst::pex::exceptions::Exception *";
 }
 

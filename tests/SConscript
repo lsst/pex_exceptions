@@ -3,8 +3,8 @@ Import("env")
 
 env.CheckSwig("python", ilang="c++",includedProducts="utils pex_exceptions")
 
-env.Program(["Exception_1.cc"], LIBS=env.libs["boost"] + ["utils"] + ["pex_exceptions"])
-failerLib = env.LoadableModuleIncomplete("_failer", ["Failer.i", "Failer.cc"], LIBS=env.libs["boost"] + ["utils"] + ["pex_exceptions"])
+env.Program(["Exception_1.cc"], LIBS=env.getlibs("utils pex_exceptions"))
+failerLib = env.LoadableModuleIncomplete("_failer", ["Failer.i", "Failer.cc"], LIBS=env.getlibs("utils pex_exceptions"))
 
 #
 # Tests

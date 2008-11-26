@@ -5,7 +5,7 @@
 
 namespace pexExcept = lsst::pex::exceptions;
 
-LSST_EXCEPTION_TYPE(ChildException, pexExcept::Exception, lsst.pex.exceptions.Exception)
+LSST_EXCEPTION_TYPE(ChildException, pexExcept::Exception, ChildException)
 
 class DetailedException : public pexExcept::Exception {
 public:
@@ -19,6 +19,9 @@ public:
             stream << "Begin DetailedException(" << _count <<
             ")" << std::endl) <<
             "End DetailedException" << std::endl;
+    };
+    virtual char const* getType(void) const throw() {
+        return "DetailedException *";
     };
     int getCount(void) const { return _count; };
 private:

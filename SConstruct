@@ -7,8 +7,7 @@ import lsst.SConsUtils as scons
 
 env = scons.makeEnv("pex_exceptions",
                     r"$HeadURL$",
-                     [["boost", "boost/format.hpp"],
-                     ["boost", "boost/regex.hpp", "boost_regex:C++"],
+                     [["boost", "boost/current_function.hpp"],
                      ["python", "Python.h"],
                      ["utils", "lsst/utils/Utils.h", "utils:C++"],
                     ])
