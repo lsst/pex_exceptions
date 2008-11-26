@@ -20,8 +20,9 @@ LSST_EXCEPTION_TYPE(RangeErrorException, RuntimeErrorException, lsst::pex::excep
 LSST_EXCEPTION_TYPE(OverflowErrorException, RuntimeErrorException, lsst::pex::exceptions::OverflowErrorException)
 LSST_EXCEPTION_TYPE(UnderflowErrorException, RuntimeErrorException, lsst::pex::exceptions::UnderflowErrorException)
 LSST_EXCEPTION_TYPE(NotFoundException, Exception, lsst::pex::exceptions::NotFoundException)
-LSST_EXCEPTION_TYPE(MemoryException, Exception, lsst::pex::exceptions::MemoryException)
-LSST_EXCEPTION_TYPE(IoErrorException, Exception, lsst::pex::exceptions::IoErrorException)
+LSST_EXCEPTION_TYPE(MemoryException, RuntimeErrorException, lsst::pex::exceptions::MemoryException)
+LSST_EXCEPTION_TYPE(IoErrorException, RuntimeErrorException, lsst::pex::exceptions::IoErrorException)
+LSST_EXCEPTION_TYPE(TimeoutException, RuntimeErrorException, lsst::pex::exceptions::TimeoutException)
 
 }
 }
