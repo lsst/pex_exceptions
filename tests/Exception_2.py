@@ -47,6 +47,7 @@ class ExceptionTestCase(unittest.TestCase):
             self.assertEqual(str(e),
                     "0: failer::MyException thrown at tests/Failer.cc:7 " +
                     "in void failer::Failer::fail()\n0: Message: message\n")
+            self.assertEqual(e.args[0].ctype(), "failer::MyException *")
 
 def suite():
     """Returns a suite containing all the test cases in this module."""
