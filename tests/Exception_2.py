@@ -15,10 +15,11 @@ class ExceptionTestCase(unittest.TestCase):
     def testHierarchy(self):
         """Check that the LsstCppException class hierarchy is correct and that
         the C++ exception is a subclass of lsst.pex.exceptions.Exception."""
-        issubclass(lsst.pex.exceptions.LsstException, Exception)
-        issubclass(lsst.pex.exceptions.LsstCppException,
-                lsst.pex.exceptions.LsstException)
-        issubclass(failer.MyException, lsst.pex.exceptions.Exception)
+        self.assert_(issubclass(lsst.pex.exceptions.LsstException, Exception))
+        self.assert_(issubclass(lsst.pex.exceptions.LsstCppException,
+            lsst.pex.exceptions.LsstException))
+        self.assert_(issubclass(failer.MyException,
+            lsst.pex.exceptions.Exception))
 
     def testThrow(self):
         """Check that the exception thrown is a Python Exception, an
