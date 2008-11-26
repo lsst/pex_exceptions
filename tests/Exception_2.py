@@ -1,5 +1,4 @@
 import unittest
-import lsst.utils.tests as tests
 
 import lsst.pex.exceptions
 import failer
@@ -47,19 +46,7 @@ class ExceptionTestCase(unittest.TestCase):
             self.assertEqual(str(e),
                     "0: failer::MyException thrown at tests/Failer.cc:7 " +
                     "in void failer::Failer::fail()\n0: Message: message\n")
-            self.assertEqual(e.args[0].ctype(), "failer::MyException *")
-
-def suite():
-    """Returns a suite containing all the test cases in this module."""
-    tests.init()
-
-    suites = []
-    suites += unittest.makeSuite(ExceptionTestCase)
-    return unittest.TestSuite(suites)
-
-def run(exit=False):
-    """Run the tests"""
-    tests.run(suite(), exit)
+            self.assertEqual(e.args[0].getType(), "failer::MyException *")
 
 if __name__ == '__main__':
-    run(True)
+    unittest.main()
