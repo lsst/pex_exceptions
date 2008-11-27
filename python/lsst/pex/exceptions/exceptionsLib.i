@@ -24,5 +24,8 @@ class LsstCppException(LsstException):
 
 %include "lsst/p_lsstSwig.i"
 
+%newobject lsst::pex::exceptions::Exception::clone;
+%template(Traceback) std::vector<lsst::pex::exceptions::Tracepoint>;
+
 %include "lsst/pex/exceptions/Exception.h"
 %include "lsst/pex/exceptions/Runtime.h"

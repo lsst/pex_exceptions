@@ -49,5 +49,18 @@ class ExceptionTestCase(unittest.TestCase):
                     "in void failer::Failer::fail()\n0: Message: message\n")
             self.assertEqual(e.args[0].getType(), "failer::MyException *")
 
+    def testTraceback(self):
+        """Check that the traceback is accessible and correct."""
+        try:
+            self.x.fail()
+        except lsst.pex.exceptions.LsstCppException, e:
+            t = e.args[0].getTraceback()
+            self.assert_(len(t), 1)
+            self.assert_(isinstance(t[0], lsst.pex.exceptions.Tracepoint))
+            self.assertEqual(t[0]._file, "tests/Failer.cc")
+            self.assertEqual(t[0]._line, 7)
+            self.assertEqual(t[0]._func, "void failer::Failer::fail()")
+            self.assertEqual(t[0]._msg, "message")
+
 if __name__ == '__main__':
     unittest.main()

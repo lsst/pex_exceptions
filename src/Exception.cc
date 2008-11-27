@@ -24,6 +24,22 @@ static char const* SVNid __attribute__((unused)) = "$Id$";
 
 namespace pexExcept = lsst::pex::exceptions;
 
+/** Default constructor.
+  */
+pexExcept::Tracepoint::Tracepoint(void) : _file(0), _line(-1), _func(0) {
+}
+
+/** Constructor.
+  * \param[in] file Filename.
+  * \param[in] line Line number.
+  * \param[in] func Function name.
+  * \param[in] message Informational string attached to exception.
+  */
+pexExcept::Tracepoint::Tracepoint(
+    char const* file, int line, char const* func, std::string const& message) :
+    _file(file), _line(line), _func(func), _msg(message) {
+}
+
 /** Constructor.
   * \param[in] file Filename (automatically passed in by macro).
   * \param[in] line Line number (automatically passed in by macro).
@@ -56,7 +72,7 @@ void pexExcept::Exception::addMessage(
 /** Retrieve the list of tracepoints associated with an exception.
   * \return Vector of tracepoints.
   */
-pexExcept::Exception::Traceback const&
+pexExcept::Traceback const&
     pexExcept::Exception::getTraceback(void) const throw() {
     return _traceback;
 }

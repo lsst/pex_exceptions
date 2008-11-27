@@ -53,18 +53,18 @@ namespace exceptions {
     };
 
 struct Tracepoint {
+    Tracepoint(void);
     Tracepoint(char const* file, int line, char const* func,
-               std::string const& message) :
-        _file(file), _line(line), _func(func), _msg(message) { };
+               std::string const& message);
     char const* _file; // Compiled strings only; does not need deletion
     int _line;
     char const* _func; // Compiled strings only; does not need deletion
     std::string _msg;
 };
+typedef std::vector<Tracepoint> Traceback;
 
 class Exception : public std::exception {
 public:
-    typedef std::vector<Tracepoint> Traceback;
 
     // Constructors
     // Should use LSST_EARGS_TYPED, but that confuses doxygen.
