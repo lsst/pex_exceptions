@@ -8,10 +8,10 @@ import lsst.SConsUtils as scons
 env = scons.makeEnv("pex_exceptions",
                     r"$HeadURL$",
                     [["boost", "boost/current_function.hpp"],
-                     ["boost", "boost/regex.hpp", "boost_regex:C++"],
                      ["python", "Python.h"],
-                     ["utils", "lsst/utils/Utils.h", "utils:C++"],
                     ])
+
+env.libs["pex_exceptions"] += env.getlibs("boost python")
 
 #
 # Build/install things

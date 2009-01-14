@@ -19,6 +19,7 @@ static char const* SVNid __attribute__((unused)) = "$Id$";
 #include "lsst/pex/exceptions/Exception.h"
 
 #include <cstring>
+#include <ostream>
 #include <sstream>
 #include <string>
 

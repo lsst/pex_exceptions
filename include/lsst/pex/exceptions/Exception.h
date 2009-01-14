@@ -3,10 +3,10 @@
 
 #include <exception>
 #include <ostream>
+#include <string>
 #include <vector>
 
 #include "boost/current_function.hpp"
-
 
 namespace lsst {
 namespace pex {

@@ -10,6 +10,7 @@ Access to the classes from the pex_exceptions library
 
 %{
 #include "lsst/pex/exceptions/Exception.h"
+#include "lsst/pex/exceptions/Runtime.h"
 %}
 
 %pythoncode {
@@ -22,7 +23,17 @@ class LsstCppException(LsstException):
 
 }
 
-%include "lsst/p_lsstSwig.i"
+%pythonnondynamic;
+%naturalvar;  // use const reference typemaps
+
+%include "cpointer.i"
+%include "exception.i"
+%include "std_string.i"
+%include "std_vector.i"
+%include "std_iostream.i"
+%include "boost_shared_ptr.i"
+%include "carrays.i"
+%include "typemaps.i"
 
 %newobject lsst::pex::exceptions::Exception::clone;
 %template(Traceback) std::vector<lsst::pex::exceptions::Tracepoint>;

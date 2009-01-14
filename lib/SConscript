@@ -5,4 +5,4 @@ import os
 env.SharedLibrary('pex_exceptions',
                          map(lambda str: "../src/" + str,
                             ["Exception.cc"
-                            ]), LIBS=env.getlibs("boost utils"))
+                            ]), LIBS=env.getlibs("boost"))
