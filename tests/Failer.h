@@ -1,7 +1,7 @@
 #ifndef FAILER_H
 #define FAILER_H
 
-#include "lsst/pex/exceptions/Exception.h"
+#include "lsst/pex/exceptions.h"
 
 namespace pexExcept = lsst::pex::exceptions;
 
@@ -13,6 +13,9 @@ class Failer {
 public:
     Failer(void);
     void fail(void);
+    void fail2(void) {
+        throw LSST_EXCEPT(pexExcept::DomainErrorException, "message 2");
+    }
 };
 
 }
