@@ -40,3 +40,17 @@ class LsstCppException(LsstException):
 
 %include "lsst/pex/exceptions/Exception.h"
 %include "lsst/pex/exceptions/Runtime.h"
+
+%types(lsst::pex::exceptions::LogicErrorException *);
+%types(lsst::pex::exceptions::DomainErrorException *);
+%types(lsst::pex::exceptions::InvalidParameterException *);
+%types(lsst::pex::exceptions::LengthErrorException *);
+%types(lsst::pex::exceptions::OutOfRangeException *);
+%types(lsst::pex::exceptions::RuntimeErrorException *);
+%types(lsst::pex::exceptions::RangeErrorException *);
+%types(lsst::pex::exceptions::OverflowErrorException *);
+%types(lsst::pex::exceptions::UnderflowErrorException *);
+%types(lsst::pex::exceptions::NotFoundException *);
+%types(lsst::pex::exceptions::MemoryException *);
+%types(lsst::pex::exceptions::IoErrorException *);
+%types(lsst::pex::exceptions::TimeoutException *);

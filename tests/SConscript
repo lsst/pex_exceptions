@@ -15,6 +15,6 @@ import os
 tests = lsst.tests.Control(env, verbose=True)
 
 tests.run("Exception_1.cc")
-for target in tests.run("Exception_2.py"):
+for target in tests.run("Exception_*.py"):
     env.Depends(target, failerLib)
     env.Depends(target, "../python/lsst/pex/exceptions/_exceptionsLib.so")

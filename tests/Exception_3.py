@@ -10,7 +10,6 @@ or
 """
 
 import unittest
-import lsst.utils.tests as tests
 import failer
 
 class Ticket656TestCase(unittest.TestCase):
@@ -26,21 +25,14 @@ class Ticket656TestCase(unittest.TestCase):
         try:
             self.x.fail2()
         except Exception, e:
+            print e.__class__
+            print dir(e)
+            print len(e.args)
             print e
             
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-def suite():
-    """Returns a suite containing all the test cases in this module."""
-    tests.init()
-
-    suites = []
-    suites += unittest.makeSuite(Ticket656TestCase)
-    return unittest.TestSuite(suites)
-
-def run(exit=False):
-    """Run the tests"""
-    tests.run(suite(), exit)
+def run():
+    unittest.main()
 
 if __name__ == "__main__":
-    run(True)
+    run()
