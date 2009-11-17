@@ -106,6 +106,7 @@ std::ostream& pexExcept::Exception::addToStream(std::ostream& stream) const {
   * \return String representation; does not need to be freed/deleted.
   */
 char const* pexExcept::Exception::what(void) const throw() {
+    // TODO: is this a concurrency risk?
     static std::string buffer; // static to avoid memory issues
     try {
         std::ostringstream s;
