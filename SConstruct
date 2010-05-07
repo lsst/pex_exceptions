@@ -9,9 +9,10 @@ env = scons.makeEnv("pex_exceptions",
                     r"$HeadURL$",
                     [["boost", "boost/current_function.hpp"],
                      ["python", "Python.h"],
+                     ["boost_python", "boost/python.hpp"],
                     ])
 
-env.libs["pex_exceptions"] += env.getlibs("boost python")
+env.libs["pex_exceptions"] += env.getlibs("boost")
 
 #
 # Build/install things
