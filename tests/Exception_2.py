@@ -64,10 +64,10 @@ class ExceptionTestCase(unittest.TestCase):
             self.assert_(isinstance(e.args[0], lsst.pex.exceptions.Exception))
             self.assert_(isinstance(e.args[0], failer.MyException))
             self.assertEqual(e.args[0].what(),
-                    "0: failer::MyException thrown at tests/Failer.cc:7 " +
+                    "0: failer::MyException thrown at tests/Failer.cc:29 " +
                     "in void failer::Failer::fail()\n0: Message: message\n")
             self.assertEqual(str(e),
-                    "0: failer::MyException thrown at tests/Failer.cc:7 " +
+                    "0: failer::MyException thrown at tests/Failer.cc:29 " +
                     "in void failer::Failer::fail()\n0: Message: message\n")
             self.assertEqual(e.args[0].getType(), "failer::MyException *")
 
@@ -80,7 +80,7 @@ class ExceptionTestCase(unittest.TestCase):
             self.assert_(len(t), 1)
             self.assert_(isinstance(t[0], lsst.pex.exceptions.Tracepoint))
             self.assertEqual(t[0]._file, "tests/Failer.cc")
-            self.assertEqual(t[0]._line, 7)
+            self.assertEqual(t[0]._line, 29)
             self.assertEqual(t[0]._func, "void failer::Failer::fail()")
             self.assertEqual(t[0]._msg, "message")
 
