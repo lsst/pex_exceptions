@@ -3,16 +3,12 @@
 # Setup our environment
 #
 import glob, os.path, re, os
-import lsst.SConsUtils as scons
+import lsst.scons.SConsUtils as scons
 
-env = scons.makeEnv("pex_exceptions",
-                    r"$HeadURL$",
-                    [["boost", "boost/current_function.hpp"],
-                     ["python", "Python.h"],
-                     ["boost_python", "boost/python.hpp"],
-                    ])
-
-env.libs["pex_exceptions"] += env.getlibs("boost")
+env = scons.makeEnv(
+    "pex_exceptions",
+    r"$HeadURL$",
+    scons.ConfigureDependentProducts("pex_exceptions"))
 
 #
 # Build/install things
@@ -22,12 +18,7 @@ for d in Split("examples lib python/lsst/pex/exceptions tests doc"):
 
 env['IgnoreFiles'] = r"(~$|\.pyc$|^\.svn$|\.o$)"
 
-Alias("install", [env.Install(env['prefix'], "python"),
-                  env.Install(env['prefix'], "include"),
-                  env.Install(env['prefix'], "lib"),
-                  env.InstallAs(os.path.join(env['prefix'], "doc", "doxygen"),
-                                os.path.join("doc", "htmlDir")),
-                  env.InstallEups(env['prefix'] + "/ups", glob.glob("ups/*.table"))])
+env.InstallLSST(env['prefix'], ["python", "etc", "include", "liib", "doc", "ups"])
 
 scons.CleanTree(r"*~ core *.so *.os *.o")
 

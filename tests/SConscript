@@ -1,18 +1,18 @@
 # -*- python -*-
 Import("env")
 
-env.Program("Exception_1.cc", LIBS=env.getlibs("pex_exceptions"))
+env.Program("Exception_1.cc", LIBS=env.getlibs("pex_exceptions") + env.gettestlibs("boost"))
+
 failerLib = env.LoadableModuleIncomplete("failer", Split("failerLib.cc Failer.cc"),
-                                         LIBS=env.getlibs("pex_exceptions") 
-                                         + env.getlibs("python boost_python"))
+                                         LIBS=env.getpylibs("pex_exceptions bputils"))
 
 #
 # Tests
 #
-import lsst.tests
+import lsst.scons.tests
 import os
 
-tests = lsst.tests.Control(env, verbose=True)
+tests = lsst.scons.tests.Control(env, verbose=True)
 
 tests.run("Exception_1.cc")
 for target in tests.run("Exception_*.py"):

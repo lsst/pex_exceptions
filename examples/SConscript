@@ -4,8 +4,8 @@ Import('env')
 #
 # Tests
 #
-import lsst.tests
-tests = lsst.tests.Control(env, verbose=True)
+import lsst.scons.tests
+tests = lsst.scons.tests.Control(env, verbose=True)
 
 if tests.runExamples:
     tests.run("*.cc")

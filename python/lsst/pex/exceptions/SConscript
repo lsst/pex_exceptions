@@ -1,5 +1,0 @@
-# -*- python -*-
-Import("env")
-
-env.LoadableModuleIncomplete("exceptionsLib", Split("exceptionsLib.cc"),
-                             LIBS=env.getlibs("pex_exceptions") + env.getlibs("python boost_python"))

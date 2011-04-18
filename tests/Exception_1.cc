@@ -1,3 +1,25 @@
+/* 
+ * LSST Data Management System
+ * Copyright 2008, 2009, 2010 LSST Corporation.
+ * 
+ * This product includes software developed by the
+ * LSST Project (http://www.lsst.org/).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the LSST License Statement and 
+ * the GNU General Public License along with this program.  If not, 
+ * see <http://www.lsstcorp.org/LegalNotices/>.
+ */
+ 
 #include "lsst/pex/exceptions/Exception.h"
 
 #define BOOST_TEST_MODULE Exception_1
@@ -113,7 +135,7 @@ BOOST_AUTO_TEST_CASE(simple) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: lsst::pex::exceptions::Exception thrown at tests/Exception_1.cc:20 in void f1()\n"
+            "0: lsst::pex::exceptions::Exception thrown at tests/Exception_1.cc:42 in void f1()\n"
             "0: Message: In f1\n"));
 }
 
@@ -127,7 +149,7 @@ BOOST_AUTO_TEST_CASE(child_as_base) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: ChildException thrown at tests/Exception_1.cc:24 in void f2()\n"
+            "0: ChildException thrown at tests/Exception_1.cc:46 in void f2()\n"
             "0: Message: In f2 2008\n"));
 }
 
@@ -141,7 +163,7 @@ BOOST_AUTO_TEST_CASE(child_as_child) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: ChildException thrown at tests/Exception_1.cc:24 in void f2()\n"
+            "0: ChildException thrown at tests/Exception_1.cc:46 in void f2()\n"
             "0: Message: In f2 2008\n"));
 }
 
@@ -156,7 +178,7 @@ BOOST_AUTO_TEST_CASE(detailed_as_base) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
             "Begin DetailedException(5)\n"
-            "0: DetailedException thrown at tests/Exception_1.cc:28 in void f3(int)\n"
+            "0: DetailedException thrown at tests/Exception_1.cc:50 in void f3(int)\n"
             "0: Message: In f3 foo\n"
             "End DetailedException\n"));
 }
@@ -173,7 +195,7 @@ BOOST_AUTO_TEST_CASE(detailed_as_detailed) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
             "Begin DetailedException(6)\n"
-            "0: DetailedException thrown at tests/Exception_1.cc:28 in void f3(int)\n"
+            "0: DetailedException thrown at tests/Exception_1.cc:50 in void f3(int)\n"
             "0: Message: In f3 foo\n"
             "End DetailedException\n"));
 }
@@ -188,9 +210,9 @@ BOOST_AUTO_TEST_CASE(simple_rethrow) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: lsst::pex::exceptions::Exception thrown at tests/Exception_1.cc:20 in void f1()\n"
+            "0: lsst::pex::exceptions::Exception thrown at tests/Exception_1.cc:42 in void f1()\n"
             "0: Message: In f1\n"
-            "1: Rethrown at tests/Exception_1.cc:36 in void f4()\n"
+            "1: Rethrown at tests/Exception_1.cc:58 in void f4()\n"
             "1: Message: In f4\n"));
 }
 
@@ -204,9 +226,9 @@ BOOST_AUTO_TEST_CASE(child_rethrow_base_as_base) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: ChildException thrown at tests/Exception_1.cc:24 in void f2()\n"
+            "0: ChildException thrown at tests/Exception_1.cc:46 in void f2()\n"
             "0: Message: In f2 2008\n"
-            "1: Rethrown at tests/Exception_1.cc:46 in void f5()\n"
+            "1: Rethrown at tests/Exception_1.cc:68 in void f5()\n"
             "1: Message: In f5\n"));
 }
 
@@ -220,9 +242,9 @@ BOOST_AUTO_TEST_CASE(child_rethrow_base_as_child) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: ChildException thrown at tests/Exception_1.cc:24 in void f2()\n"
+            "0: ChildException thrown at tests/Exception_1.cc:46 in void f2()\n"
             "0: Message: In f2 2008\n"
-            "1: Rethrown at tests/Exception_1.cc:46 in void f5()\n"
+            "1: Rethrown at tests/Exception_1.cc:68 in void f5()\n"
             "1: Message: In f5\n"));
 }
 
@@ -236,9 +258,9 @@ BOOST_AUTO_TEST_CASE(child_rethrow_child_as_base) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: ChildException thrown at tests/Exception_1.cc:24 in void f2()\n"
+            "0: ChildException thrown at tests/Exception_1.cc:46 in void f2()\n"
             "0: Message: In f2 2008\n"
-            "1: Rethrown at tests/Exception_1.cc:56 in void f6()\n"
+            "1: Rethrown at tests/Exception_1.cc:78 in void f6()\n"
             "1: Message: In f6\n"));
 }
 
@@ -252,9 +274,9 @@ BOOST_AUTO_TEST_CASE(child_rethrow_child_as_child) {
     }
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
-            "0: ChildException thrown at tests/Exception_1.cc:24 in void f2()\n"
+            "0: ChildException thrown at tests/Exception_1.cc:46 in void f2()\n"
             "0: Message: In f2 2008\n"
-            "1: Rethrown at tests/Exception_1.cc:56 in void f6()\n"
+            "1: Rethrown at tests/Exception_1.cc:78 in void f6()\n"
             "1: Message: In f6\n"));
 }
 
@@ -270,9 +292,9 @@ BOOST_AUTO_TEST_CASE(detailed_rethrow_base_as_detailed) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
             "Begin DetailedException(7)\n"
-            "0: DetailedException thrown at tests/Exception_1.cc:28 in void f3(int)\n"
+            "0: DetailedException thrown at tests/Exception_1.cc:50 in void f3(int)\n"
             "0: Message: In f3 foo\n"
-            "1: Rethrown at tests/Exception_1.cc:66 in void f7(int)\n"
+            "1: Rethrown at tests/Exception_1.cc:88 in void f7(int)\n"
             "1: Message: In f7 (7 42 3.14159)\n"
             "End DetailedException\n"));
 }
@@ -289,9 +311,9 @@ BOOST_AUTO_TEST_CASE(detailed_rethrow_detailed_as_detailed) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
             "Begin DetailedException(8)\n"
-            "0: DetailedException thrown at tests/Exception_1.cc:28 in void f3(int)\n"
+            "0: DetailedException thrown at tests/Exception_1.cc:50 in void f3(int)\n"
             "0: Message: In f3 foo\n"
-            "1: Rethrown at tests/Exception_1.cc:76 in void f8(int)\n"
+            "1: Rethrown at tests/Exception_1.cc:98 in void f8(int)\n"
             "1: Message: In f8\n"
             "End DetailedException\n"));
 }
@@ -308,7 +330,7 @@ BOOST_AUTO_TEST_CASE(detailed_rethrow_child_as_detailed) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
             "Begin DetailedException(9)\n"
-            "0: DetailedException thrown at tests/Exception_1.cc:28 in void f3(int)\n"
+            "0: DetailedException thrown at tests/Exception_1.cc:50 in void f3(int)\n"
             "0: Message: In f3 foo\n"
             "End DetailedException\n"));
 }
@@ -325,7 +347,7 @@ BOOST_AUTO_TEST_CASE(detailed_what_normal) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(o.is_equal(
             "Begin DetailedException(10)\n"
-            "0: DetailedException thrown at tests/Exception_1.cc:28 in void f3(int)\n"
+            "0: DetailedException thrown at tests/Exception_1.cc:50 in void f3(int)\n"
             "0: Message: In f3 foo\n"
             "End DetailedException\n"));
 }
