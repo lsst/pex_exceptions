@@ -2,7 +2,4 @@
 Import('env')
 import os
 
-env.SharedLibrary('pex_exceptions',
-                         map(lambda str: "../src/" + str,
-                            ["Exception.cc"
-                            ]), LIBS=env.getlibs("boost"))
+env.SharedLibrary('pex_exceptions', Glob("#src/*.cc"), LIBS=env.getLibs("self"))

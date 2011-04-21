@@ -2,4 +2,4 @@
 Import("env")
 
 env.LoadableModuleIncomplete("exceptionsLib", Glob("#pysrc/*.cc"),
-                             LIBS=env.getpylibs("pex_exceptions bputils"))
+                             LIBS=env.getLibs("main python"))
