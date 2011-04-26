@@ -1,5 +1,5 @@
 # -*- python -*-
 Import("env")
 
-env.LoadableModuleIncomplete("exceptionsLib", Glob("#pysrc/*.cc"),
+env.LoadableModuleIncomplete("_exceptions", Glob("#pysrc/*.cc"),
                              LIBS=env.getLibs("main python"))

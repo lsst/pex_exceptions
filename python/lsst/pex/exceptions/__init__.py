@@ -1,7 +1,7 @@
-from . import exceptionsLib
+from . import _exceptions
 import lsst.bputils
 
-@lsst.bputils.extend(exceptionsLib.Exception)
+@lsst.bputils.extend(_exceptions.Exception)
 class Exception(object):
 
     def __str__(self):
@@ -16,4 +16,4 @@ class Exception(object):
     def what(self):
         return self.args[0].what()
 
-lsst.bputils.rescope(exceptionsLib, globals(), ignore=("Exception",))
+lsst.bputils.rescope(_exceptions, globals(), ignore=("Exception",))

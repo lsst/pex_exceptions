@@ -66,7 +66,7 @@ void declareRuntimeExceptions() {
 
 }}} // namespace lsst::pex::exceptions
 
-BOOST_PYTHON_MODULE(exceptionsLib) {
+BOOST_PYTHON_MODULE(_exceptions) {
     lsst::pex::exceptions::declareBaseException();
     lsst::pex::exceptions::declareRuntimeExceptions();
 }

@@ -599,6 +599,7 @@ RECURSIVE              = YES
 EXCLUDE                = ../.sconf_temp \
                          ../examples \
                          ../tests
+			 ../pysrc
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix filesystem feature) are excluded 

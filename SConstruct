@@ -18,7 +18,7 @@ for d in Split("examples lib python/lsst/pex/exceptions tests doc"):
 
 env['IgnoreFiles'] = r"(~$|\.pyc$|^\.svn$|\.o$)"
 
-env.InstallLSST(env['prefix'], ["python", "etc", "include", "liib", "doc", "ups"])
+env.InstallLSST(env['prefix'], ["python", "etc", "include", "lib", "doc", "ups"])
 
 scons.CleanTree(r"*~ core *.so *.os *.o")
 
