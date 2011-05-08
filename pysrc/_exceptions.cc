@@ -1,7 +1,6 @@
 // -*- lsst-c++ -*-
-#include "lsst/bputils/exceptions.h"
+#include "lsst/bputils.h"
 #include "lsst/pex/exceptions.h"
-#include "boost/python/to_python/copy_to_tuple.hpp"
 
 namespace bp = boost::python;
 
@@ -67,6 +66,7 @@ void declareRuntimeExceptions() {
 }}} // namespace lsst::pex::exceptions
 
 BOOST_PYTHON_MODULE(_exceptions) {
+    lsst::bputils::registerConversions();
     lsst::pex::exceptions::declareBaseException();
     lsst::pex::exceptions::declareRuntimeExceptions();
 }
