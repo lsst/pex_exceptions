@@ -1,18 +1,17 @@
 # -*- python -*-
 Import("env")
 
-env.CheckSwig("python", ilang="c++",includedProducts="pex_exceptions")
-
-env.Program("Exception_1.cc", LIBS=env.getlibs("pex_exceptions"))
-failerLib = env.LoadableModuleIncomplete("_failer", ["Failer.i", "Failer.cc"], LIBS=env.getlibs("pex_exceptions"))
+env.Program("Exception_1.cc", LIBS=env.getLibs("main test"))
+failerLib = env.LoadableModuleIncomplete("_failer", ["Failer.i", "Failer.cc"],
+                                         LIBS=env.getLibs("main python"))
 
 #
 # Tests
 #
-import lsst.tests
+import lsst.sconsUtils.tests
 import os
 
-tests = lsst.tests.Control(env, verbose=True)
+tests = lsst.sconsUtils.tests.Control(env, verbose=True)
 
 tests.run("Exception_1.cc")
 for target in tests.run("Exception_*.py"):

@@ -1,8 +1,4 @@
 # -*- python -*-
-Import('env')
-import os
-
-env.SharedLibrary('pex_exceptions',
-                         map(lambda str: "../src/" + str,
-                            ["Exception.cc"
-                            ]), LIBS=env.getlibs("boost"))
+Import("env")
+import lsst.sconsUtils.scripts
+lsst.sconsUtils.scripts.BasicSConscript(env).lib()
