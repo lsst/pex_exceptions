@@ -1,19 +1,18 @@
 # -*- python -*-
-Import("env")
+from lsst.sconsUtils import tests, env
 
 env.Program("Exception_1.cc", LIBS=env.getLibs("main test"))
-failerLib = env.LoadableModuleIncomplete("_failer", ["Failer.i", "Failer.cc"],
-                                         LIBS=env.getLibs("main python"))
+failerLib = env.SwigLoadableModule("_failer", ["Failer.i", "Failer.cc"],
+                                   LIBS=env.getLibs("main python"))
 
 #
 # Tests
 #
-import lsst.sconsUtils.tests
 import os
 
-tests = lsst.sconsUtils.tests.Control(env, verbose=True)
+control = tests.Control(env, verbose=True)
 
-tests.run("Exception_1.cc")
-for target in tests.run("Exception_*.py"):
+control.run("Exception_1.cc")
+for target in control.run("Exception_*.py"):
     env.Depends(target, failerLib)
-    env.Depends(target, "../python/lsst/pex/exceptions/_exceptionsLib.so")
+    env.Depends(target, "#python")

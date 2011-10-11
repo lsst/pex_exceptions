@@ -1,4 +1,4 @@
 # -*- python -*-
-Import('env')
+from lsst.sconsUtils import env
 
 doxy = env.Doxygen("doxygen.conf")
