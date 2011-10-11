@@ -1,18 +1,3 @@
 # -*- python -*-
-from lsst.sconsUtils import tests, env
-
-env.Program("Exception_1.cc", LIBS=env.getLibs("main test"))
-failerLib = env.SwigLoadableModule("_failer", ["Failer.i", "Failer.cc"],
-                                   LIBS=env.getLibs("main python"))
-
-#
-# Tests
-#
-import os
-
-control = tests.Control(env, verbose=True)
-
-control.run("Exception_1.cc")
-for target in control.run("Exception_*.py"):
-    env.Depends(target, failerLib)
-    env.Depends(target, "#python")
+from lsst.sconsUtils import scripts
+scripts.BasicSConscript.tests(swigSrc={"failer": ["Failer.cc"]})
