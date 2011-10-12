@@ -22,7 +22,7 @@
  * see <http://www.lsstcorp.org/LegalNotices/>.
  */
  
-#if !defined(LSST_RUNTIME_EXCEPTION)      //! multiple inclusion guard macro
+#if !defined(LSST_RUNTIME_EXCEPTION)
 #define LSST_RUNTIME_EXCEPTION 1
 
 #include "lsst/pex/exceptions/Exception.h"
