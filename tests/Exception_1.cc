@@ -21,9 +21,9 @@
  */
  
 #include "lsst/pex/exceptions/Exception.h"
-
+#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Exception_1
-#include "boost/test/included/unit_test.hpp"
+#include "boost/test/unit_test.hpp"
 #include "boost/test/output_test_stream.hpp"
 
 #include "boost/format.hpp"
