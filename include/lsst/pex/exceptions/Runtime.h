@@ -46,6 +46,8 @@ LSST_EXCEPTION_TYPE(NotFoundException, Exception, lsst::pex::exceptions::NotFoun
 LSST_EXCEPTION_TYPE(MemoryException, RuntimeErrorException, lsst::pex::exceptions::MemoryException)
 LSST_EXCEPTION_TYPE(IoErrorException, RuntimeErrorException, lsst::pex::exceptions::IoErrorException)
 LSST_EXCEPTION_TYPE(TimeoutException, RuntimeErrorException, lsst::pex::exceptions::TimeoutException)
+LSST_EXCEPTION_TYPE(GpuMemoryException, RuntimeErrorException, lsst::pex::exceptions::GpuMemoryException)
+LSST_EXCEPTION_TYPE(GpuRuntimeErrorException, RuntimeErrorException, lsst::pex::exceptions::RuntimeErrorException)
 
 }
 }
