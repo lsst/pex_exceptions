@@ -1,5 +1,3 @@
 # -*- python -*-
-Import("env")
-
-env.CheckSwig("python", ilang="c++")
-env.LoadableModuleIncomplete("_exceptionsLib", Split("exceptionsLib.i"), LIBS=env.getlibs("pex_exceptions"))
+from lsst.sconsUtils import scripts
+scripts.BasicSConscript.python()

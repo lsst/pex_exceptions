@@ -20,5 +20,5 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-from exceptionsLib import *
-from .version import *
+import lsstimport, pkgutil
+__path__ = pkgutil.extend_path(__path__, __name__)

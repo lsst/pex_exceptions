@@ -1,7 +1,7 @@
 /**
 \mainpage lsst::pex::exceptions;  LSST Exceptions
 
-\section secIntro Introduction
+\section secExcIntro Introduction
 
 LSST C++ exceptions are designed to automatically provide information about
 where the exception was thrown from.  Exception subclasses can be defined to
@@ -10,7 +10,7 @@ through a simple message or, in rare cases, additional instance variables
 within exception subclasses; caught and rethrown exceptions can have additional
 context information appended.
 
-\section secPython Python Interface
+\section secExcPython Python Interface
 
 Python wrappers for the C++ exception objects are generated using SWIG.  Any
 package defining new exception subclasses must import

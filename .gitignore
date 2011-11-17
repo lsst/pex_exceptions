@@ -1,35 +1,18 @@
-
-# /
-/.*
-/config.log
-
-# /doc/
-/doc/htmlDir
-
-# /examples/
-/examples/.tests
-/examples/exceptions
-
-# /include/lsst/pex/exceptions/
-/include/lsst/pex/exceptions/Runtime.h
-
-# /lib/
-/lib/*.dylib
-/lib/*.so
-
-# /python/lsst/pex/exceptions/
-/python/lsst/pex/exceptions/exceptionsLib.py
-/python/lsst/pex/exceptions/exceptionsLib_wrap.cc
-/python/lsst/pex/exceptions/*.os
-
-# /src/
-/src/*.os
-
-# /tests/
-/tests/.tests
-/tests/*.so
-/tests/*.os
-/tests/*.pyc
-/tests/*_wrap.cc
-/tests/Exception_1
-/tests/failer.py
+.sconsign.dblite
+config.log
+.sconf_temp
+*.dylib
+*.o
+*.os
+*.so
+*.cfgc
+*.pyc
+*_wrap.cc
+*Lib.py
+doc/html
+doc/*.tag
+doc/*.inc
+tests/.tests
+python/lsst/pex/exceptions/version.py
+tests/Exception_1
+tests/failer.py
