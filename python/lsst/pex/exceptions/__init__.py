@@ -21,3 +21,4 @@
 #
 
 from exceptionsLib import *
+from .version import *
