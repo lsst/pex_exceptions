@@ -59,6 +59,8 @@ class LsstCppException(LsstException):
 %include "typemaps.i"
 
 %newobject lsst::pex::exceptions::Exception::clone;
+%immutable lsst::pex::exceptions::Tracepoint::_file;
+%immutable lsst::pex::exceptions::Tracepoint::_func;
 %template(Traceback) std::vector<lsst::pex::exceptions::Tracepoint>;
 
 %include "lsst/pex/exceptions/Exception.h"
