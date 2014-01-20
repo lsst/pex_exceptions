@@ -39,7 +39,7 @@ public:
         throw LSST_EXCEPT(pexExcept::DomainErrorException, "message 2");
     }
     void fail3(int a, int b) {
-        LSST_ASSERT_EQUAL(a, b, "a=%d is not equal to b=%d", pexExcept::RuntimeErrorException);
+        LSST_THROW_IF_NE(a, b, pexExcept::RuntimeErrorException, "a=%d is not equal to b=%d");
     }
 };
 
