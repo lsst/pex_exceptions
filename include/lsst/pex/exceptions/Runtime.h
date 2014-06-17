@@ -33,19 +33,19 @@ namespace lsst {
 namespace pex {
 namespace exceptions {
 
-LSST_EXCEPTION_TYPE(LogicErrorException, Exception, lsst::pex::exceptions::LogicErrorException)
-LSST_EXCEPTION_TYPE(DomainErrorException, LogicErrorException, lsst::pex::exceptions::DomainErrorException)
-LSST_EXCEPTION_TYPE(InvalidParameterException, LogicErrorException, lsst::pex::exceptions::InvalidParameterException)
-LSST_EXCEPTION_TYPE(LengthErrorException, LogicErrorException, lsst::pex::exceptions::LengthErrorException)
-LSST_EXCEPTION_TYPE(OutOfRangeException, LogicErrorException, lsst::pex::exceptions::OutOfRangeException)
-LSST_EXCEPTION_TYPE(RuntimeErrorException, Exception, lsst::pex::exceptions::RuntimeErrorException)
-LSST_EXCEPTION_TYPE(RangeErrorException, RuntimeErrorException, lsst::pex::exceptions::RangeErrorException)
-LSST_EXCEPTION_TYPE(OverflowErrorException, RuntimeErrorException, lsst::pex::exceptions::OverflowErrorException)
-LSST_EXCEPTION_TYPE(UnderflowErrorException, RuntimeErrorException, lsst::pex::exceptions::UnderflowErrorException)
-LSST_EXCEPTION_TYPE(NotFoundException, Exception, lsst::pex::exceptions::NotFoundException)
-LSST_EXCEPTION_TYPE(MemoryException, RuntimeErrorException, lsst::pex::exceptions::MemoryException)
-LSST_EXCEPTION_TYPE(IoErrorException, RuntimeErrorException, lsst::pex::exceptions::IoErrorException)
-LSST_EXCEPTION_TYPE(TimeoutException, RuntimeErrorException, lsst::pex::exceptions::TimeoutException)
+LSST_EXCEPTION_TYPE(LogicError, Exception, lsst::pex::exceptions::LogicError)
+LSST_EXCEPTION_TYPE(DomainError, LogicError, lsst::pex::exceptions::DomainError)
+LSST_EXCEPTION_TYPE(InvalidParameterError, LogicError, lsst::pex::exceptions::InvalidParameterError)
+LSST_EXCEPTION_TYPE(LengthError, LogicError, lsst::pex::exceptions::LengthError)
+LSST_EXCEPTION_TYPE(OutOfRangeError, LogicError, lsst::pex::exceptions::OutOfRangeError)
+LSST_EXCEPTION_TYPE(RuntimeError, Exception, lsst::pex::exceptions::RuntimeError)
+LSST_EXCEPTION_TYPE(RangeError, RuntimeError, lsst::pex::exceptions::RangeError)
+LSST_EXCEPTION_TYPE(OverflowError, RuntimeError, lsst::pex::exceptions::OverflowError)
+LSST_EXCEPTION_TYPE(UnderflowError, RuntimeError, lsst::pex::exceptions::UnderflowError)
+LSST_EXCEPTION_TYPE(NotFoundError, Exception, lsst::pex::exceptions::NotFoundError)
+LSST_EXCEPTION_TYPE(MemoryError, RuntimeError, lsst::pex::exceptions::MemoryError)
+LSST_EXCEPTION_TYPE(IoError, RuntimeError, lsst::pex::exceptions::IoError)
+LSST_EXCEPTION_TYPE(TypeError, RuntimeError, lsst::pex::exceptions::TypeError)
 
 }
 }

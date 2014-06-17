@@ -91,7 +91,7 @@ class ExceptionTestCase(unittest.TestCase):
         except lsst.pex.exceptions.LsstCppException as e:
             self.assert_("a=4" in str(e))
             self.assert_("b=5" in str(e))
-            self.assert_(isinstance(e.args[0], lsst.pex.exceptions.RuntimeErrorException))
+            self.assert_(isinstance(e.args[0], lsst.pex.exceptions.RuntimeError))
 
 if __name__ == '__main__':
     unittest.main()
