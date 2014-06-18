@@ -46,6 +46,7 @@ LSST_EXCEPTION_TYPE(NotFoundError, Exception, lsst::pex::exceptions::NotFoundErr
 LSST_EXCEPTION_TYPE(MemoryError, RuntimeError, lsst::pex::exceptions::MemoryError)
 LSST_EXCEPTION_TYPE(IoError, RuntimeError, lsst::pex::exceptions::IoError)
 LSST_EXCEPTION_TYPE(TypeError, RuntimeError, lsst::pex::exceptions::TypeError)
+LSST_EXCEPTION_TYPE(TimeoutError, RuntimeError, lsst::pex::exceptions::TimeoutError)
 
 }
 }
