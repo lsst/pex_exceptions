@@ -79,3 +79,4 @@ class LsstCppException(LsstException):
 %types(lsst::pex::exceptions::MemoryError *);
 %types(lsst::pex::exceptions::IoError *);
 %types(lsst::pex::exceptions::TypeError *);
+%types(lsst::pex::exceptions::TimeoutError *);
