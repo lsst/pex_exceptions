@@ -31,7 +31,7 @@
  *
  *  For example:
  *  @code
- *  LSST_ASSERT_EQUAL(3, 4, "size of foo (%d) is not equal to size of bar (%d)", LengthErrorException);
+ *  LSST_ASSERT_EQUAL(3, 4, "size of foo (%d) is not equal to size of bar (%d)", LengthError);
  *  @endcode
  */
 #define LSST_THROW_IF_NE(N1, N2, EXC_CLASS, MSG)                        \

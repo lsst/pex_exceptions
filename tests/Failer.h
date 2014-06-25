@@ -36,10 +36,10 @@ public:
     Failer(void);
     void fail(void);
     void fail2(void) {
-        throw LSST_EXCEPT(pexExcept::DomainErrorException, "message 2");
+        throw LSST_EXCEPT(pexExcept::DomainError, "message 2");
     }
     void fail3(int a, int b) {
-        LSST_THROW_IF_NE(a, b, pexExcept::RuntimeErrorException, "a=%d is not equal to b=%d");
+        LSST_THROW_IF_NE(a, b, pexExcept::RuntimeError, "a=%d is not equal to b=%d");
     }
 };
 
