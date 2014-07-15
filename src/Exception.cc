@@ -40,21 +40,32 @@ Tracepoint::Tracepoint(
     char const* file, int line, char const* func,
     std::string const& message
 ) :
-    _file(file), _line(line), _func(func), _msg(message)
+    _file(file), _line(line), _func(func), _message(message)
 {}
 
 Exception::Exception(
     char const* file, int line, char const* func,
     std::string const& message
-) {
-    _traceback.push_back(Tracepoint(file, line, func, message));
-}
+) : _message(message), _traceback(1, Tracepoint(file, line, func, message)) {}
 
 Exception::~Exception(void) throw() {}
 
 void Exception::addMessage(
-    char const* file, int line, char const* func, std::string const& message) {
+    char const* file, int line, char const* func, std::string const& message
+) {
+    std::ostringstream stream;
+    stream << _message;
+    if (_traceback.size() == static_cast<std::size_t>(1)) {
+        // The original message doesn't start with an index (because it's faster,
+        // and there's no need if there's only one), so when we add the second,
+        // we have to give it an index.
+        stream << " {0}; ";
+    } else {
+        stream << "; ";
+    }
     _traceback.push_back(Tracepoint(file, line, func, message));
+    stream << message << " {" << _traceback.size() << "}";
+    _message = stream.str();
 }
 
 Traceback const&
@@ -68,29 +79,19 @@ std::ostream& Exception::addToStream(std::ostream& stream) const {
         stream << "0: " << type << " thrown at " <<
             _traceback[0]._file << ":" << _traceback[0]._line << " in " <<
             _traceback[0]._func << std::endl;
-        stream << "0: Message: " << _traceback[0]._msg << std::endl;
+        stream << "0: Message: " << _traceback[0]._message << std::endl;
         for (size_t i = 1; i < _traceback.size(); ++i) {
             stream << i << ": Rethrown at " <<
                 _traceback[i]._file << ":" << _traceback[i]._line << " in " <<
                 _traceback[i]._func << std::endl;
-            stream << i << ": Message: " << _traceback[i]._msg << std::endl;
+            stream << i << ": Message: " << _traceback[i]._message << std::endl;
         }
     }
     return stream;
 }
 
 char const* Exception::what(void) const throw() {
-    // TODO: is this a concurrency risk?
-    static std::string buffer; // static to avoid memory issues
-    try {
-        std::ostringstream s;
-        addToStream(s);
-        buffer = s.str(); // copies underlying string
-        return buffer.c_str();
-    }
-    catch (...) {
-        return getType();
-    }
+    return _message.c_str();
 }
 
 char const* Exception::getType(void) const throw() {

@@ -345,11 +345,7 @@ BOOST_AUTO_TEST_CASE(detailed_what_normal) {
         o << e.what();
     }
     BOOST_CHECK(!o.is_empty(false));
-    BOOST_CHECK(o.is_equal(
-            "Begin DetailedException(10)\n"
-            "0: DetailedException thrown at tests/Exception_1.cc:50 in void f3(int)\n"
-            "0: Message: In f3 foo\n"
-            "End DetailedException\n"));
+    BOOST_CHECK(o.is_equal("In f3 foo"));
 }
 
 BOOST_AUTO_TEST_CASE(detailed_what_boobytrap) {
@@ -362,7 +358,7 @@ BOOST_AUTO_TEST_CASE(detailed_what_boobytrap) {
         o << e.what();
     }
     BOOST_CHECK(!o.is_empty(false));
-    BOOST_CHECK(o.is_equal("DetailedException *"));
+    BOOST_CHECK(o.is_equal("In f3 foo"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

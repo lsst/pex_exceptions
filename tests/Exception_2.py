@@ -63,12 +63,8 @@ class ExceptionTestCase(unittest.TestCase):
             self.assert_(isinstance(e, lsst.pex.exceptions.LsstCppException))
             self.assert_(isinstance(e.args[0], lsst.pex.exceptions.Exception))
             self.assert_(isinstance(e.args[0], failer.MyException))
-            self.assertEqual(e.args[0].what(),
-                    "0: failer::MyException thrown at tests/Failer.cc:29 " +
-                    "in void failer::Failer::fail()\n0: Message: message\n")
-            self.assertEqual(str(e),
-                    "0: failer::MyException thrown at tests/Failer.cc:29 " +
-                    "in void failer::Failer::fail()\n0: Message: message\n")
+            self.assertEqual(e.args[0].what(), "message")
+            self.assertEqual(str(e), "message")
             self.assertEqual(e.args[0].getType(), "failer::MyException *")
 
     def testTraceback(self):
@@ -82,7 +78,7 @@ class ExceptionTestCase(unittest.TestCase):
             self.assertEqual(t[0]._file, "tests/Failer.cc")
             self.assertEqual(t[0]._line, 29)
             self.assertEqual(t[0]._func, "void failer::Failer::fail()")
-            self.assertEqual(t[0]._msg, "message")
+            self.assertEqual(t[0]._message, "message")
 
     def testAssertEqual(self):
         """Test that the LSST_ASSERT_EQUAL macro works as expected"""

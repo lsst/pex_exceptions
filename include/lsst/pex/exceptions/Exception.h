@@ -94,7 +94,7 @@ struct Tracepoint {
     char const* _file; // Compiled strings only; does not need deletion
     int _line;
     char const* _func; // Compiled strings only; does not need deletion
-    std::string _msg;
+    std::string _message;
 };
 typedef std::vector<Tracepoint> Traceback;
 
@@ -135,9 +135,13 @@ public:
      */
     virtual std::ostream& addToStream(std::ostream& stream) const;
 
-    /** Return a character string representing this exception.  Not allowed to
-     *  throw any exceptions.  Try to use addToStream(); fall back on getType()
-     *  if that fails.
+    /**
+     *  Return a character string summarizing this exception.
+     *
+     *  This combines the all messages added to the exception, but not the type or
+     *  traceback (use the stream operator to get this more detailed information).
+     *
+     *  Not allowed to throw any exceptions.
      *
      *  @return String representation; does not need to be freed/deleted.
      */
@@ -159,6 +163,7 @@ public:
     virtual Exception* clone(void) const;
 
 private:
+    std::string _message;
     Traceback _traceback;
 };
 
