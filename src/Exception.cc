@@ -63,9 +63,9 @@ void Exception::addMessage(
     } else {
         stream << "; ";
     }
-    _traceback.push_back(Tracepoint(file, line, func, message));
     stream << message << " {" << _traceback.size() << "}";
     _message = stream.str();
+    _traceback.push_back(Tracepoint(file, line, func, message));
 }
 
 Traceback const&
@@ -73,19 +73,19 @@ Traceback const&
     return _traceback;
 }
 
-std::ostream& Exception::addToStream(std::ostream& stream) const {
-    if (_traceback.size() > 0) { // Should always be true
+std::ostream& Exception::addToStream(std::ostream& stream, bool tracebackOnly) const {
+    if (!tracebackOnly) {
+        stream << "Traceback (most recent call last):" << std::endl;
+    }
+    for (std::size_t i = 0; i != _traceback.size(); ++i) {
+        stream << "  File \"" << _traceback[i]._file
+               << "\", line " << _traceback[i]._line
+               << ", in " << _traceback[i]._func << std::endl;
+        stream << "    " << _traceback[i]._message << " {" << i << "}" << std::endl;
+    }
+    if (!tracebackOnly) {
         std::string type(getType(), 0, std::strlen(getType()) - 2);
-        stream << "0: " << type << " thrown at " <<
-            _traceback[0]._file << ":" << _traceback[0]._line << " in " <<
-            _traceback[0]._func << std::endl;
-        stream << "0: Message: " << _traceback[0]._message << std::endl;
-        for (size_t i = 1; i < _traceback.size(); ++i) {
-            stream << i << ": Rethrown at " <<
-                _traceback[i]._file << ":" << _traceback[i]._line << " in " <<
-                _traceback[i]._func << std::endl;
-            stream << i << ": Message: " << _traceback[i]._message << std::endl;
-        }
+        stream << type << ": '" << _message << "'" << std::endl;
     }
     return stream;
 }

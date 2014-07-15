@@ -133,7 +133,7 @@ public:
      * @param[in] stream Reference to an output stream.
      * @return Reference to the output stream after adding the text.
      */
-    virtual std::ostream& addToStream(std::ostream& stream) const;
+    virtual std::ostream& addToStream(std::ostream& stream, bool tracebackOnly=false) const;
 
     /**
      *  Return a character string summarizing this exception.
