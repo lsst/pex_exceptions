@@ -41,13 +41,13 @@ class ExceptionTestCase(unittest.TestCase):
             self.fail("Expected Exception not raised")
 
     def testDerivedTranslation(self):
-        self.assertRaises(lsst.pex.exceptions.LogicError, testLib.failLogicError1, "message1")
-        self.assertRaises(lsst.pex.exceptions.Exception, testLib.failLogicError1, "message1")
+        self.assertRaises(lsst.pex.exceptions.RuntimeError, testLib.failRuntimeError1, "message1")
+        self.assertRaises(lsst.pex.exceptions.Exception, testLib.failRuntimeError1, "message1")
         try:
-            testLib.failLogicError1("message2")
-        except lsst.pex.exceptions.LogicError as err:
+            testLib.failRuntimeError1("message2")
+        except lsst.pex.exceptions.RuntimeError as err:
             self.assertEqual(err.what(), "message2")
-            self.assertEqual(repr(err), "LogicError('message2')")
+            self.assertEqual(repr(err), "RuntimeError('message2')")
         else:
             self.fail("Expected Exception not raised")
 
@@ -95,26 +95,32 @@ class ExceptionTestCase(unittest.TestCase):
         self.checkHierarchy(testLib.failOverflowError1,
                             [lsst.pex.exceptions.OverflowError,
                              lsst.pex.exceptions.RuntimeError,
-                             lsst.pex.exceptions.Exception])
+                             lsst.pex.exceptions.Exception,
+                             OverflowError])
         self.checkHierarchy(testLib.failUnderflowError1,
                             [lsst.pex.exceptions.UnderflowError,
                              lsst.pex.exceptions.RuntimeError,
-                             lsst.pex.exceptions.Exception])
+                             lsst.pex.exceptions.Exception,
+                             ArithmeticError])
         self.checkHierarchy(testLib.failNotFoundError1,
                             [lsst.pex.exceptions.NotFoundError,
-                             lsst.pex.exceptions.Exception])
+                             lsst.pex.exceptions.Exception,
+                             LookupError])
         self.checkHierarchy(testLib.failMemoryError1,
                             [lsst.pex.exceptions.MemoryError,
                              lsst.pex.exceptions.RuntimeError,
-                             lsst.pex.exceptions.Exception])
+                             lsst.pex.exceptions.Exception,
+                             MemoryError])
         self.checkHierarchy(testLib.failIoError1,
                             [lsst.pex.exceptions.IoError,
                              lsst.pex.exceptions.RuntimeError,
-                             lsst.pex.exceptions.Exception])
+                             lsst.pex.exceptions.Exception,
+                             IOError])
         self.checkHierarchy(testLib.failTypeError1,
                             [lsst.pex.exceptions.TypeError,
                              lsst.pex.exceptions.RuntimeError,
-                             lsst.pex.exceptions.Exception])
+                             lsst.pex.exceptions.Exception,
+                             TypeError])
         self.checkHierarchy(testLib.failTimeoutError1,
                             [lsst.pex.exceptions.TimeoutError,
                              lsst.pex.exceptions.RuntimeError,

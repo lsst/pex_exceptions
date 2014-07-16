@@ -1,4 +1,5 @@
 import warnings
+import __builtin__
 
 from . import exceptionsLib
 
@@ -62,7 +63,7 @@ class OutOfRangeError(LogicError):
     WrappedClass = exceptionsLib.OutOfRangeError
 
 @register
-class RuntimeError(Exception):
+class RuntimeError(Exception, __builtin__.RuntimeError):
     WrappedClass = exceptionsLib.RuntimeError
 
 @register
@@ -70,27 +71,27 @@ class RangeError(RuntimeError):
     WrappedClass = exceptionsLib.RangeError
 
 @register
-class OverflowError(RuntimeError):
+class OverflowError(RuntimeError, __builtin__.OverflowError):
     WrappedClass = exceptionsLib.OverflowError
 
 @register
-class UnderflowError(RuntimeError):
+class UnderflowError(RuntimeError, __builtin__.ArithmeticError):
     WrappedClass = exceptionsLib.UnderflowError
 
 @register
-class NotFoundError(Exception):
+class NotFoundError(Exception, __builtin__.LookupError):
     WrappedClass = exceptionsLib.NotFoundError
 
 @register
-class MemoryError(RuntimeError):
+class MemoryError(RuntimeError, __builtin__.MemoryError):
     WrappedClass = exceptionsLib.MemoryError
 
 @register
-class IoError(RuntimeError):
+class IoError(RuntimeError, __builtin__.IOError):
     WrappedClass = exceptionsLib.IoError
 
 @register
-class TypeError(RuntimeError):
+class TypeError(RuntimeError, __builtin__.TypeError):
     WrappedClass = exceptionsLib.TypeError
 
 @register
