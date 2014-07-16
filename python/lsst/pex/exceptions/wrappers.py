@@ -2,42 +2,53 @@ from __future__ import print_function
 
 import sys
 import traceback
+import warnings
 
 from . import exceptionsLib
 
+registry = {}
+
+def register(cls):
+    """A Python decorator that adds a Python exception wrapper to the registry that maps C++ Exceptions
+    to their Python wrapper classes.
+    """
+    registry[cls.WrappedClass] = cls
+    return cls
+
+@register
 class Exception(StandardError):
     """The base class for Python-wrapped LSST C++ exceptions.
     """
+
+    # wrappers.py is an implementation detail, not a public namespace, so we pretend this is defined
+    # in the package for pretty-printing purposes
+    __module__ = "lsst.pex.exceptions"
 
     WrappedClass = exceptionsLib.Exception
 
     def __init__(self, arg):
         if isinstance(arg, exceptionsLib.Exception):
             cpp = arg
-            message = " ".join(tp._msg for tp in cpp.getTraceback())
+            message = cpp.what()
         else:
             message = arg
-            file, line, func, _ = traceback.extract_stack()[-2]
-            cpp = self.WrappedClass(file, line, func, message)
+            cpp = self.WrappedClass(message)
         StandardError.__init__(self, message)
         self.cpp = cpp
 
-    def addMessage(self, message):
-        """Add a message to the Exception, using the C++ Exception's Traceback vector.
-        This message will not appear in str(self) or repr(self), but it will appear
-        in Python tracebacks
-        """
-        file, line, func, _ = traceback.extract_stack()[-2]
-        self.cpp.addMessage(file, line, func, message)
-        self.args = (" ".join(tp._msg for tp in self.cpp.getTraceback()),)
+    def __getattr__(self, name):
+        return getattr(self.cpp, name)
 
-    def formatCppTraceback(self):
-        return '\n'.join('  File "%s", line %d, in %s: %s' % (tp._file, tp._line, tp._func, tp._msg)
-                         for tp in self.cpp.getTraceback())
+    def __repr__(self):
+        return "%s('%s')" % (type(self).__name__, self.cpp.what())
 
-def excepthook(type, value, tb):
-    traceback.print_exception(type, value, tb, file=sys.stderr)
-    if issubclass(type, Exception):
-        print(value.formatCppTraceback(), file=sys.stderr)
-    print("%s: %s" % (type.__name__, value), file=sys.stderr)
-sys.excepthook = excepthook
+    def __str__(self):
+        return "\n%s" % self.cpp.asString()
+
+def translate(cpp):
+    """Translate a C++ Exception instance to Python and return it."""
+    PyType = registry.get(type(cpp), None)
+    if PyType is None:
+        warnings.warn("Could not find appropriate Python type for C++ Exception")
+        PyType = Exception
+    return PyType(cpp)
