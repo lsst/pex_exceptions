@@ -69,6 +69,7 @@ namespace exceptions {
     class t : public b { \
     public: \
         t(LSST_EARGS_TYPED) : b(LSST_EARGS_UNTYPED) { }; \
+        t(std::string const & message) : b(message) { }; \
         virtual char const* getType(void) const throw() { return #c " *"; }; \
         virtual lsst::pex::exceptions::Exception* clone(void) const { \
             return new t(*this); \
@@ -110,6 +111,17 @@ public:
      */
     Exception(char const* file, int line, char const* func,
               std::string const& message); // Should use LSST_EARGS_TYPED, but that confuses doxygen.
+
+    /** Message-only constructor, intended for use from Python only.
+     *
+     * While this constructor can be called from C++, it's better to use the LSST_EXCEPT
+     * macro there, which stores file/line/function information as well.  In Python, however,
+     * that information is stored outside the exception, so we don't want to duplicate it,
+     * and hence this constructor is invoked instead.
+     *
+     * @param[in] message Informational string attached to exception.
+     */
+    explicit Exception(std::string const & message);
 
     virtual ~Exception(void) throw();
 

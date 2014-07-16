@@ -48,6 +48,10 @@ Exception::Exception(
     std::string const& message
 ) : _message(message), _traceback(1, Tracepoint(file, line, func, message)) {}
 
+Exception::Exception(
+    std::string const& message
+) : _message(message), _traceback() {}
+
 Exception::~Exception(void) throw() {}
 
 void Exception::addMessage(
