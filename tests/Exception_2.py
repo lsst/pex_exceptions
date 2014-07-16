@@ -69,5 +69,57 @@ class ExceptionTestCase(unittest.TestCase):
             self.assertEqual(repr(err), "LogicError('message1')")
             self.assertEqual(str(err), "message1")
 
+    def checkHierarchy(self, method, classes):
+        for cls in classes:
+            self.assertRaises(cls, method, "message")
+
+    def testHierarchy(self):
+        self.checkHierarchy(testLib.failLogicError1,
+                            [lsst.pex.exceptions.LogicError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failInvalidParameterError1,
+                            [lsst.pex.exceptions.InvalidParameterError,
+                             lsst.pex.exceptions.LogicError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failLengthError1,
+                            [lsst.pex.exceptions.LengthError,
+                             lsst.pex.exceptions.LogicError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failOutOfRangeError1,
+                            [lsst.pex.exceptions.OutOfRangeError,
+                             lsst.pex.exceptions.LogicError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failRuntimeError1,
+                            [lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failOverflowError1,
+                            [lsst.pex.exceptions.OverflowError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failUnderflowError1,
+                            [lsst.pex.exceptions.UnderflowError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failNotFoundError1,
+                            [lsst.pex.exceptions.NotFoundError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failMemoryError1,
+                            [lsst.pex.exceptions.MemoryError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failIoError1,
+                            [lsst.pex.exceptions.IoError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failTypeError1,
+                            [lsst.pex.exceptions.TypeError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failTimeoutError1,
+                            [lsst.pex.exceptions.TimeoutError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
+
+
 if __name__ == '__main__':
     unittest.main()

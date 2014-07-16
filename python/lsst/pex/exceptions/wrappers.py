@@ -1,7 +1,3 @@
-from __future__ import print_function
-
-import sys
-import traceback
 import warnings
 
 from . import exceptionsLib
@@ -49,6 +45,58 @@ class Exception(StandardError):
 class LogicError(Exception):
     WrappedClass = exceptionsLib.LogicError
 
+@register
+class DomainError(LogicError):
+    WrappedClass = exceptionsLib.DomainError
+
+@register
+class InvalidParameterError(LogicError):
+    WrappedClass = exceptionsLib.InvalidParameterError
+
+@register
+class LengthError(LogicError):
+    WrappedClass = exceptionsLib.LengthError
+
+@register
+class OutOfRangeError(LogicError):
+    WrappedClass = exceptionsLib.OutOfRangeError
+
+@register
+class RuntimeError(Exception):
+    WrappedClass = exceptionsLib.RuntimeError
+
+@register
+class RangeError(RuntimeError):
+    WrappedClass = exceptionsLib.RangeError
+
+@register
+class OverflowError(RuntimeError):
+    WrappedClass = exceptionsLib.OverflowError
+
+@register
+class UnderflowError(RuntimeError):
+    WrappedClass = exceptionsLib.UnderflowError
+
+@register
+class NotFoundError(Exception):
+    WrappedClass = exceptionsLib.NotFoundError
+
+@register
+class MemoryError(RuntimeError):
+    WrappedClass = exceptionsLib.MemoryError
+
+@register
+class IoError(RuntimeError):
+    WrappedClass = exceptionsLib.IoError
+
+@register
+class TypeError(RuntimeError):
+    WrappedClass = exceptionsLib.TypeError
+
+@register
+class TimeoutError(RuntimeError):
+    WrappedClass = exceptionsLib.TimeoutError
+
 def translate(cpp):
     """Translate a C++ Exception instance to Python and return it."""
     PyType = registry.get(type(cpp), None)
@@ -56,3 +104,4 @@ def translate(cpp):
         warnings.warn("Could not find appropriate Python type for C++ Exception")
         PyType = Exception
     return PyType(cpp)
+

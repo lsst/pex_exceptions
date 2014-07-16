@@ -60,7 +60,6 @@ Access to the classes from the pex_exceptions library
 %ignore lsst::pex::exceptions::addMessage;
 
 %include "lsst/pex/exceptions/Exception.h"
-%include "lsst/pex/exceptions/Runtime.h"
 
 %extend lsst::pex::exceptions::Exception {
     std::string asString() {
@@ -69,6 +68,8 @@ Access to the classes from the pex_exceptions library
         return stream.str();
     }
 }
+
+%include "lsst/pex/exceptions/Runtime.h"
 
 %types(lsst::pex::exceptions::LogicError *);
 %types(lsst::pex::exceptions::DomainError *);
