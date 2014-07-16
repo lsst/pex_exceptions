@@ -60,5 +60,14 @@ class ExceptionTestCase(unittest.TestCase):
         else:
             self.fail("Expected Exception not raised")
 
+    def testPythonRaise(self):
+        try:
+            raise lsst.pex.exceptions.LogicError("message1")
+        except lsst.pex.exceptions.Exception as err:
+            self.assertIsInstance(err, lsst.pex.exceptions.LogicError)
+            self.assertEqual(err.what(), "message1")
+            self.assertEqual(repr(err), "LogicError('message1')")
+            self.assertEqual(str(err), "message1")
+
 if __name__ == '__main__':
     unittest.main()

@@ -56,6 +56,9 @@ Access to the classes from the pex_exceptions library
 %immutable lsst::pex::exceptions::Tracepoint::_func;
 %template(Traceback) std::vector<lsst::pex::exceptions::Tracepoint>;
 
+// Don't want this callable from Python, as Python does its own traceback-tracking.
+%ignore lsst::pex::exceptions::addMessage;
+
 %include "lsst/pex/exceptions/Exception.h"
 %include "lsst/pex/exceptions/Runtime.h"
 

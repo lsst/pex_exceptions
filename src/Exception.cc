@@ -60,13 +60,16 @@ void Exception::addMessage(
     std::ostringstream stream;
     stream << _message;
     if (_traceback.empty()) {
-        // This means the message-only constructor was used, probably in Python,
-        // and there's no traceback associated the exception so far.  Since that
-        // cgor shouldn't be called from C++, and it's nearly impossible for a
-        // Python-thrown exception to land back in C++ to allow addMessage() to
-        // be called there, we'll assume that addMessage() is also being called
-        // in Python.  In that case, we should append the message, but *not*
-        // the traceback, because Python tracks tracebacks separately.
+        // This means the message-only constructor was used, which should only happen
+        // from Python...but this method isn't accessible from Python, so maybe
+        // this Exception was thrown in Python, then passed back to C++.  Or, more
+        // likely, someone didn't read the warning and threw this exception in C++
+        // without using LSST_EXCEPT.
+        // But, because we don't have a traceback for that first message, we can't
+        // add one here without messing up the stringification logic later.  Since
+        // this is a rare case (and should be considered a bug, but we don't want
+        // exception code throwing its own exceptions unless it absolutely has to),
+        // we'll proceed by just appending the message and ignoring the traceback.
         stream << "; " << message;
     } else {
         if (_traceback.size() == static_cast<std::size_t>(1)) {

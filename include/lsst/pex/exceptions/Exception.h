@@ -135,7 +135,6 @@ public:
     void addMessage(char const* file, int line, char const* func,
                     std::string const& message);
 
-
     /// Retrieve the list of tracepoints associated with an exception.
     Traceback const& getTraceback(void) const throw();
 
