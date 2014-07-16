@@ -59,17 +59,29 @@ void Exception::addMessage(
 ) {
     std::ostringstream stream;
     stream << _message;
-    if (_traceback.size() == static_cast<std::size_t>(1)) {
-        // The original message doesn't start with an index (because it's faster,
-        // and there's no need if there's only one), so when we add the second,
-        // we have to give it an index.
-        stream << " {0}; ";
+    if (_traceback.empty()) {
+        // This means the message-only constructor was used, probably in Python,
+        // and there's no traceback associated the exception so far.  Since that
+        // cgor shouldn't be called from C++, and it's nearly impossible for a
+        // Python-thrown exception to land back in C++ to allow addMessage() to
+        // be called there, we'll assume that addMessage() is also being called
+        // in Python.  In that case, we should append the message, but *not*
+        // the traceback, because Python tracks tracebacks separately.
+        stream << "; " << message;
     } else {
-        stream << "; ";
+        if (_traceback.size() == static_cast<std::size_t>(1)) {
+            // The original message doesn't have an index (because it's faster,
+            // and there's no need if there's only one), so when we add the second,
+            // we have to give it an index.
+            stream << " {0}; ";
+        } else {
+            stream << "; ";
+        }
+        stream << message << " {" << _traceback.size() << "}";
+        _traceback.push_back(Tracepoint(file, line, func, message));
     }
-    stream << message << " {" << _traceback.size() << "}";
     _message = stream.str();
-    _traceback.push_back(Tracepoint(file, line, func, message));
+
 }
 
 Traceback const&
