@@ -77,20 +77,15 @@ Traceback const&
     return _traceback;
 }
 
-std::ostream& Exception::addToStream(std::ostream& stream, bool tracebackOnly) const {
-    if (!tracebackOnly) {
-        stream << "Traceback (most recent call last):" << std::endl;
-    }
+std::ostream& Exception::addToStream(std::ostream& stream) const {
     for (std::size_t i = 0; i != _traceback.size(); ++i) {
         stream << "  File \"" << _traceback[i]._file
                << "\", line " << _traceback[i]._line
                << ", in " << _traceback[i]._func << std::endl;
         stream << "    " << _traceback[i]._message << " {" << i << "}" << std::endl;
     }
-    if (!tracebackOnly) {
-        std::string type(getType(), 0, std::strlen(getType()) - 2);
-        stream << type << ": '" << _message << "'" << std::endl;
-    }
+    std::string type(getType(), 0, std::strlen(getType()) - 2);
+    stream << type << ": '" << _message << "'" << std::endl;
     return stream;
 }
 
