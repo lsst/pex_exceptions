@@ -43,7 +43,7 @@ class Exception(StandardError):
         return "%s('%s')" % (type(self).__name__, self.cpp.what())
 
     def __str__(self):
-        return "\n%s" % self.cpp.asString()
+        return self.cpp.asString()
 
 @register
 class LogicError(Exception):

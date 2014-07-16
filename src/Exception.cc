@@ -90,14 +90,21 @@ Traceback const&
 }
 
 std::ostream& Exception::addToStream(std::ostream& stream) const {
-    for (std::size_t i = 0; i != _traceback.size(); ++i) {
-        stream << "  File \"" << _traceback[i]._file
-               << "\", line " << _traceback[i]._line
-               << ", in " << _traceback[i]._func << std::endl;
-        stream << "    " << _traceback[i]._message << " {" << i << "}" << std::endl;
+    if (_traceback.empty()) {
+        // The exception was raised in Python, so we don't include the traceback, the type, or any
+        // newlines, because Python will print those itself.
+        stream << _message;
+    } else {
+        stream << std::endl; // Start with a newline to separate our stuff from Pythons "<type>: " prefix.
+        for (std::size_t i = 0; i != _traceback.size(); ++i) {
+            stream << "  File \"" << _traceback[i]._file
+                   << "\", line " << _traceback[i]._line
+                   << ", in " << _traceback[i]._func << std::endl;
+            stream << "    " << _traceback[i]._message << " {" << i << "}" << std::endl;
+        }
+        std::string type(getType(), 0, std::strlen(getType()) - 2);
+        stream << type << ": '" << _message << "'" << std::endl;
     }
-    std::string type(getType(), 0, std::strlen(getType()) - 2);
-    stream << type << ": '" << _message << "'" << std::endl;
     return stream;
 }
 
