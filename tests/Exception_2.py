@@ -40,5 +40,25 @@ class ExceptionTestCase(unittest.TestCase):
         else:
             self.fail("Expected Exception not raised")
 
+    def testDerivedTranslation(self):
+        self.assertRaises(lsst.pex.exceptions.LogicError, testLib.failLogicError1, "message1")
+        self.assertRaises(lsst.pex.exceptions.Exception, testLib.failLogicError1, "message1")
+        try:
+            testLib.failLogicError1("message2")
+        except lsst.pex.exceptions.LogicError as err:
+            self.assertEqual(err.what(), "message2")
+            self.assertEqual(repr(err), "LogicError('message2')")
+        else:
+            self.fail("Expected Exception not raised")
+
+    def testAddMessage(self):
+        try:
+            testLib.failLogicError2("message1", "message2")
+        except lsst.pex.exceptions.LogicError as err:
+            self.assertEqual(err.what(), "message1 {0}; message2 {1}")
+            self.assertEqual(repr(err), "LogicError('message1 {0}; message2 {1}')")
+        else:
+            self.fail("Expected Exception not raised")
+
 if __name__ == '__main__':
     unittest.main()

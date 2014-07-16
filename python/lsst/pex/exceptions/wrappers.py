@@ -33,7 +33,7 @@ class Exception(StandardError):
         else:
             message = arg
             cpp = self.WrappedClass(message)
-        StandardError.__init__(self, message)
+        super(Exception, self).__init__(message)
         self.cpp = cpp
 
     def __getattr__(self, name):
@@ -44,6 +44,10 @@ class Exception(StandardError):
 
     def __str__(self):
         return "\n%s" % self.cpp.asString()
+
+@register
+class LogicError(Exception):
+    WrappedClass = exceptionsLib.LogicError
 
 def translate(cpp):
     """Translate a C++ Exception instance to Python and return it."""

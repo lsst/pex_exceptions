@@ -62,6 +62,22 @@ void fail1(std::string const & message) {
     throw LSST_EXCEPT(T, message);
 }
 
+template <typename T>
+void fail2(std::string const & message1, std::string const & message2) {
+    try {
+        fail1<T>(message1);
+    } catch (T & err) {
+        LSST_EXCEPT_ADD(err, message2);
+        throw err;
+    }
 }
 
-%template(failException1) fail1<lsst::pex::exceptions::Exception>;
+}
+
+%define %INSTANTIATE(NAME)
+%template(fail ## NAME ## 1) fail1< lsst::pex::exceptions::##NAME >;
+%template(fail ## NAME ## 2) fail2< lsst::pex::exceptions::##NAME >;
+%enddef
+
+%INSTANTIATE(Exception)
+%INSTANTIATE(LogicError)
