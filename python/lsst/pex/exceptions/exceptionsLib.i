@@ -85,3 +85,14 @@ Access to the classes from the pex_exceptions library
 %types(lsst::pex::exceptions::IoError *);
 %types(lsst::pex::exceptions::TypeError *);
 %types(lsst::pex::exceptions::TimeoutError *);
+
+%define %declareException(NAME, PYBASE, FULLNAME)
+%types(FULLNAME *);
+%pythoncode %{
+import lsst.pex.exceptions.wrappers
+_Cpp ## NAME = NAME
+@lsst.pex.exceptions.wrappers.register
+class NAME(PYBASE):
+    WrappedClass = _Cpp ## NAME
+%}
+%enddef

@@ -57,6 +57,8 @@ Test module for pex_exceptions
 
 %inline {
 
+LSST_EXCEPTION_TYPE(TestError, lsst::pex::exceptions::RuntimeError, TestError)
+
 template <typename T>
 void fail1(std::string const & message) {
     throw LSST_EXCEPT(T, message);
@@ -73,6 +75,8 @@ void fail2(std::string const & message1, std::string const & message2) {
 }
 
 }
+
+%declareException(TestError, lsst.pex.exceptions.RuntimeError, TestError)
 
 %define %INSTANTIATE(NAME)
 %template(fail ## NAME ## 1) fail1< lsst::pex::exceptions::##NAME >;
@@ -93,3 +97,6 @@ void fail2(std::string const & message1, std::string const & message2) {
 %INSTANTIATE(IoError)
 %INSTANTIATE(TypeError)
 %INSTANTIATE(TimeoutError)
+
+%template(failTestError1) fail1< TestError >;
+%template(failTestError2) fail2< TestError >;

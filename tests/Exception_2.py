@@ -69,6 +69,19 @@ class ExceptionTestCase(unittest.TestCase):
             self.assertEqual(repr(err), "LogicError('message1')")
             self.assertEqual(str(err), "message1")
 
+    def testCustom(self):
+        self.assertRaises(lsst.pex.exceptions.Exception, testLib.failTestError1, "message1")
+        self.assertRaises(lsst.pex.exceptions.RuntimeError, testLib.failTestError1, "message1")
+        self.assertRaises(RuntimeError, testLib.failTestError1, "message1")
+        self.assertRaises(testLib.TestError, testLib.failTestError1, "message1")
+        try:
+            testLib.failTestError1("message2")
+        except lsst.pex.exceptions.Exception as err:
+            self.assertEqual(err.what(), "message2")
+            self.assertEqual(repr(err), "TestError('message2')")
+        else:
+            self.fail("Expected Exception not raised")
+
     def checkHierarchy(self, method, classes):
         for cls in classes:
             self.assertRaises(cls, method, "message")
