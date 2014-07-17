@@ -27,6 +27,8 @@
 // copy of the exception object.
 %{
 
+#include "lsst/pex/exceptions/Exception.h"
+
 static void tryLsstExceptionWarn(const char * message) {
     // Try to warn that exception translation failed, if we fail, clear the exception raised by the
     // warning attempt so we can raise a less-informative exception based on the original.
