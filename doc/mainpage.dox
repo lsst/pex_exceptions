@@ -190,6 +190,11 @@ or (if depending on utils as well as pex_exceptions):
 @code
 %include "lsst/utils/p_lsstSwig.i"
 @endcode
+Then, finally:
+@code
+%lsst_exceptions()
+@endcode
+
 
 Note that this procedure has not changed from previous versions
 of pex_exceptions, though the actual exception handling code
