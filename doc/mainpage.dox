@@ -93,8 +93,8 @@ except LookupError as err:
     assert isinstance(err, lsst.pex.exceptions.NotFoundError)
 @endcode
 
-When working out what exceptions specifiers will match a given exception,
-it's also work keeping in mind that many LSST exceptions inherit from
+When working out what exception specifiers will match a given exception,
+it's also worth keeping in mind that many LSST exceptions inherit from
 lsst::pex::exceptions::RuntimeError, and hence inherit indirectly from
 Python's RuntimeError.
 
