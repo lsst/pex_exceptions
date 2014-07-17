@@ -23,13 +23,13 @@ class Exception(StandardError):
 
     WrappedClass = exceptionsLib.Exception
 
-    def __init__(self, arg):
+    def __init__(self, arg, *args, **kwds):
         if isinstance(arg, exceptionsLib.Exception):
             cpp = arg
             message = cpp.what()
         else:
             message = arg
-            cpp = self.WrappedClass(message)
+            cpp = self.WrappedClass(message, *args, **kwds)
         super(Exception, self).__init__(message)
         self.cpp = cpp
 
