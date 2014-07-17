@@ -86,6 +86,7 @@ Access to the classes from the pex_exceptions library
 %types(lsst::pex::exceptions::TypeError *);
 %types(lsst::pex::exceptions::TimeoutError *);
 
+/// See Doxygen documentation (from mainpage.dox) for more info
 %define %declareException(NAME, PYBASE, FULLNAME)
 %types(FULLNAME *);
 %pythoncode %{
