@@ -102,8 +102,8 @@ Python's RuntimeError.
 
 LSST Exceptions can also be raised just like any other Python exception.
 The resulting exception object cannot be passed back to C++ functions,
-however, unlike other wrapped C++ objects (this feature could potentially
-added if be desired, but currently we see no need for it).
+however, unlike other wrapped C++ objects (if this is needed, you can
+instead pass "err.cpp" instead of "err").
 
 Generally, raising a pure-Python exception is preferred over raising a
 wrapped C++ exception.  When some implementations of an interface are
