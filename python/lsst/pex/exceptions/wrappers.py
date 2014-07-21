@@ -12,10 +12,20 @@ def register(cls):
     registry[cls.WrappedClass] = cls
     return cls
 
+class ExceptionMeta(type):
+    """A metaclass for custom exception wrappers, which adds lookup of class attributes
+    by delegating to the Swig-generated wrapper.
+    """
+
+    def __getattr__(self, name):
+        return getattr(self.WrappedClass, name)
+
 @register
 class Exception(StandardError):
     """The base class for Python-wrapped LSST C++ exceptions.
     """
+
+    __metaclass__ = ExceptionMeta
 
     # wrappers.py is an implementation detail, not a public namespace, so we pretend this is defined
     # in the package for pretty-printing purposes
