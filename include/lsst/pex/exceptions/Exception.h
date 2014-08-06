@@ -149,7 +149,7 @@ public:
     /**
      *  Return a character string summarizing this exception.
      *
-     *  This combines the all messages added to the exception, but not the type or
+     *  This combines all the messages added to the exception, but not the type or
      *  traceback (use the stream operator to get this more detailed information).
      *
      *  Not allowed to throw any exceptions.

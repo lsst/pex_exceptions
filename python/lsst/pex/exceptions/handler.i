@@ -21,14 +21,16 @@
  * see <http://www.lsstcorp.org/LegalNotices/>.
  */
 
-
 // Use the Python C API to raise an exception of type
 // lsst.pex.exceptions.Exception with a value that is a SWIGged proxy for a
 // copy of the exception object.
+
 %{
 
 #include "lsst/pex/exceptions/Exception.h"
 
+
+// Helper function to show a Python warning when exception translation fails.
 static void tryLsstExceptionWarn(const char * message) {
     // Try to warn that exception translation failed, if we fail, clear the exception raised by the
     // warning attempt so we can raise a less-informative exception based on the original.
@@ -38,10 +40,21 @@ static void tryLsstExceptionWarn(const char * message) {
     }
 }
 
+// Raise a Python exception that wraps the given C++ exception instance.
+//
+// Most of the work is delegated to the pure-Python function pex.exceptions.wrappers.translate(),
+// which looks up the appropriate Python exception class from a dict that maps Swigged C++ exception
+// types to their custom Python wrappers.  Everything else here is basically just importing that
+// module, preparing the arguments, and calling that function, along with the very verbose error
+// handling required by the Python C API.
+//
+// If any point we fail to translate the exception, we print a Python warning and raise the built-in
+// Python RuntimeError exception with the same message as the C++ exception.
 static void raiseLsstException(lsst::pex::exceptions::Exception& ex) {
-    PyObject* pyex = 0;
+    PyObject* pyex = 0; // Will be the Swigged C++ Exception instance
     swig_type_info* tinfo = SWIG_TypeQuery(ex.getType());
     bool failed = false;
+
     if (tinfo != 0) {
 	lsst::pex::exceptions::Exception* e = ex.clone();
         pyex = SWIG_NewPointerObj(static_cast<void*>(e), tinfo, SWIG_POINTER_OWN);
@@ -55,7 +68,7 @@ static void raiseLsstException(lsst::pex::exceptions::Exception& ex) {
     }
 
     PyObject* module = PyImport_ImportModule("lsst.pex.exceptions.wrappers");
-    if (!module) {
+    if (!module || failed) {
         tryLsstExceptionWarn("Failed to import C++ Exception wrapper module.");
         failed = true;
     } else {
@@ -64,6 +77,8 @@ static void raiseLsstException(lsst::pex::exceptions::Exception& ex) {
             tryLsstExceptionWarn("Failed to find translation function for C++ Exceptions.");
             failed = true;
         } else {
+            // Calling the Python translate() returns an instance of the appropriate Python
+            // exception that wraps the C++ exception instance that we give it.
             PyObject* instance = PyObject_CallFunctionObjArgs(translate, pyex, NULL);
             if (!instance) {
                 // we actually expect a null return here, as translate() should raise an exception
@@ -87,9 +102,13 @@ static void raiseLsstException(lsst::pex::exceptions::Exception& ex) {
     }
 }
 
+
 %}
 
-// Turns on the default C++ to python exception handling interface
+// Invoking this macro in a Swig interface file turns on translation of
+// LSST C++ exceptions.  All of the work is delegated to raiseLsstException().
+// Non-LSST C++ exceptions are raised as instances of the Python builtin
+// Exception base class.
 %define %lsst_exceptions()
     %exception {
         try {

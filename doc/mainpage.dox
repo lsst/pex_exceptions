@@ -1,7 +1,7 @@
 /**
  *  Swig macro to generate wrappers for a custom C++ exception
  *
- *  @note This is actually a Swig macro "%declareExceptions" (note the "%")
+ *  @note This is actually a Swig macro "%declareException" (note the "%")
  *  defined in exceptionsLib.i, but we've lied to Doxygen about its name
  *  and location to produce this documentation.
  *
@@ -134,7 +134,7 @@ Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
   File "testLib.py", line 637, in failException1
     return _testLib.failException1(*args)
-lsst.pex.exceptions.Exception: 
+lsst.pex.exceptions.Exception:
   File "tests/testLib.i", line 64, in void fail1(const string&) [with T = lsst::pex::exceptions::Exception, std::string = std::basic_string<char>]
     my message {0}
 lsst::pex::exceptions::Exception: 'my message'
@@ -213,4 +213,34 @@ wrapper, so there should be no need to add custom methods to the wrapper.
 
 See tests/testLib.i for a complete example.
 
+\section secExcTransition Transition from LsstCppException and LsstException
+
+In older versions of pex_exceptions, there were two Python classes that filled
+roles now covered by the Python lsst.pex.exceptions.Exception class:
+ - LsstCppException provided a pure-Python wrapper that inherited from Python's
+   built-in Exception class.
+ - LsstException was the name given to the Swig-wrapped C++
+   lsst::pex::exceptions::Exception class.  Derived classes were not renamed.
+
+Older code that uses catches LsstCppException and then checks the type of the
+LsstException subclass it holds should be converted to catch the derived class
+exception directly.  For instance, older code that looks like this:
+@code
+try:
+    ...
+except lsst.pex.exceptions.LsstCppException as err:
+    if isinstance(err.args[0], lsst.pex.exceptions.RuntimeError):
+        ...
+    raise
+@endcode
+should be transformed to this to get the same effect:
+@code
+try:
+    ...
+except lsst.pex.exceptions.RuntimeError as err:
+    ...
+@endcode
+Note that there is no need to re-raise here; if an exception other
+than RuntimeError is thrown in this example, the except block will
+not match and the exception will propagate up normally.
 */
