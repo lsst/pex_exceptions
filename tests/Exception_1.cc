@@ -76,6 +76,16 @@ void f6(void) {
     }
 }
 
+void f7(void) {
+    try {
+        f6();
+    }
+    catch (ChildException& e) {
+        LSST_EXCEPT_ADD(e, "In f7");
+        throw;
+    }
+}
+
 BOOST_AUTO_TEST_SUITE(ExceptionSuite)
 
 BOOST_AUTO_TEST_CASE(base) {
@@ -84,6 +94,7 @@ BOOST_AUTO_TEST_CASE(base) {
     BOOST_CHECK_THROW(f4(), pexExcept::Exception);
     BOOST_CHECK_THROW(f5(), ChildException);
     BOOST_CHECK_THROW(f6(), ChildException);
+    BOOST_CHECK_THROW(f7(), ChildException);
 }
 
 BOOST_AUTO_TEST_CASE(simple) {
@@ -229,6 +240,41 @@ BOOST_AUTO_TEST_CASE(child_rethrow_child_as_child) {
                     "  File \"tests/Exception_1.cc\", line 74, in void f6()\n"
                     "    In f6 {1}\n"
                     "ChildException: 'In f2 2008 {0}; In f6 {1}'\n"
+                ));
+}
+
+BOOST_AUTO_TEST_CASE(throw_without_macro) {
+    test::output_test_stream o;
+    try { // this form shouldn't be used, but we don't want things to explode if it is
+        throw ChildException("python-only ctor");
+    } catch (ChildException & e) {
+        LSST_EXCEPT_ADD(e, "new message");
+        o << e;
+    }
+    BOOST_CHECK(!o.is_empty(false));
+    BOOST_CHECK(o.is_equal(
+                    "python-only ctor; new message"
+                ));
+}
+
+BOOST_AUTO_TEST_CASE(rethrow_twice) {
+    test::output_test_stream o;
+    try {
+        f7();
+    }
+    catch (ChildException const& e) {
+        o << e;
+    }
+    BOOST_CHECK(!o.is_empty(false));
+    BOOST_CHECK(o.is_equal(
+                    "\n"
+                    "  File \"tests/Exception_1.cc\", line 46, in void f2()\n"
+                    "    In f2 2008 {0}\n"
+                    "  File \"tests/Exception_1.cc\", line 74, in void f6()\n"
+                    "    In f6 {1}\n"
+                    "  File \"tests/Exception_1.cc\", line 84, in void f7()\n"
+                    "    In f7 {2}\n"
+                    "ChildException: 'In f2 2008 {0}; In f6 {1}; In f7 {2}'\n"
                 ));
 }
 
