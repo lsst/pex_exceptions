@@ -54,6 +54,10 @@ Access to the classes from the pex_exceptions library
 %newobject lsst::pex::exceptions::Exception::clone;
 %immutable lsst::pex::exceptions::Tracepoint::_file;
 %immutable lsst::pex::exceptions::Tracepoint::_func;
+
+%ignore std::vector<lsst::pex::exceptions::Tracepoint>::vector(size_type);
+%ignore std::vector<lsst::pex::exceptions::Tracepoint>::resize(size_type);
+
 %template(Traceback) std::vector<lsst::pex::exceptions::Tracepoint>;
 
 // Don't want this callable from Python, as Python does its own traceback-tracking.

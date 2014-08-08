@@ -34,8 +34,6 @@
 
 namespace lsst { namespace pex { namespace exceptions {
 
-Tracepoint::Tracepoint(void) : _file(0), _line(-1), _func(0) {}
-
 Tracepoint::Tracepoint(
     char const* file, int line, char const* func,
     std::string const& message

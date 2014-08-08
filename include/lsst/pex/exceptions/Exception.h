@@ -79,9 +79,6 @@ namespace exceptions {
 /// One point in the Traceback vector held by Exception
 struct Tracepoint {
 
-    /// Default constructor.
-    Tracepoint(void);
-
     /** Standard constructor, intended for C++ use.
      *
      * @param[in] file Filename.
