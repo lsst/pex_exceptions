@@ -32,19 +32,10 @@ Access to the classes from the pex_exceptions library
 %module(package="lsst.pex.exceptions", docstring=pex_exceptions_DOCSTRING) exceptionsLib
 
 %{
+#include <sstream>
 #include "lsst/pex/exceptions/Exception.h"
 #include "lsst/pex/exceptions/Runtime.h"
 %}
-
-%pythoncode {
-class LsstException(Exception):
-    pass
-
-class LsstCppException(LsstException):
-    def __str__(self):
-        return self.args[0].what()
-
-}
 
 %pythonnondynamic;
 %naturalvar;  // use const reference typemaps
@@ -58,12 +49,30 @@ class LsstCppException(LsstException):
 %include "carrays.i"
 %include "typemaps.i"
 
+%ignore lsst::pex::exceptions::Exception::addToStream;
+
 %newobject lsst::pex::exceptions::Exception::clone;
 %immutable lsst::pex::exceptions::Tracepoint::_file;
 %immutable lsst::pex::exceptions::Tracepoint::_func;
+
+%ignore std::vector<lsst::pex::exceptions::Tracepoint>::vector(size_type);
+%ignore std::vector<lsst::pex::exceptions::Tracepoint>::resize(size_type);
+
 %template(Traceback) std::vector<lsst::pex::exceptions::Tracepoint>;
 
+// Don't want this callable from Python, as Python does its own traceback-tracking.
+%ignore lsst::pex::exceptions::addMessage;
+
 %include "lsst/pex/exceptions/Exception.h"
+
+%extend lsst::pex::exceptions::Exception {
+    std::string asString() {
+        std::ostringstream stream;
+        self->addToStream(stream);
+        return stream.str();
+    }
+}
+
 %include "lsst/pex/exceptions/Runtime.h"
 
 %types(lsst::pex::exceptions::LogicError *);
@@ -80,3 +89,15 @@ class LsstCppException(LsstException):
 %types(lsst::pex::exceptions::IoError *);
 %types(lsst::pex::exceptions::TypeError *);
 %types(lsst::pex::exceptions::TimeoutError *);
+
+/// See Doxygen documentation (from mainpage.dox) for more info
+%define %declareException(NAME, PYBASE, FULLNAME)
+%types(FULLNAME *);
+%pythoncode %{
+import lsst.pex.exceptions.wrappers
+_Cpp ## NAME = NAME
+@lsst.pex.exceptions.wrappers.register
+class NAME(PYBASE):
+    WrappedClass = _Cpp ## NAME
+%}
+%enddef

@@ -1,7 +1,8 @@
-# 
+#!/usr/bin/env python
+#
 # LSST Data Management System
-# Copyright 2008, 2009, 2010 LSST Corporation.
-# 
+# Copyright 2008-2014 LSST Corporation.
+#
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
 #
@@ -9,89 +10,135 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
-# You should have received a copy of the LSST License Statement and 
-# the GNU General Public License along with this program.  If not, 
+#
+# You should have received a copy of the LSST License Statement and
+# the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+import sys
 import unittest
 
 import lsst.pex.exceptions
-import failer
+import testLib
 
 class ExceptionTestCase(unittest.TestCase):
     """A test case for C++/Python LsstCppExceptions."""
-    def setUp(self):
-        """Create a wrapped C++ instance that throws an exception."""
-        self.x = failer.Failer()
 
-    def tearDown(self):
-        del self.x
+    def testBaseTranslation(self):
+        self.assertRaises(lsst.pex.exceptions.Exception, testLib.failException1, "message1")
+        try:
+            testLib.failException1("message2")
+        except lsst.pex.exceptions.Exception as err:
+            self.assertEqual(err.what(), "message2")
+            self.assertEqual(repr(err), "Exception('message2')")
+        else:
+            self.fail("Expected Exception not raised")
+
+    def testDerivedTranslation(self):
+        self.assertRaises(lsst.pex.exceptions.RuntimeError, testLib.failRuntimeError1, "message1")
+        self.assertRaises(lsst.pex.exceptions.Exception, testLib.failRuntimeError1, "message1")
+        try:
+            testLib.failRuntimeError1("message2")
+        except lsst.pex.exceptions.RuntimeError as err:
+            self.assertEqual(err.what(), "message2")
+            self.assertEqual(repr(err), "RuntimeError('message2')")
+        else:
+            self.fail("Expected Exception not raised")
+
+    def testAddMessage(self):
+        try:
+            testLib.failLogicError2("message1", "message2")
+        except lsst.pex.exceptions.LogicError as err:
+            self.assertEqual(err.what(), "message1 {0}; message2 {1}")
+            self.assertEqual(repr(err), "LogicError('message1 {0}; message2 {1}')")
+        else:
+            self.fail("Expected Exception not raised")
+
+    def testPythonRaise(self):
+        try:
+            raise lsst.pex.exceptions.LogicError("message1")
+        except lsst.pex.exceptions.Exception as err:
+            self.assertIsInstance(err, lsst.pex.exceptions.LogicError)
+            self.assertEqual(err.what(), "message1")
+            self.assertEqual(repr(err), "LogicError('message1')")
+            self.assertEqual(str(err), "message1")
+
+    def testCustom(self):
+        self.assertRaises(lsst.pex.exceptions.Exception, testLib.failTestError1, "message1")
+        self.assertRaises(lsst.pex.exceptions.RuntimeError, testLib.failTestError1, "message1")
+        self.assertRaises(RuntimeError, testLib.failTestError1, "message1")
+        self.assertRaises(testLib.TestError, testLib.failTestError1, "message1")
+        try:
+            testLib.failTestError1("message2")
+        except lsst.pex.exceptions.Exception as err:
+            self.assertEqual(err.what(), "message2")
+            self.assertEqual(repr(err), "TestError('message2')")
+        else:
+            self.fail("Expected Exception not raised")
+
+    def checkHierarchy(self, method, classes):
+        for cls in classes:
+            self.assertRaises(cls, method, "message")
 
     def testHierarchy(self):
-        """Check that the LsstCppException class hierarchy is correct and that
-        the C++ exception is a subclass of lsst.pex.exceptions.Exception."""
-        self.assert_(issubclass(lsst.pex.exceptions.LsstException, Exception))
-        self.assert_(issubclass(lsst.pex.exceptions.LsstCppException,
-            lsst.pex.exceptions.LsstException))
-        self.assert_(issubclass(failer.MyException,
-            lsst.pex.exceptions.Exception))
+        self.checkHierarchy(testLib.failLogicError1,
+                            [lsst.pex.exceptions.LogicError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failInvalidParameterError1,
+                            [lsst.pex.exceptions.InvalidParameterError,
+                             lsst.pex.exceptions.LogicError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failLengthError1,
+                            [lsst.pex.exceptions.LengthError,
+                             lsst.pex.exceptions.LogicError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failOutOfRangeError1,
+                            [lsst.pex.exceptions.OutOfRangeError,
+                             lsst.pex.exceptions.LogicError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failRuntimeError1,
+                            [lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
+        self.checkHierarchy(testLib.failOverflowError1,
+                            [lsst.pex.exceptions.OverflowError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception,
+                             OverflowError])
+        self.checkHierarchy(testLib.failUnderflowError1,
+                            [lsst.pex.exceptions.UnderflowError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception,
+                             ArithmeticError])
+        self.checkHierarchy(testLib.failNotFoundError1,
+                            [lsst.pex.exceptions.NotFoundError,
+                             lsst.pex.exceptions.Exception,
+                             LookupError])
+        self.checkHierarchy(testLib.failMemoryError1,
+                            [lsst.pex.exceptions.MemoryError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception,
+                             MemoryError])
+        self.checkHierarchy(testLib.failIoError1,
+                            [lsst.pex.exceptions.IoError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception,
+                             IOError])
+        self.checkHierarchy(testLib.failTypeError1,
+                            [lsst.pex.exceptions.TypeError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception,
+                             TypeError])
+        self.checkHierarchy(testLib.failTimeoutError1,
+                            [lsst.pex.exceptions.TimeoutError,
+                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.Exception])
 
-    def testThrow(self):
-        """Check that the exception thrown is a Python Exception, an
-        LsstException, and an LsstCppException."""
-        self.assertRaises(Exception, self.x.fail)
-        self.assertRaises(lsst.pex.exceptions.LsstException, self.x.fail)
-        self.assertRaises(lsst.pex.exceptions.LsstCppException, self.x.fail)
-
-    def testValue(self):
-        """Check that the exception value is a proper SWIGged C++ exception
-        with appropriate message."""
-        try:
-            self.x.fail()
-        except Exception, e:
-            self.assert_(e is not None)
-            self.assertEqual(len(e.args), 1)
-            self.assert_(isinstance(e, Exception))
-            self.assert_(isinstance(e, lsst.pex.exceptions.LsstException))
-            self.assert_(isinstance(e, lsst.pex.exceptions.LsstCppException))
-            self.assert_(isinstance(e.args[0], lsst.pex.exceptions.Exception))
-            self.assert_(isinstance(e.args[0], failer.MyException))
-            self.assertEqual(e.args[0].what(),
-                    "0: failer::MyException thrown at tests/Failer.cc:29 " +
-                    "in void failer::Failer::fail()\n0: Message: message\n")
-            self.assertEqual(str(e),
-                    "0: failer::MyException thrown at tests/Failer.cc:29 " +
-                    "in void failer::Failer::fail()\n0: Message: message\n")
-            self.assertEqual(e.args[0].getType(), "failer::MyException *")
-
-    def testTraceback(self):
-        """Check that the traceback is accessible and correct."""
-        try:
-            self.x.fail()
-        except lsst.pex.exceptions.LsstCppException, e:
-            t = e.args[0].getTraceback()
-            self.assert_(len(t), 1)
-            self.assert_(isinstance(t[0], lsst.pex.exceptions.Tracepoint))
-            self.assertEqual(t[0]._file, "tests/Failer.cc")
-            self.assertEqual(t[0]._line, 29)
-            self.assertEqual(t[0]._func, "void failer::Failer::fail()")
-            self.assertEqual(t[0]._msg, "message")
-
-    def testAssertEqual(self):
-        """Test that the LSST_ASSERT_EQUAL macro works as expected"""
-        try:
-            self.x.fail3(4, 5)
-        except lsst.pex.exceptions.LsstCppException as e:
-            self.assert_("a=4" in str(e))
-            self.assert_("b=5" in str(e))
-            self.assert_(isinstance(e.args[0], lsst.pex.exceptions.RuntimeError))
 
 if __name__ == '__main__':
     unittest.main()

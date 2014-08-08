@@ -1,4 +1,30 @@
 /**
+ *  Swig macro to generate wrappers for a custom C++ exception
+ *
+ *  @note This is actually a Swig macro "%declareException" (note the "%")
+ *  defined in exceptionsLib.i, but we've lied to Doxygen about its name
+ *  and location to produce this documentation.
+ *
+ *  @param[in] NAME      Name of the exception, not including
+ *                       the namespace (e.g. MyCustomException).
+ *  @param[in] PYBASE    Fully-qualified Python name of the
+ *                       exception's base class (e.g.
+ *                       lsst.pex.exceptions.NotFoundError).
+ *  @param[in] FULLNAME  Fully-qualified C++ name of the exception
+ *                       (e.g. lsst::mypackage::MyCustomException).
+ *
+ *  Note that the Python module that contains the base class must have
+ *  been imported in the Swig-generated Python code prior to the point
+ *  where this macro is invoked.  Usually this is added automatically
+ *  by Swig due to an \%import statement, but in some cases it may need
+ *  to be added manually in a \%pythoncode block.
+ *
+ *  See tests/testLib.i for a complete example.
+ *
+ */
+#define declareException(NAME, PYBASE, FULLNAME)
+
+/**
 \mainpage lsst::pex::exceptions;  LSST Exceptions
 
 \section secExcIntro Introduction
@@ -12,26 +38,209 @@ context information appended.
 
 \section secExcPython Python Interface
 
-Python wrappers for the C++ exception objects are generated using SWIG.  Any
-package defining new exception subclasses must import
-lsst/pex/exceptions/exceptionsLib.i in its SWIG configuration, as well as
-including the exception subclass header file.
+<b>For Python Users: Catching C++ Exceptions</b>
 
-The new SWIGged exception class derives from the lsst.pex.exceptions.Exception
-class but will not derive from the Python Exception base class. Instead,
-exceptions deriving from this Exception class are caught (in p_lsstSwig.i) and
-transformed into lsst.pex.exceptions.LsstCppException instances. The
-LsstCppException class derives from LsstException (usable by Python code),
-which in turn derives from the Python Exception base class. The SWIG proxy for
-the customized exception class is accessible as the args[0] item in the
-LsstCppException.
+Python wrappers for the C++ exception objects are generated using SWIG, with
+an additional custom wrapper layer on top.  This additional layer allows
+the wrapped exceptions to inherit from Python's built-in Exception class,
+which is necessary for them to be raised or caught in Python.  These custom
+wrappers have the same names as their C++ counterparts.  The immediate Swig
+wrappers should not be used by users, and as such are generally renamed or not
+imported into a package namespace to hide them.
 
-Other exceptions thrown from C++ are raised as Python RuntimeErrors. No attempt
-is made to move the C++ traceback information into a Python traceback object. 
+This means that to catch a C++ exception in Python (we'll use
+pex::exceptions::NotFoundError), you can simply use:
+@code
+try:
+    someSwiggedFunction()   # assume this throws NotFoundError
+except lsst.pex.exceptions.NotFoundError as err:
+    pass
+@endcode
+In addition, you can catch this same error using either the LSST Exception
+base class:
+@code
+try:
+    someSwiggedFunction()   # assume this throws NotFoundError
+except lsst.pex.exceptions.Exception as err:
+    # Note that 'err' is still the most-derived exception type:
+    assert isinstance(err, lsst.pex.exceptions.NotFoundError)
+@endcode
+or Python's built-in StandardError class (from which all LSST exceptions
+inherit):
+@code
+try:
+    someSwiggedFunction()   # assume this throws NotFoundError
+except StandardError as err:
+    # Once again, 'err' is still the most-derived exception type:
+    assert isinstance(err, lsst.pex.exceptions.NotFoundError)
+@endcode
+In addition, we've multiply-inherited certain LSST exceptions from
+obvious Python counterparts:
+ - lsst.pex.exceptions.RuntimeError: RuntimeError
+ - lsst.pex.exceptions.NotFoundError: LookupError
+ - lsst.pex.exceptions.MemoryError: MemoryError
+ - lsst.pex.exceptions.OverflowError: OverflowError
+ - lsst.pex.exceptions.UnderflowError: ArithmeticError
+ - lsst.pex.exceptions.TypeError: TypeError
+ - lsst.pex.exceptions.IoError: IOError
 
-None of the exceptions defined in this package should be used from Python code.
-Pure Python exceptions should be used, either deriving from the normal Python
-Exception base class or, if needed, the lsst.pex.exceptions.LsstException base
-class.
+This means that there's one more way to catch our NotFoundError:
+@code
+try:
+    someSwiggedFunction()   # assume this throws NotFoundError
+except LookupError as err:
+    # Once again, 'err' is still the most-derived exception type:
+    assert isinstance(err, lsst.pex.exceptions.NotFoundError)
+@endcode
 
+When working out what exception specifiers will match a given exception,
+it's also worth keeping in mind that many LSST exceptions inherit from
+lsst::pex::exceptions::RuntimeError, and hence inherit indirectly from
+Python's RuntimeError.
+
+<b>For Python Users: Raising C++ Exceptions</b>
+
+LSST Exceptions can also be raised just like any other Python exception.
+The resulting exception object cannot be passed back to C++ functions,
+however, unlike other wrapped C++ objects (if this is needed, you can
+instead pass "err.cpp" instead of "err").
+
+Generally, raising a pure-Python exception is preferred over raising a
+wrapped C++ exception.  When some implementations of an interface are
+in Swigged C++ and others are in pure-Python, however, it may be better
+to raise wrapped C++ exceptions even in the pure-Python implementation,
+so calling code that wants to catch exceptions is better insulated from
+the choice of implementation language.
+
+One can also define custom Python exceptions that inherit from wrapped
+LSST C++ exceptions, in the same way one would inherit from any other
+exception:
+@code
+class MyCustomException(lsst.pex.exceptions.NotFoundError):
+    pass
+@endcode
+
+<b>Printing Exceptions and Tracebacks</b>
+
+The C++ and Python stringification methods of LSST exceptions have been
+carefully tuned to allow the partial C++ traceback to look broadly like
+a continuation of the Python traceback provided by Python itself.  For
+example, if we call the failException1() function that's part of the
+test suite for pex_exceptions, the traceback looks like this:
+@code
+>>> import testLib
+>>> testLib.failException1("my message")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "testLib.py", line 637, in failException1
+    return _testLib.failException1(*args)
+lsst.pex.exceptions.Exception:
+  File "tests/testLib.i", line 64, in void fail1(const string&) [with T = lsst::pex::exceptions::Exception, std::string = std::basic_string<char>]
+    my message {0}
+lsst::pex::exceptions::Exception: 'my message'
+@endcode
+This is done by having the __str__() method of the Python exception
+wrapper classes return a newline followed by the C++ traceback
+(so this takes over in the above just after
+"lsst.pex.exceptions.Exception: ").  Unfortunately, custom exception
+traceback formatting (such as that provided by IPython) will not be
+applied to the C++ traceback.  This appears to be impossible to
+support.
+
+When a C++ exception
+is raised in Python, __str__() will just return the string
+associated with exception, generating a traceback like this:
+@code
+>>> import lsst.pex.exceptions
+>>> raise lsst.pex.exceptions.NotFoundError("my message")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+lsst.pex.exceptions.wrappers.NotFoundError: my message
+@endcode
+This is because C++ exceptions raised in Python do not carry
+any traceback information - Python handles traceback information
+separately, and hence there's no need to duplicate it in the
+Python object.
+
+Both of the __str__() methods delegate to the C++ addToStream() method,
+which is also used to implement stream (<<) output; these return the same
+as __str__().
+
+In both cases, __repr__() is defined to return the name of the exception
+class with the message following in parenthesis, as is standard in Python:
+@code
+NotFoundError('my message')
+@endcode
+
+<b>For C++ Developers: Invoking Exception Translation</b>
+
+When creating Swig wrappers for a C++ library that throws LSST exceptions,
+include the following in the Swig interface file:
+@code
+%{
+#include "lsst/pex/exceptions.h"
+%}
+%import "lsst/pex/exceptions/exceptionsLib.i"
+@endcode
+as well as either:
+@code
+%include "lsst/pex/exceptions/handler.i"
+@endcode
+or (if depending on utils as well as pex_exceptions):
+@code
+%include "lsst/utils/p_lsstSwig.i"
+@endcode
+Then, finally:
+@code
+%lsst_exceptions()
+@endcode
+
+
+Note that this procedure has not changed from previous versions
+of pex_exceptions, though the actual exception handling code
+is now in pex_exceptions and included by utils' p_lsstSwig.i,
+instead of being defined directly there.
+
+<b>For C++ Developers: Wrapping New C++ Exceptions</b>
+
+When creating Swig wrappers for a C++ library that defines a new C++ exception,
+use the \%declareException (see \ref declareException) Swig macro, which is
+defined in exceptionsLib.i.  This will rename the Swig-generated wrapper class
+by prefixing it with a "_Cpp", then generate a special wrapper class with the
+original name.  Like the standard exception wrappers, the wrappers for custom
+exceptions will automatically forward attribute requests to the Swig-generated
+wrapper, so there should be no need to add custom methods to the wrapper.
+
+See tests/testLib.i for a complete example.
+
+\section secExcTransition Transition from LsstCppException and LsstException
+
+In older versions of pex_exceptions, there were two Python classes that filled
+roles now covered by the Python lsst.pex.exceptions.Exception class:
+ - LsstCppException provided a pure-Python wrapper that inherited from Python's
+   built-in Exception class.
+ - LsstException was the name given to the Swig-wrapped C++
+   lsst::pex::exceptions::Exception class.  Derived classes were not renamed.
+
+Older code that uses catches LsstCppException and then checks the type of the
+LsstException subclass it holds should be converted to catch the derived class
+exception directly.  For instance, older code that looks like this:
+@code
+try:
+    ...
+except lsst.pex.exceptions.LsstCppException as err:
+    if isinstance(err.args[0], lsst.pex.exceptions.RuntimeError):
+        ...
+    raise
+@endcode
+should be transformed to this to get the same effect:
+@code
+try:
+    ...
+except lsst.pex.exceptions.RuntimeError as err:
+    ...
+@endcode
+Note that there is no need to re-raise here; if an exception other
+than RuntimeError is thrown in this example, the except block will
+not match and the exception will propagate up normally.
 */
