@@ -41,7 +41,7 @@ Test module for pex_exceptions
 %include "std_set.i"
 %include "std_vector.i"
 %include "std_iostream.i"
-%include "boost_shared_ptr.i"
+%include "std_shared_ptr.i"
 %include "carrays.i"
 %include "typemaps.i"
 

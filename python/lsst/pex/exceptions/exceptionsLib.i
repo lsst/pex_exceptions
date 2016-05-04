@@ -45,7 +45,7 @@ Access to the classes from the pex_exceptions library
 %include "std_string.i"
 %include "std_vector.i"
 %include "std_iostream.i"
-%include "boost_shared_ptr.i"
+%include "std_shared_ptr.i"
 %include "carrays.i"
 %include "typemaps.i"
 
