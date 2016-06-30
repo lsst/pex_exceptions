@@ -157,7 +157,7 @@ public:
 
     /** Return the fully-specified C++ type of a pointer to the exception.  This
      *  is overridden by derived classes (automatically if the LSST_EXCEPTION_TYPE
-     *  macro is used).  It is used by the SWIG interface.
+     *  macro is used).  It is used by the Python interface.
      *
      *  @return String with the C++ type; does not need to be freed/deleted.
      */
