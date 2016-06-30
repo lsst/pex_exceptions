@@ -25,7 +25,7 @@ import sys
 import unittest
 
 import lsst.pex.exceptions
-import testLib
+import _testLib as testLib
 
 class ExceptionTestCase(unittest.TestCase):
     """A test case for C++/Python LsstCppExceptions."""
