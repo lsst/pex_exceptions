@@ -26,7 +26,7 @@ from builtins import str
 import unittest
 
 import lsst.pex.exceptions
-import testLib
+import _testLib as testLib
 
 
 class ExceptionTestCase(unittest.TestCase):

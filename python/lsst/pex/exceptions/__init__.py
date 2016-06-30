@@ -20,6 +20,5 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-from .exceptionsLib import *
-from .wrappers import *   # this intentionally overrides all the C++ exception types
 from .version import *
+from .exceptions import *

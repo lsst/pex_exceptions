@@ -3,8 +3,8 @@ standard_library.install_aliases()
 import warnings
 import builtins
 
-from . import exceptionsLib
 from future.utils import with_metaclass
+from . import _exceptions as exceptionsLib
 
 registry = {}
 
@@ -134,3 +134,8 @@ def translate(cpp):
         warnings.warn("Could not find appropriate Python type for C++ Exception")
         PyType = Exception
     return PyType(cpp)
+
+def declare(module, exception_name, base, wrapped_class):
+    """Declare a new exception."""
+    setattr(module, exception_name, register(ExceptionMeta(exception_name, (base, ), dict(WrappedClass=wrapped_class))))
+
