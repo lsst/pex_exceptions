@@ -21,6 +21,8 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+from builtins import str
+
 import sys
 import unittest
 

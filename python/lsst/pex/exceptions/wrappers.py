@@ -1,7 +1,10 @@
+from future import standard_library
+standard_library.install_aliases()
 import warnings
-import __builtin__
+import builtins
 
 from . import exceptionsLib
+from future.utils import with_metaclass
 
 registry = {}
 
@@ -21,11 +24,9 @@ class ExceptionMeta(type):
         return getattr(self.WrappedClass, name)
 
 @register
-class Exception(StandardError):
+class Exception(with_metaclass(ExceptionMeta, builtins.Exception)):
     """The base class for Python-wrapped LSST C++ exceptions.
     """
-
-    __metaclass__ = ExceptionMeta
 
     # wrappers.py is an implementation detail, not a public namespace, so we pretend this is defined
     # in the package for pretty-printing purposes
@@ -73,7 +74,7 @@ class OutOfRangeError(LogicError):
     WrappedClass = exceptionsLib.OutOfRangeError
 
 @register
-class RuntimeError(Exception, __builtin__.RuntimeError):
+class RuntimeError(Exception, builtins.RuntimeError):
     WrappedClass = exceptionsLib.RuntimeError
 
 @register
@@ -81,27 +82,27 @@ class RangeError(RuntimeError):
     WrappedClass = exceptionsLib.RangeError
 
 @register
-class OverflowError(RuntimeError, __builtin__.OverflowError):
+class OverflowError(RuntimeError, builtins.OverflowError):
     WrappedClass = exceptionsLib.OverflowError
 
 @register
-class UnderflowError(RuntimeError, __builtin__.ArithmeticError):
+class UnderflowError(RuntimeError, builtins.ArithmeticError):
     WrappedClass = exceptionsLib.UnderflowError
 
 @register
-class NotFoundError(Exception, __builtin__.LookupError):
+class NotFoundError(Exception, builtins.LookupError):
     WrappedClass = exceptionsLib.NotFoundError
 
 @register
-class MemoryError(RuntimeError, __builtin__.MemoryError):
+class MemoryError(RuntimeError, builtins.MemoryError):
     WrappedClass = exceptionsLib.MemoryError
 
 @register
-class IoError(RuntimeError, __builtin__.IOError):
+class IoError(RuntimeError, builtins.IOError):
     WrappedClass = exceptionsLib.IoError
 
 @register
-class TypeError(RuntimeError, __builtin__.TypeError):
+class TypeError(RuntimeError, builtins.TypeError):
     WrappedClass = exceptionsLib.TypeError
 
 @register
