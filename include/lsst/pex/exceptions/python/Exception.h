@@ -39,9 +39,12 @@ namespace python {
   * \param[in] mod Module to insert the exception into.
   * \param[in] name Name of the exception in the module.
   * \param[in] base Python name of base class (from pex exceptions).
+  *
+  * While this function creates the class wrapper, the user is still responsible
+  * for adding all constructor and member wrappers to the returned py::class_ object.
   */
 template <typename T, typename E=lsst::pex::exceptions::Exception>
-void declareException(pybind11::module &mod, const std::string & name, const std::string & base) {
+pybind11::class_<T> declareException(pybind11::module &mod, const std::string & name, const std::string & base) {
     namespace py = pybind11;
 
     // Wrap T as a new Python exception type with *name* and add it to the module
@@ -50,7 +53,6 @@ void declareException(pybind11::module &mod, const std::string & name, const std
     // It is only in the pure Python wrapper layer that they get embedded in
     // a subclass of the requested base.
     py::class_<T> cls(mod, name.c_str(), py::base<E>());
-    cls.def(py::init<std::string const &>());
     
     // Declare T wrapped by cls as a pex exception and register it
     // this relies on the pure Python function "declare" defined in "wrappers"
@@ -85,6 +87,8 @@ void declareException(pybind11::module &mod, const std::string & name, const std
         PyErr_SetString(PyExc_SystemError, "could not declare exception");
         throw py::error_already_set();
     }
+
+    return cls;
 }
 
 }}}} // namespace lsst::pex::exceptions::python

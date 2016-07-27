@@ -36,7 +36,8 @@ void fail2(std::string const & message1, std::string const & message2) {
 PYBIND11_PLUGIN(_testLib) {
     pybind11::module mod("_testLib", "Tests for the pex_exceptions library");
 
-    python::declareException<TestError>(mod, "TestError", "RuntimeError");
+    auto cls = python::declareException<TestError>(mod, "TestError", "RuntimeError");
+    cls.def(pybind11::init<std::string const &>());
 
     LSST_FAIL_TEST(TestError)
     LSST_FAIL_TEST(IoError)
