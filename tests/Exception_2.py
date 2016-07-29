@@ -23,11 +23,11 @@
 
 from builtins import str
 
-import sys
 import unittest
 
 import lsst.pex.exceptions
 import testLib
+
 
 class ExceptionTestCase(unittest.TestCase):
     """A test case for C++/Python LsstCppExceptions."""
