@@ -132,7 +132,7 @@ PYBIND11_PLUGIN(_exceptions) {
             if (p) std::rethrow_exception(p);
         } catch (const Exception &e) {
             py::object current_exception;
-            current_exception = py::cast(e);
+            current_exception = py::cast(e.clone(), py::return_value_policy::take_ownership);
             raiseLsstException(current_exception);
         }
     });
