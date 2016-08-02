@@ -1,7 +1,6 @@
 #include <sstream>
 
 #include <pybind11/pybind11.h>
-#include <pybind11/exception_translator.h>
 
 #include "lsst/pex/exceptions/Exception.h"
 #include "lsst/pex/exceptions/Runtime.h"

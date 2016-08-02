@@ -20,5 +20,4 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-from .version import *
-from .exceptionsLib import *
+from .exceptions import *
