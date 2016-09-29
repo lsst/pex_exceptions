@@ -30,11 +30,11 @@ static void tryLsstExceptionWarn(const char * message) {
 // If any point we fail to translate the exception, we print a Python warning and raise the built-in
 // Python RuntimeError exception with the same message as the C++ exception.
 static void raiseLsstException(py::object &pyex) {
-    static py::object module{PyImport_ImportModule("lsst.pex.exceptions.wrappers"), false};
+    static py::object module{PyImport_ImportModule("lsst.pex.exceptions.wrappers"), true};
     if (!module.ptr()) {
         tryLsstExceptionWarn("Failed to import C++ Exception wrapper module.");
     } else {
-        static py::object translate{PyObject_GetAttrString(module.ptr(), "translate"), false};
+        static py::object translate{PyObject_GetAttrString(module.ptr(), "translate"), true};
         if (!translate.ptr()) {
             tryLsstExceptionWarn("Failed to find translation function for C++ Exceptions.");
         } else {
