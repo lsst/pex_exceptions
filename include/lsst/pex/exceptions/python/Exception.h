@@ -52,7 +52,7 @@ pybind11::class_<T> declareException(pybind11::module &mod, const std::string & 
     // Note that all created C++ wrapped type derive from Exception here.
     // It is only in the pure Python wrapper layer that they get embedded in
     // a subclass of the requested base.
-    py::class_<T> cls(mod, name.c_str(), py::base<E>());
+    py::class_<T, E> cls(mod, name.c_str());
     
     // Declare T wrapped by cls as a pex exception and register it
     // this relies on the pure Python function "declare" defined in "wrappers"
