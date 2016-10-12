@@ -84,46 +84,46 @@ PYBIND11_PLUGIN(_exceptions) {
                 return s.str();
         });
 
-    py::class_<LogicError> clsLogicError(mod, "LogicError", py::base<Exception>()); 
+    py::class_<LogicError, Exception> clsLogicError(mod, "LogicError"); 
     clsLogicError.def(py::init<std::string const &>());
 
-    py::class_<NotFoundError> clsNotFoundError(mod, "NotFoundError", py::base<Exception>()); 
+    py::class_<NotFoundError, Exception> clsNotFoundError(mod, "NotFoundError"); 
     clsNotFoundError.def(py::init<std::string const &>());
 
-    py::class_<RuntimeError> clsRuntimeError(mod, "RuntimeError", py::base<Exception>()); 
+    py::class_<RuntimeError, Exception> clsRuntimeError(mod, "RuntimeError"); 
     clsRuntimeError.def(py::init<std::string const &>());
 
-    py::class_<IoError> clsIoError(mod, "IoError", py::base<RuntimeError>()); 
+    py::class_<IoError, RuntimeError> clsIoError(mod, "IoError"); 
     clsIoError.def(py::init<std::string const &>());
 
-    py::class_<MemoryError> clsMemoryError(mod, "MemoryError", py::base<RuntimeError>()); 
+    py::class_<MemoryError, RuntimeError> clsMemoryError(mod, "MemoryError"); 
     clsMemoryError.def(py::init<std::string const &>());
 
-    py::class_<OverflowError> clsOverflowError(mod, "OverflowError", py::base<RuntimeError>()); 
+    py::class_<OverflowError, RuntimeError> clsOverflowError(mod, "OverflowError"); 
     clsOverflowError.def(py::init<std::string const &>());
 
-    py::class_<RangeError> clsRangeError(mod, "RangeError", py::base<RuntimeError>()); 
+    py::class_<RangeError, RuntimeError> clsRangeError(mod, "RangeError"); 
     clsRangeError.def(py::init<std::string const &>());
 
-    py::class_<TimeoutError> clsTimeoutError(mod, "TimeoutError", py::base<RuntimeError>()); 
+    py::class_<TimeoutError, RuntimeError> clsTimeoutError(mod, "TimeoutError"); 
     clsTimeoutError.def(py::init<std::string const &>());
 
-    py::class_<TypeError> clsTypeError(mod, "TypeError", py::base<RuntimeError>()); 
+    py::class_<TypeError, RuntimeError> clsTypeError(mod, "TypeError"); 
     clsTypeError.def(py::init<std::string const &>());
 
-    py::class_<UnderflowError> clsUnderflowError(mod, "UnderflowError", py::base<RuntimeError>()); 
+    py::class_<UnderflowError, RuntimeError> clsUnderflowError(mod, "UnderflowError"); 
     clsUnderflowError.def(py::init<std::string const &>());
 
-    py::class_<DomainError> clsDomainError(mod, "DomainError", py::base<LogicError>()); 
+    py::class_<DomainError, LogicError> clsDomainError(mod, "DomainError"); 
     clsDomainError.def(py::init<std::string const &>());
 
-    py::class_<InvalidParameterError> clsInvalidParameterError(mod, "InvalidParameterError", py::base<LogicError>()); 
+    py::class_<InvalidParameterError, LogicError> clsInvalidParameterError(mod, "InvalidParameterError"); 
     clsInvalidParameterError.def(py::init<std::string const &>());
 
-    py::class_<LengthError> clsLengthError(mod, "LengthError", py::base<LogicError>()); 
+    py::class_<LengthError, LogicError> clsLengthError(mod, "LengthError"); 
     clsLengthError.def(py::init<std::string const &>());
 
-    py::class_<OutOfRangeError> clsOutOfRangeError(mod, "OutOfRangeError", py::base<LogicError>()); 
+    py::class_<OutOfRangeError, LogicError> clsOutOfRangeError(mod, "OutOfRangeError"); 
     clsOutOfRangeError.def(py::init<std::string const &>());
 
     py::register_exception_translator([](std::exception_ptr p) {
