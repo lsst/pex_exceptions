@@ -1,30 +1,4 @@
 /**
- *  Swig macro to generate wrappers for a custom C++ exception
- *
- *  @note This is actually a Swig macro "%declareException" (note the "%")
- *  defined in exceptionsLib.i, but we've lied to Doxygen about its name
- *  and location to produce this documentation.
- *
- *  @param[in] NAME      Name of the exception, not including
- *                       the namespace (e.g. MyCustomException).
- *  @param[in] PYBASE    Fully-qualified Python name of the
- *                       exception's base class (e.g.
- *                       lsst.pex.exceptions.NotFoundError).
- *  @param[in] FULLNAME  Fully-qualified C++ name of the exception
- *                       (e.g. lsst::mypackage::MyCustomException).
- *
- *  Note that the Python module that contains the base class must have
- *  been imported in the Swig-generated Python code prior to the point
- *  where this macro is invoked.  Usually this is added automatically
- *  by Swig due to an \%import statement, but in some cases it may need
- *  to be added manually in a \%pythoncode block.
- *
- *  See tests/testLib.i for a complete example.
- *
- */
-#define declareException(NAME, PYBASE, FULLNAME)
-
-/**
 \mainpage lsst::pex::exceptions;  LSST Exceptions
 
 \section secExcIntro Introduction
@@ -40,11 +14,11 @@ context information appended.
 
 <b>For Python Users: Catching C++ Exceptions</b>
 
-Python wrappers for the C++ exception objects are generated using SWIG, with
+Python wrappers for the C++ exception objects are generated using pybind11, with
 an additional custom wrapper layer on top.  This additional layer allows
 the wrapped exceptions to inherit from Python's built-in Exception class,
 which is necessary for them to be raised or caught in Python.  These custom
-wrappers have the same names as their C++ counterparts.  The immediate Swig
+wrappers have the same names as their C++ counterparts.  The immediate pybind11
 wrappers should not be used by users, and as such are generally renamed or not
 imported into a package namespace to hide them.
 
@@ -52,7 +26,7 @@ This means that to catch a C++ exception in Python (we'll use
 pex::exceptions::NotFoundError), you can simply use:
 @code
 try:
-    someSwiggedFunction()   # assume this throws NotFoundError
+    someWrappedFunction()   # assume this throws NotFoundError
 except lsst.pex.exceptions.NotFoundError as err:
     pass
 @endcode
@@ -60,7 +34,7 @@ In addition, you can catch this same error using either the LSST Exception
 base class:
 @code
 try:
-    someSwiggedFunction()   # assume this throws NotFoundError
+    someWrappedFunction()   # assume this throws NotFoundError
 except lsst.pex.exceptions.Exception as err:
     # Note that 'err' is still the most-derived exception type:
     assert isinstance(err, lsst.pex.exceptions.NotFoundError)
@@ -69,7 +43,7 @@ or Python's built-in StandardError class (from which all LSST exceptions
 inherit):
 @code
 try:
-    someSwiggedFunction()   # assume this throws NotFoundError
+    someWrappedFunction()   # assume this throws NotFoundError
 except StandardError as err:
     # Once again, 'err' is still the most-derived exception type:
     assert isinstance(err, lsst.pex.exceptions.NotFoundError)
@@ -87,7 +61,7 @@ obvious Python counterparts:
 This means that there's one more way to catch our NotFoundError:
 @code
 try:
-    someSwiggedFunction()   # assume this throws NotFoundError
+    someWrappedFunction()   # assume this throws NotFoundError
 except LookupError as err:
     # Once again, 'err' is still the most-derived exception type:
     assert isinstance(err, lsst.pex.exceptions.NotFoundError)
@@ -107,7 +81,7 @@ instead pass "err.cpp" instead of "err").
 
 Generally, raising a pure-Python exception is preferred over raising a
 wrapped C++ exception.  When some implementations of an interface are
-in Swigged C++ and others are in pure-Python, however, it may be better
+in wrapped C++ and others are in pure-Python, however, it may be better
 to raise wrapped C++ exceptions even in the pure-Python implementation,
 so calling code that wants to catch exceptions is better insulated from
 the choice of implementation language.
@@ -174,44 +148,20 @@ NotFoundError('my message')
 
 <b>For C++ Developers: Invoking Exception Translation</b>
 
-When creating Swig wrappers for a C++ library that throws LSST exceptions,
-include the following in the Swig interface file:
-@code
-%{
-#include "lsst/pex/exceptions.h"
-%}
-%import "lsst/pex/exceptions/exceptionsLib.i"
-@endcode
-as well as either:
-@code
-%include "lsst/pex/exceptions/handler.i"
-@endcode
-or (if depending on utils as well as pex_exceptions):
-@code
-%include "lsst/utils/p_lsstSwig.i"
-@endcode
-Then, finally:
-@code
-%lsst_exceptions()
-@endcode
-
-
-Note that this procedure has not changed from previous versions
-of pex_exceptions, though the actual exception handling code
-is now in pex_exceptions and included by utils' p_lsstSwig.i,
-instead of being defined directly there.
+Make sure lsst.pex.exceptions is imported before the exception is raised,
+as this will register the automatic translators from C++ to Python exceptions.
 
 <b>For C++ Developers: Wrapping New C++ Exceptions</b>
 
-When creating Swig wrappers for a C++ library that defines a new C++ exception,
-use the \%declareException (see \ref declareException) Swig macro, which is
-defined in exceptionsLib.i.  This will rename the Swig-generated wrapper class
-by prefixing it with a "_Cpp", then generate a special wrapper class with the
-original name.  Like the standard exception wrappers, the wrappers for custom
-exceptions will automatically forward attribute requests to the Swig-generated
-wrapper, so there should be no need to add custom methods to the wrapper.
+When creating pybind11 wrappers for a C++ library that defines a new C++ exception,
+use the declareException (see \ref lsst::pex::exceptions::python::declareException) function template, which is
+defined in include/lsst/pex/exceptions/python/Exception.h.
+This will generate a new custom exception type and will enable automatic translation
+of this exception type from C++ to Python.
+It returns a standard pybind11::class_ object for the exception that you can add
+custom constructors and members to as needed.
 
-See tests/testLib.i for a complete example.
+See tests/testLib.cc for a complete example.
 
 \section secExcTransition Transition from LsstCppException and LsstException
 
