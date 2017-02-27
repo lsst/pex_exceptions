@@ -57,32 +57,32 @@ pybind11::class_<T> declareException(pybind11::module &mod, const std::string & 
     // Declare T wrapped by cls as a pex exception and register it
     // this relies on the pure Python function "declare" defined in "wrappers"
     // to create a corresponding Python type derived from Python standard Exception
-    py::object exceptions{PyImport_ImportModule("lsst.pex.exceptions.wrappers"), false};
+    auto exceptions = py::reinterpret_steal<py::object>(PyImport_ImportModule("lsst.pex.exceptions.wrappers"));
     if (!exceptions.ptr()) {
         PyErr_SetString(PyExc_SystemError, "import failed");
         throw py::error_already_set();
     }   
 
-    py::object declare{PyObject_GetAttrString(exceptions.ptr(), "declare"), false};
+    auto declare = py::reinterpret_steal<py::object>(PyObject_GetAttrString(exceptions.ptr(), "declare"));
     if (!declare.ptr()) {
         PyErr_SetString(PyExc_SystemError, "could not get declare function from Python");
         throw py::error_already_set();
     }   
 
-    py::object baseCls{PyObject_GetAttrString(exceptions.ptr(), base.c_str()), false};
+    auto baseCls = py::reinterpret_steal<py::object>(PyObject_GetAttrString(exceptions.ptr(), base.c_str()));
     if (!baseCls.ptr()) {
         PyErr_SetString(PyExc_SystemError, "could not get base class");
         throw py::error_already_set();
     }   
 
-    py::object exceptionName{PYBIND11_FROM_STRING(name.c_str()), false};
+    auto exceptionName = py::reinterpret_steal<py::object>(PYBIND11_FROM_STRING(name.c_str()));
     if (!exceptionName.ptr()) {
         PyErr_SetString(PyExc_SystemError, "could not create name string");
         throw py::error_already_set();
     }   
 
-    py::object result{PyObject_CallFunctionObjArgs(declare.ptr(), mod.ptr(),
-            exceptionName.ptr(), baseCls.ptr(), cls.ptr(), NULL), false};
+    auto result = py::reinterpret_steal<py::object>(PyObject_CallFunctionObjArgs(declare.ptr(), mod.ptr(),
+            exceptionName.ptr(), baseCls.ptr(), cls.ptr(), NULL));
     if (!result.ptr()) {
         PyErr_SetString(PyExc_SystemError, "could not declare exception");
         throw py::error_already_set();
