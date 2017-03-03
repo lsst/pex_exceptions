@@ -20,5 +20,8 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
+from __future__ import absolute_import
+
 from .version import *
-from .exceptionsLib import *
+from .exceptions import *
+from .wrappers import *

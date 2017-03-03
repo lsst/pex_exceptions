@@ -1,10 +1,11 @@
+from __future__ import absolute_import
 from future import standard_library
 standard_library.install_aliases()
 import warnings
 import builtins
 
 from future.utils import with_metaclass
-from . import _exceptions as exceptionsLib
+from . import exceptions
 
 registry = {}
 
@@ -35,10 +36,10 @@ class Exception(with_metaclass(ExceptionMeta, builtins.Exception)):
     # in the package for pretty-printing purposes
     __module__ = "lsst.pex.exceptions"
 
-    WrappedClass = exceptionsLib.Exception
+    WrappedClass = exceptions.Exception
 
     def __init__(self, arg, *args, **kwds):
-        if isinstance(arg, exceptionsLib.Exception):
+        if isinstance(arg, exceptions.Exception):
             cpp = arg
             message = cpp.what()
         else:
@@ -59,72 +60,72 @@ class Exception(with_metaclass(ExceptionMeta, builtins.Exception)):
 
 @register
 class LogicError(Exception):
-    WrappedClass = exceptionsLib.LogicError
+    WrappedClass = exceptions.LogicError
 
 
 @register
 class DomainError(LogicError):
-    WrappedClass = exceptionsLib.DomainError
+    WrappedClass = exceptions.DomainError
 
 
 @register
 class InvalidParameterError(LogicError):
-    WrappedClass = exceptionsLib.InvalidParameterError
+    WrappedClass = exceptions.InvalidParameterError
 
 
 @register
 class LengthError(LogicError):
-    WrappedClass = exceptionsLib.LengthError
+    WrappedClass = exceptions.LengthError
 
 
 @register
 class OutOfRangeError(LogicError):
-    WrappedClass = exceptionsLib.OutOfRangeError
+    WrappedClass = exceptions.OutOfRangeError
 
 
 @register
 class RuntimeError(Exception, builtins.RuntimeError):
-    WrappedClass = exceptionsLib.RuntimeError
+    WrappedClass = exceptions.RuntimeError
 
 
 @register
 class RangeError(RuntimeError):
-    WrappedClass = exceptionsLib.RangeError
+    WrappedClass = exceptions.RangeError
 
 
 @register
 class OverflowError(RuntimeError, builtins.OverflowError):
-    WrappedClass = exceptionsLib.OverflowError
+    WrappedClass = exceptions.OverflowError
 
 
 @register
 class UnderflowError(RuntimeError, builtins.ArithmeticError):
-    WrappedClass = exceptionsLib.UnderflowError
+    WrappedClass = exceptions.UnderflowError
 
 
 @register
 class NotFoundError(Exception, builtins.LookupError):
-    WrappedClass = exceptionsLib.NotFoundError
+    WrappedClass = exceptions.NotFoundError
 
 
 @register
 class MemoryError(RuntimeError, builtins.MemoryError):
-    WrappedClass = exceptionsLib.MemoryError
+    WrappedClass = exceptions.MemoryError
 
 
 @register
 class IoError(RuntimeError, builtins.IOError):
-    WrappedClass = exceptionsLib.IoError
+    WrappedClass = exceptions.IoError
 
 
 @register
 class TypeError(RuntimeError, builtins.TypeError):
-    WrappedClass = exceptionsLib.TypeError
+    WrappedClass = exceptions.TypeError
 
 
 @register
 class TimeoutError(RuntimeError):
-    WrappedClass = exceptionsLib.TimeoutError
+    WrappedClass = exceptions.TimeoutError
 
 
 def translate(cpp):

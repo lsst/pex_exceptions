@@ -1,6 +1,6 @@
-#include <sstream>
+#include "pybind11/pybind11.h"
 
-#include <pybind11/pybind11.h>
+#include <sstream>
 
 #include "lsst/pex/exceptions/Exception.h"
 #include "lsst/pex/exceptions/Runtime.h"
@@ -9,8 +9,12 @@ using namespace lsst::pex::exceptions;
 
 namespace py = pybind11;
 
+namespace lsst {
+namespace pex {
+namespace exceptions {
+namespace {
 // Helper function to show a Python warning when exception translation fails.
-static void tryLsstExceptionWarn(const char * message) {
+void tryLsstExceptionWarn(const char * message) {
     // Try to warn that exception translation failed, if we fail, clear the exception raised by the
     // warning attempt so we can raise a less-informative exception based on the original.
     int s = PyErr_WarnEx(PyExc_Warning, message, 1);
@@ -29,32 +33,32 @@ static void tryLsstExceptionWarn(const char * message) {
 //
 // If any point we fail to translate the exception, we print a Python warning and raise the built-in
 // Python RuntimeError exception with the same message as the C++ exception.
-static void raiseLsstException(py::object &pyex) {
-    static py::object module{PyImport_ImportModule("lsst.pex.exceptions.wrappers"), true};
+void raiseLsstException(py::object &pyex) {
+    static auto module = py::reinterpret_borrow<py::object>(PyImport_ImportModule("lsst.pex.exceptions.wrappers"));
     if (!module.ptr()) {
         tryLsstExceptionWarn("Failed to import C++ Exception wrapper module.");
     } else {
-        static py::object translate{PyObject_GetAttrString(module.ptr(), "translate"), true};
+        static auto translate = py::reinterpret_borrow<py::object>(PyObject_GetAttrString(module.ptr(), "translate"));
         if (!translate.ptr()) {
             tryLsstExceptionWarn("Failed to find translation function for C++ Exceptions.");
         } else {
             // Calling the Python translate() returns an instance of the appropriate Python
             // exception that wraps the C++ exception instance that we give it.
-            py::object instance{PyObject_CallFunctionObjArgs(translate.ptr(), pyex.ptr(), NULL),
-                false};
+            auto instance = py::reinterpret_steal<py::object>(PyObject_CallFunctionObjArgs(translate.ptr(), pyex.ptr(), NULL));
             if (!instance.ptr()) {
                 // We actually expect a null return here, as translate() should raise an exception
                 tryLsstExceptionWarn("Failed to translate C++ Exception to Python.");
             } else {
-                py::object type{PyObject_Type(instance.ptr()), false};
+                auto type = py::reinterpret_borrow<py::object>(PyObject_Type(instance.ptr()));
                 PyErr_SetObject(type.ptr(), instance.ptr());
             }
         }
     }
 }
+}  // <anonymous>
 
-PYBIND11_PLUGIN(_exceptions) {
-    py::module mod("_exceptions", "Access to the classes from the pex_exceptions library");
+PYBIND11_PLUGIN(exceptions) {
+    py::module mod("exceptions");
 
     py::class_<Tracepoint> clsTracepoint(mod, "Tracepoint");
 
@@ -73,14 +77,14 @@ PYBIND11_PLUGIN(_exceptions) {
         .def("what", &Exception::what)
         .def("getType", &Exception::getType)
         .def("clone", &Exception::clone)
-        .def("asString", [](Exception &e) -> std::string {
+        .def("asString", [](Exception & self) -> std::string {
             std::ostringstream stream;
-            e.addToStream(stream);
+            self.addToStream(stream);
             return stream.str();
         })
-        .def("__repr__", [](Exception &e) -> std::string {
+        .def("__repr__", [](Exception & self) -> std::string {
                 std::stringstream s;
-                s<<"Exception('"<<e.what()<<"')";
+                s<<"Exception('"<<self.what()<<"')";
                 return s.str();
         });
 
@@ -138,3 +142,8 @@ PYBIND11_PLUGIN(_exceptions) {
 
     return mod.ptr();
 }
+
+}  // exceptions
+}  // pex
+}  // lsst
+
