@@ -20,6 +20,8 @@
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
-from .exceptionsLib import *
-from .wrappers import *   # this intentionally overrides all the C++ exception types
+from __future__ import absolute_import
+
 from .version import *
+from .exceptions import *
+from .wrappers import *
