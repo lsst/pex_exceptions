@@ -14,5 +14,5 @@ doc/*.tag
 doc/*.inc
 tests/.tests
 python/lsst/pex/exceptions/version.py
-tests/Exception_1
+tests/test_Exception_1
 tests/failer.py
