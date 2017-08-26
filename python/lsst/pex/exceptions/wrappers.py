@@ -1,11 +1,10 @@
 from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
 import warnings
 import builtins
 
 from future.utils import with_metaclass
 from . import exceptions
+
 
 registry = {}
 
@@ -136,7 +135,8 @@ def translate(cpp):
         PyType = Exception
     return PyType(cpp)
 
+
 def declare(module, exception_name, base, wrapped_class):
     """Declare a new exception."""
-    setattr(module, exception_name, register(ExceptionMeta(exception_name, (base, ), dict(WrappedClass=wrapped_class))))
-
+    setattr(module, exception_name, register(ExceptionMeta(exception_name, (base, ),
+                                                           dict(WrappedClass=wrapped_class))))
