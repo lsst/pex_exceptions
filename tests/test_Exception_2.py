@@ -130,10 +130,6 @@ class ExceptionTestCase(unittest.TestCase):
                              lsst.pex.exceptions.RuntimeError,
                              lsst.pex.exceptions.Exception,
                              TypeError])
-        self.checkHierarchy(testLib.failTimeoutError1,
-                            [lsst.pex.exceptions.TimeoutError,
-                             lsst.pex.exceptions.RuntimeError,
-                             lsst.pex.exceptions.Exception])
 
 
 if __name__ == '__main__':

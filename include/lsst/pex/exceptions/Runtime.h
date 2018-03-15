@@ -45,7 +45,6 @@ LSST_EXCEPTION_TYPE(UnderflowError, RuntimeError, lsst::pex::exceptions::Underfl
 LSST_EXCEPTION_TYPE(NotFoundError, Exception, lsst::pex::exceptions::NotFoundError)
 LSST_EXCEPTION_TYPE(IoError, RuntimeError, lsst::pex::exceptions::IoError)
 LSST_EXCEPTION_TYPE(TypeError, RuntimeError, lsst::pex::exceptions::TypeError)
-LSST_EXCEPTION_TYPE(TimeoutError, RuntimeError, lsst::pex::exceptions::TimeoutError)
 
 }
 }

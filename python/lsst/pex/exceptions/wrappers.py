@@ -117,11 +117,6 @@ class TypeError(RuntimeError, builtins.TypeError):
     WrappedClass = exceptions.TypeError
 
 
-@register
-class TimeoutError(RuntimeError):
-    WrappedClass = exceptions.TimeoutError
-
-
 def translate(cpp):
     """Translate a C++ Exception instance to Python and return it."""
     PyType = registry.get(type(cpp), None)
