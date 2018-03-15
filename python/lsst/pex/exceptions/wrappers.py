@@ -108,11 +108,6 @@ class NotFoundError(Exception, builtins.LookupError):
 
 
 @register
-class MemoryError(RuntimeError, builtins.MemoryError):
-    WrappedClass = exceptions.MemoryError
-
-
-@register
 class IoError(RuntimeError, builtins.IOError):
     WrappedClass = exceptions.IoError
 

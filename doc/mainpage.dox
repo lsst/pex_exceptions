@@ -52,7 +52,6 @@ In addition, we've multiply-inherited certain LSST exceptions from
 obvious Python counterparts:
  - lsst.pex.exceptions.RuntimeError: RuntimeError
  - lsst.pex.exceptions.NotFoundError: LookupError
- - lsst.pex.exceptions.MemoryError: MemoryError
  - lsst.pex.exceptions.OverflowError: OverflowError
  - lsst.pex.exceptions.UnderflowError: ArithmeticError
  - lsst.pex.exceptions.TypeError: TypeError

@@ -104,9 +104,6 @@ PYBIND11_PLUGIN(exceptions) {
     py::class_<IoError, RuntimeError> clsIoError(mod, "IoError");
     clsIoError.def(py::init<std::string const &>());
 
-    py::class_<MemoryError, RuntimeError> clsMemoryError(mod, "MemoryError");
-    clsMemoryError.def(py::init<std::string const &>());
-
     py::class_<OverflowError, RuntimeError> clsOverflowError(mod, "OverflowError");
     clsOverflowError.def(py::init<std::string const &>());
 
