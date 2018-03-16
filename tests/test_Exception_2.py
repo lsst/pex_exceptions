@@ -120,11 +120,6 @@ class ExceptionTestCase(unittest.TestCase):
                             [lsst.pex.exceptions.NotFoundError,
                              lsst.pex.exceptions.Exception,
                              LookupError])
-        self.checkHierarchy(testLib.failMemoryError1,
-                            [lsst.pex.exceptions.MemoryError,
-                             lsst.pex.exceptions.RuntimeError,
-                             lsst.pex.exceptions.Exception,
-                             MemoryError])
         self.checkHierarchy(testLib.failIoError1,
                             [lsst.pex.exceptions.IoError,
                              lsst.pex.exceptions.RuntimeError,
@@ -135,10 +130,6 @@ class ExceptionTestCase(unittest.TestCase):
                              lsst.pex.exceptions.RuntimeError,
                              lsst.pex.exceptions.Exception,
                              TypeError])
-        self.checkHierarchy(testLib.failTimeoutError1,
-                            [lsst.pex.exceptions.TimeoutError,
-                             lsst.pex.exceptions.RuntimeError,
-                             lsst.pex.exceptions.Exception])
 
 
 if __name__ == '__main__':

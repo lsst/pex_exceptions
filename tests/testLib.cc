@@ -41,10 +41,8 @@ PYBIND11_PLUGIN(_testLib) {
 
     LSST_FAIL_TEST(TestError)
     LSST_FAIL_TEST(IoError)
-    LSST_FAIL_TEST(MemoryError)
     LSST_FAIL_TEST(OverflowError)
     LSST_FAIL_TEST(RangeError)
-    LSST_FAIL_TEST(TimeoutError)
     LSST_FAIL_TEST(TypeError)
     LSST_FAIL_TEST(UnderflowError)
     LSST_FAIL_TEST(DomainError)
