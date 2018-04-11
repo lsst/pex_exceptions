@@ -11,26 +11,24 @@ using namespace lsst::pex::exceptions;
 LSST_EXCEPTION_TYPE(TestError, lsst::pex::exceptions::RuntimeError, TestError)
 
 template <typename T>
-void fail1(std::string const & message) {
+void fail1(std::string const &message) {
     throw LSST_EXCEPT(T, message);
 }
 
 template <typename T>
-void fail2(std::string const & message1, std::string const & message2) {
+void fail2(std::string const &message1, std::string const &message2) {
     try {
         fail1<T>(message1);
-    } catch (T & err) {
+    } catch (T &err) {
         LSST_EXCEPT_ADD(err, message2);
         throw err;
-    }   
+    }
 }
 
-#define LSST_FAIL_TEST(name) \
-    mod.def("fail" #name "1", [](const std::string & message){ \
-            fail1<name>(message); \
-    }); \
-    mod.def("fail" #name "2", [](const std::string & message1, const std::string & message2){ \
-            fail2<name>(message1, message2); \
+#define LSST_FAIL_TEST(name)                                                                 \
+    mod.def("fail" #name "1", [](const std::string &message) { fail1<name>(message); });     \
+    mod.def("fail" #name "2", [](const std::string &message1, const std::string &message2) { \
+        fail2<name>(message1, message2);                                                     \
     });
 
 PYBIND11_PLUGIN(_testLib) {

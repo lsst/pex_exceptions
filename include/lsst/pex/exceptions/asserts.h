@@ -34,5 +34,5 @@
  *  LSST_ASSERT_EQUAL(3, 4, "size of foo (%d) is not equal to size of bar (%d)", LengthError);
  *  @endcode
  */
-#define LSST_THROW_IF_NE(N1, N2, EXC_CLASS, MSG)                        \
+#define LSST_THROW_IF_NE(N1, N2, EXC_CLASS, MSG) \
     if ((N1) != (N2)) throw LSST_EXCEPT(EXC_CLASS, (boost::format(MSG) % (N1) % (N2)).str())

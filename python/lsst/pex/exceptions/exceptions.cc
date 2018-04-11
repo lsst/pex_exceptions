@@ -58,7 +58,7 @@ void raiseLsstException(py::object &pyex) {
         }
     }
 }
-}  // <anonymous>
+}  // namespace
 
 PYBIND11_PLUGIN(exceptions) {
     py::module mod("exceptions");
@@ -141,6 +141,6 @@ PYBIND11_PLUGIN(exceptions) {
     return mod.ptr();
 }
 
-}  // exceptions
-}  // pex
-}  // lsst
+}  // namespace exceptions
+}  // namespace pex
+}  // namespace lsst

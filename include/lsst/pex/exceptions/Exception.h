@@ -36,49 +36,44 @@ namespace pex {
 namespace exceptions {
 
 /** For internal use; gathers the file, line, and function for a tracepoint.
-  */
+ */
 #define LSST_EXCEPT_HERE __FILE__, __LINE__, BOOST_CURRENT_FUNCTION
 
 /** Create an exception with a given type and message and optionally other
-  * arguments (dependent on the type).
-  * \param[in] type C++ type of the exception to be thrown.
-  */
+ * arguments (dependent on the type).
+ * \param[in] type C++ type of the exception to be thrown.
+ */
 #define LSST_EXCEPT(type, ...) type(LSST_EXCEPT_HERE, __VA_ARGS__)
 
 /** Add the current location and a message to an existing exception before
-  * rethrowing it.
-  */
+ * rethrowing it.
+ */
 #define LSST_EXCEPT_ADD(e, m) e.addMessage(LSST_EXCEPT_HERE, m)
 
 /** The initial arguments required for new exception subclasses.
-  */
-#define LSST_EARGS_TYPED \
-    char const* ex_file, int ex_line, char const* ex_func, \
-    std::string const& ex_message
+ */
+#define LSST_EARGS_TYPED char const *ex_file, int ex_line, char const *ex_func, std::string const &ex_message
 
 /** The initial arguments to the base class constructor for new subclasses.
-  */
+ */
 #define LSST_EARGS_UNTYPED ex_file, ex_line, ex_func, ex_message
 
 /** Macro used to define new types of exceptions without additional data.
-  * \param[in] t Type of the exception.
-  * \param[in] b Base class of the exception.
-  * \param[in] c C++ class of the exception (fully specified).
-  */
-#define LSST_EXCEPTION_TYPE(t, b, c) \
-    class t : public b { \
-    public: \
-        t(LSST_EARGS_TYPED) : b(LSST_EARGS_UNTYPED) { }; \
-        t(std::string const & message) : b(message) { }; \
-        virtual char const* getType(void) const throw() { return #c " *"; }; \
-        virtual lsst::pex::exceptions::Exception* clone(void) const { \
-            return new t(*this); \
-        }; \
+ * \param[in] t Type of the exception.
+ * \param[in] b Base class of the exception.
+ * \param[in] c C++ class of the exception (fully specified).
+ */
+#define LSST_EXCEPTION_TYPE(t, b, c)                                                          \
+    class t : public b {                                                                      \
+    public:                                                                                   \
+        t(LSST_EARGS_TYPED) : b(LSST_EARGS_UNTYPED){};                                        \
+        t(std::string const& message) : b(message){};                                         \
+        virtual char const* getType(void) const throw() { return #c " *"; };                  \
+        virtual lsst::pex::exceptions::Exception* clone(void) const { return new t(*this); }; \
     };
 
 /// One point in the Traceback vector held by Exception
 struct Tracepoint {
-
     /** Standard constructor, intended for C++ use.
      *
      * @param[in] file Filename.
@@ -86,19 +81,17 @@ struct Tracepoint {
      * @param[in] func Function name.
      * @param[in] message Informational string attached to exception.
      */
-    Tracepoint(char const* file, int line, char const* func,
-               std::string const & message);
+    Tracepoint(char const* file, int line, char const* func, std::string const& message);
 
-    char const* _file; // Compiled strings only; does not need deletion
+    char const* _file;  // Compiled strings only; does not need deletion
     int _line;
-    char const* _func; // Compiled strings only; does not need deletion
+    char const* _func;  // Compiled strings only; does not need deletion
     std::string _message;
 };
 typedef std::vector<Tracepoint> Traceback;
 
 class Exception : public std::exception {
 public:
-
     /** Standard constructor, intended for C++ use via the LSST_EXCEPT() macro.
      *
      * @param[in] file Filename (automatically passed in by macro).
@@ -107,7 +100,7 @@ public:
      * @param[in] message Informational string attached to exception.
      */
     Exception(char const* file, int line, char const* func,
-              std::string const& message); // Should use LSST_EARGS_TYPED, but that confuses doxygen.
+              std::string const& message);  // Should use LSST_EARGS_TYPED, but that confuses doxygen.
 
     /** Message-only constructor, intended for use from Python only.
      *
@@ -118,7 +111,7 @@ public:
      *
      * @param[in] message Informational string attached to exception.
      */
-    explicit Exception(std::string const & message);
+    explicit Exception(std::string const& message);
 
     virtual ~Exception(void) throw();
 
@@ -129,8 +122,7 @@ public:
      * @param[in] func Function name (automatically passed in by macro).
      * @param[in] message Additional message to associate with this rethrow.
      */
-    void addMessage(char const* file, int line, char const* func,
-                    std::string const& message);
+    void addMessage(char const* file, int line, char const* func, std::string const& message);
 
     /// Retrieve the list of tracepoints associated with an exception.
     Traceback const& getTraceback(void) const throw();
@@ -176,12 +168,13 @@ private:
 };
 
 /** Push the text representation of an exception onto a stream.
-  * @param[in] stream Reference to an output stream.
-  * @param[in] e Exception to output.
-  * @return Reference to the output stream after adding the text.
-  */
+ * @param[in] stream Reference to an output stream.
+ * @param[in] e Exception to output.
+ * @return Reference to the output stream after adding the text.
+ */
 std::ostream& operator<<(std::ostream& stream, Exception const& e);
-
-}}} // namespace lsst::pex::exceptions
+}
+}  // namespace pex
+}  // namespace lsst
 
 #endif
