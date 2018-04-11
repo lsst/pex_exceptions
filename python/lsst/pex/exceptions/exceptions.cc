@@ -137,7 +137,7 @@ PYBIND11_PLUGIN(exceptions) {
     py::class_<RangeError, RuntimeError> clsRangeError(mod, "RangeError");
     clsRangeError.def(py::init<std::string const &>());
 
-    py::class_<TypeError, RuntimeError> clsTypeError(mod, "TypeError");
+    py::class_<TypeError, LogicError> clsTypeError(mod, "TypeError");
     clsTypeError.def(py::init<std::string const &>());
 
     py::class_<UnderflowError, RuntimeError> clsUnderflowError(mod, "UnderflowError");

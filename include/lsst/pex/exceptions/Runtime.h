@@ -164,7 +164,7 @@ LSST_EXCEPTION_TYPE(IoError, RuntimeError, lsst::pex::exceptions::IoError)
  *
  * In Python, this exception inherits from `__builtin__.TypeError`.
  */
-LSST_EXCEPTION_TYPE(TypeError, RuntimeError, lsst::pex::exceptions::TypeError)
+LSST_EXCEPTION_TYPE(TypeError, LogicError, lsst::pex::exceptions::TypeError)
 
 }  // namespace exceptions
 }  // namespace pex
