@@ -44,7 +44,7 @@ Exception::Exception(char const* file, int line, char const* func, std::string c
 
 Exception::Exception(std::string const& message) : _message(message), _traceback() {}
 
-Exception::~Exception(void) throw() {}
+Exception::~Exception(void) noexcept {}
 
 void Exception::addMessage(char const* file, int line, char const* func, std::string const& message) {
     std::ostringstream stream;
@@ -76,7 +76,7 @@ void Exception::addMessage(char const* file, int line, char const* func, std::st
     _message = stream.str();
 }
 
-Traceback const& Exception::getTraceback(void) const throw() { return _traceback; }
+Traceback const& Exception::getTraceback(void) const noexcept { return _traceback; }
 
 std::ostream& Exception::addToStream(std::ostream& stream) const {
     if (_traceback.empty()) {
@@ -96,9 +96,9 @@ std::ostream& Exception::addToStream(std::ostream& stream) const {
     return stream;
 }
 
-char const* Exception::what(void) const throw() { return _message.c_str(); }
+char const* Exception::what(void) const noexcept { return _message.c_str(); }
 
-char const* Exception::getType(void) const throw() { return "lsst::pex::exceptions::Exception *"; }
+char const* Exception::getType(void) const noexcept { return "lsst::pex::exceptions::Exception *"; }
 
 Exception* Exception::clone(void) const { return new Exception(*this); }
 

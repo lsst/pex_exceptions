@@ -70,7 +70,7 @@ namespace exceptions {
     public:                                                                                   \
         t(LSST_EARGS_TYPED) : b(LSST_EARGS_UNTYPED){};                                        \
         t(std::string const& message) : b(message){};                                         \
-        virtual char const* getType(void) const throw() { return #c " *"; };                  \
+        virtual char const* getType(void) const noexcept { return #c " *"; };                 \
         virtual lsst::pex::exceptions::Exception* clone(void) const { return new t(*this); }; \
     };
 
@@ -118,7 +118,7 @@ public:
      */
     explicit Exception(std::string const& message);
 
-    virtual ~Exception(void) throw();
+    virtual ~Exception(void) noexcept;
 
     /**
      * Add a tracepoint and a message to an exception before rethrowing it (access via @ref LSST_EXCEPT_ADD).
@@ -131,7 +131,7 @@ public:
     void addMessage(char const* file, int line, char const* func, std::string const& message);
 
     /// Retrieve the list of tracepoints associated with an exception.
-    Traceback const& getTraceback(void) const throw();
+    Traceback const& getTraceback(void) const noexcept;
 
     /**
      * @brief Add a text representation of this exception, including its traceback with
@@ -152,7 +152,7 @@ public:
      *
      * @returns String representation; does not need to be freed/deleted.
      */
-    virtual char const* what(void) const throw();
+    virtual char const* what(void) const noexcept;
 
     /**
      * Return the fully-specified C++ type of a pointer to the exception.  This
@@ -161,7 +161,7 @@ public:
      *
      * @returns String with the C++ type; does not need to be freed/deleted.
      */
-    virtual char const* getType(void) const throw();
+    virtual char const* getType(void) const noexcept;
 
     /**
      * Return a copy of the exception as an Exception pointer. Can be overridden by
