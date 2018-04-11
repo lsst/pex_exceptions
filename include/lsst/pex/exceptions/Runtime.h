@@ -32,17 +32,138 @@ namespace lsst {
 namespace pex {
 namespace exceptions {
 
+/**
+ * Reports errors in the logical structure of the program.
+ *
+ * LogicError and its subclasses should be thrown to represent problems, such
+ * as violation of logical preconditions or class invariants, that are in
+ * principle preventable using defensive programming or other good practices.
+ * In many cases, it may not be appropriate to catch them.
+ *
+ * @see RuntimeError
+ * @see std::logic_error
+ */
 LSST_EXCEPTION_TYPE(LogicError, Exception, lsst::pex::exceptions::LogicError)
+
+/**
+ * Reports arguments outside the domain of an operation.
+ *
+ * This exception should be reserved for mathematical operations that are
+ * defined on a limited range of inputs. InvalidParameterError is more
+ * appropriate for non-mathematical operations.
+ *
+ * @see std::domain_error
+ */
 LSST_EXCEPTION_TYPE(DomainError, LogicError, lsst::pex::exceptions::DomainError)
+
+/**
+ * Reports invalid arguments.
+ *
+ * This exception reports errors that arise because an argument value has not been accepted.
+ *
+ * @see std::invalid_argument
+ */
 LSST_EXCEPTION_TYPE(InvalidParameterError, LogicError, lsst::pex::exceptions::InvalidParameterError)
+
+/**
+ * Reports attempts to exceed implementation-defined length limits for some classes.
+ *
+ * For example, some collection classes might not be able to handle more than
+ * some number of elements, or bit fields might support a limited number of flags.
+ *
+ * @see std::length_error
+ */
 LSST_EXCEPTION_TYPE(LengthError, LogicError, lsst::pex::exceptions::LengthError)
+
+/**
+ * Reports attempts to access elements outside a valid range of indices.
+ *
+ * @see NotFoundError
+ * @see std::out_of_range
+ *
+ * @note pybind11 wrappers should manually translate this exception to
+ * `py::index_error` when appropriate. Some Python language constructs check
+ * for exceptions that are exactly `IndexError` rather than a
+ * sub- or superclass.
+ */
 LSST_EXCEPTION_TYPE(OutOfRangeError, LogicError, lsst::pex::exceptions::OutOfRangeError)
+
+/**
+ * Reports errors that are due to events beyond the control of the program.
+ *
+ * RuntimeError and its subclasses represent problems that cannot be easily
+ * predicted or prevented. In other words, a RuntimeError is a possible outcome
+ * of calling a function or method even in well-written programs, and should be
+ * handled at the appropriate level.
+ *
+ * In Python, this exception inherits from `__builtin__.RuntimeError`.
+ *
+ * @see LogicError
+ * @see std::runtime_error
+ */
 LSST_EXCEPTION_TYPE(RuntimeError, Exception, lsst::pex::exceptions::RuntimeError)
+
+/**
+ * Reports when the result of an operation cannot be represented by the destination type.
+ *
+ * Situations covered by this exception include lossy type conversions.
+ *
+ * @see OverflowError
+ * @see UnderflowError
+ * @see std::range_error
+ */
 LSST_EXCEPTION_TYPE(RangeError, RuntimeError, lsst::pex::exceptions::RangeError)
+
+/**
+ * Reports when the result of an arithmetic operation is too large for the destination type.
+ *
+ * In Python, this exception inherits from `__builtin__.OverflowError`.
+ *
+ * @see std::overflow_error
+ */
 LSST_EXCEPTION_TYPE(OverflowError, RuntimeError, lsst::pex::exceptions::OverflowError)
+
+/**
+ * Reports when the result of an arithmetic operation is too small for the destination type.
+ *
+ * In Python, this exception inherits from `__builtin__.ArithmeticError`.
+ *
+ * @see std::underflow_error
+ */
 LSST_EXCEPTION_TYPE(UnderflowError, RuntimeError, lsst::pex::exceptions::UnderflowError)
+
+/**
+ * Reports attempts to access elements using an invalid key.
+ *
+ * This exception may represent lookup failures in classes that resemble C++
+ * maps or Python dictionaries, but it may also be used when the relationship
+ * between an identifier and a resource is more abstract.
+ *
+ * In Python, this exception inherits from `__builtin__.LookupError`.
+ *
+ * @see OutOfRangeError
+ *
+ * @note pybind11 wrappers should manually translate this exception to
+ * `py::key_error` when appropriate. Some Python language constructs check
+ * for exceptions that are exactly `KeyError` rather than a
+ * sub- or superclass.
+ */
 LSST_EXCEPTION_TYPE(NotFoundError, Exception, lsst::pex::exceptions::NotFoundError)
+
+/**
+ * Reports errors in external input/output operations.
+ *
+ * In Python, this exception inherits from `__builtin__.IOError`.
+ *
+ * @see std::ios_base::failure
+ */
 LSST_EXCEPTION_TYPE(IoError, RuntimeError, lsst::pex::exceptions::IoError)
+
+/**
+ * Reports errors from accepting an object of an unexpected or inappropriate type.
+ *
+ * In Python, this exception inherits from `__builtin__.TypeError`.
+ */
 LSST_EXCEPTION_TYPE(TypeError, RuntimeError, lsst::pex::exceptions::TypeError)
 
 }  // namespace exceptions

@@ -93,6 +93,16 @@ struct Tracepoint {
 };
 typedef std::vector<Tracepoint> Traceback;
 
+/**
+ * Provides consistent interface for LSST exceptions.
+ *
+ * All exceptions defined by the LSST Stack are derived from this class. Code
+ * should not throw or catch Exception directly, but should instead be written
+ * in terms of the appropriate subclasses (e.g., catch RuntimeError to handle
+ * all unknown errors).
+ *
+ * In Python, this exception inherits from `__builtin__.Exception`.
+ */
 class Exception : public std::exception {
 public:
     /**
