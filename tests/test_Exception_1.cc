@@ -1,9 +1,11 @@
 /*
- * LSST Data Management System
- * Copyright 2008, 2009, 2010 LSST Corporation.
+ * This file is part of pex_exceptions.
  *
- * This product includes software developed by the
- * LSST Project (http://www.lsst.org/).
+ * Developed for the LSST Data Management System.
+ * This product includes software developed by the LSST Project
+ * (https://www.lsst.org).
+ * See the COPYRIGHT file at the top-level directory of this distribution
+ * for details of code ownership.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,9 +17,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the LSST License Statement and
- * the GNU General Public License along with this program.  If not,
- * see <http://www.lsstcorp.org/LegalNotices/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "lsst/pex/exceptions/Exception.h"
@@ -99,7 +100,7 @@ BOOST_AUTO_TEST_CASE(simple) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 41, in void f1()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 42, in void f1()\n"
                        "    In f1 {0}\n"
                        "lsst::pex::exceptions::Exception: 'In f1'\n"));
 }
@@ -114,7 +115,7 @@ BOOST_AUTO_TEST_CASE(child_as_base) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 43, in void f2()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 44, in void f2()\n"
                        "    In f2 2008 {0}\n"
                        "ChildException: 'In f2 2008'\n"));
 }
@@ -129,7 +130,7 @@ BOOST_AUTO_TEST_CASE(child_as_child) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 43, in void f2()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 44, in void f2()\n"
                        "    In f2 2008 {0}\n"
                        "ChildException: 'In f2 2008'\n"));
 }
@@ -144,9 +145,9 @@ BOOST_AUTO_TEST_CASE(simple_rethrow) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 41, in void f1()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 42, in void f1()\n"
                        "    In f1 {0}\n"
-                       "  File \"tests/test_Exception_1.cc\", line 49, in void f4()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 50, in void f4()\n"
                        "    In f4 {1}\n"
                        "lsst::pex::exceptions::Exception: 'In f1 {0}; In f4 {1}'\n"));
 }
@@ -161,9 +162,9 @@ BOOST_AUTO_TEST_CASE(child_rethrow_base_as_base) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 43, in void f2()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 44, in void f2()\n"
                        "    In f2 2008 {0}\n"
-                       "  File \"tests/test_Exception_1.cc\", line 58, in void f5()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 59, in void f5()\n"
                        "    In f5 {1}\n"
                        "ChildException: 'In f2 2008 {0}; In f5 {1}'\n"));
 }
@@ -178,9 +179,9 @@ BOOST_AUTO_TEST_CASE(child_rethrow_base_as_child) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 43, in void f2()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 44, in void f2()\n"
                        "    In f2 2008 {0}\n"
-                       "  File \"tests/test_Exception_1.cc\", line 58, in void f5()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 59, in void f5()\n"
                        "    In f5 {1}\n"
                        "ChildException: 'In f2 2008 {0}; In f5 {1}'\n"));
 }
@@ -195,9 +196,9 @@ BOOST_AUTO_TEST_CASE(child_rethrow_child_as_base) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 43, in void f2()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 44, in void f2()\n"
                        "    In f2 2008 {0}\n"
-                       "  File \"tests/test_Exception_1.cc\", line 67, in void f6()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 68, in void f6()\n"
                        "    In f6 {1}\n"
                        "ChildException: 'In f2 2008 {0}; In f6 {1}'\n"));
 }
@@ -212,9 +213,9 @@ BOOST_AUTO_TEST_CASE(child_rethrow_child_as_child) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 43, in void f2()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 44, in void f2()\n"
                        "    In f2 2008 {0}\n"
-                       "  File \"tests/test_Exception_1.cc\", line 67, in void f6()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 68, in void f6()\n"
                        "    In f6 {1}\n"
                        "ChildException: 'In f2 2008 {0}; In f6 {1}'\n"));
 }
@@ -241,11 +242,11 @@ BOOST_AUTO_TEST_CASE(rethrow_twice) {
     BOOST_CHECK(!o.is_empty(false));
     BOOST_CHECK(
             o.is_equal("\n"
-                       "  File \"tests/test_Exception_1.cc\", line 43, in void f2()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 44, in void f2()\n"
                        "    In f2 2008 {0}\n"
-                       "  File \"tests/test_Exception_1.cc\", line 67, in void f6()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 68, in void f6()\n"
                        "    In f6 {1}\n"
-                       "  File \"tests/test_Exception_1.cc\", line 76, in void f7()\n"
+                       "  File \"tests/test_Exception_1.cc\", line 77, in void f7()\n"
                        "    In f7 {2}\n"
                        "ChildException: 'In f2 2008 {0}; In f6 {1}; In f7 {2}'\n"));
 }
