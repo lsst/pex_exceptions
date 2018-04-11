@@ -35,13 +35,18 @@ namespace pex {
 namespace exceptions {
 namespace python {
 
-/** Helper function for pybind11, used to define new types of exceptions.
- * \param[in] mod Module to insert the exception into.
- * \param[in] name Name of the exception in the module.
- * \param[in] base Python name of base class (from pex exceptions).
+/**
+ * Helper function for pybind11, used to define new types of exceptions.
  *
  * While this function creates the class wrapper, the user is still responsible
- * for adding all constructor and member wrappers to the returned py::class_ object.
+ * for adding all constructor and member wrappers to the returned `py::class_` object.
+ *
+ * @tparam T The C++ exception to wrap.
+ * @tparam E The C++ base class of `T`.
+ *
+ * @param[in] mod Module to insert the exception into.
+ * @param[in] name Name of the exception in the module.
+ * @param[in] base Python name of base class (from pex::exceptions).
  */
 template <typename T, typename E = lsst::pex::exceptions::Exception>
 pybind11::class_<T> declareException(pybind11::module &mod, const std::string &name,

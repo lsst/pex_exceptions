@@ -26,13 +26,14 @@
 #include "lsst/pex/exceptions/Exception.h"
 
 /**
- *  Check whether the given values are equal, and throw an LSST Exception with the given message
- *  (which must include two Boost.Format placeholders for the two numbers) if they are not.
+ * Check whether the given values are equal, and throw an LSST Exception if they are not.
  *
- *  For example:
- *  @code
- *  LSST_ASSERT_EQUAL(3, 4, "size of foo (%d) is not equal to size of bar (%d)", LengthError);
- *  @endcode
+ * The given message must include two Boost.Format placeholders for the two numbers.
+ *
+ * For example:
+ *
+ *     LSST_THROW_IF_NE(3, 4, LengthError, "size of foo (%d) is not equal to size of bar (%d)");
+ *
  */
 #define LSST_THROW_IF_NE(N1, N2, EXC_CLASS, MSG) \
     if ((N1) != (N2)) throw LSST_EXCEPT(EXC_CLASS, (boost::format(MSG) % (N1) % (N2)).str())

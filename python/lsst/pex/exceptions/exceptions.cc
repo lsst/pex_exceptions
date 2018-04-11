@@ -46,16 +46,20 @@ void tryLsstExceptionWarn(const char *message) {
     }
 }
 
-// Raise a Python exception that wraps the given C++ exception instance.
-//
-// Most of the work is delegated to the pure-Python function pex.exceptions.wrappers.translate(),
-// which looks up the appropriate Python exception class from a dict that maps C++ exception
-// types to their custom Python wrappers.  Everything else here is basically just importing that
-// module, preparing the arguments, and calling that function, along with the very verbose error
-// handling required by the Python C API.
-//
-// If any point we fail to translate the exception, we print a Python warning and raise the built-in
-// Python RuntimeError exception with the same message as the C++ exception.
+/**
+ * Raise a Python exception that wraps the given C++ exception instance.
+ *
+ * Most of the work is delegated to the pure-Python function pex.exceptions.wrappers.translate(),
+ * which looks up the appropriate Python exception class from a dict that maps C++ exception
+ * types to their custom Python wrappers.  Everything else here is basically just importing that
+ * module, preparing the arguments, and calling that function, along with the very verbose error
+ * handling required by the Python C API.
+ *
+ * If any point we fail to translate the exception, we print a Python warning and raise the built-in
+ * Python RuntimeError exception with the same message as the C++ exception.
+ *
+ * @param pyex a wrapped instance of pex::exceptions::Exception
+ */
 void raiseLsstException(py::object &pyex) {
     static auto module =
             py::reinterpret_borrow<py::object>(PyImport_ImportModule("lsst.pex.exceptions.wrappers"));
