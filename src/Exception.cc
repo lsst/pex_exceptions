@@ -1,10 +1,11 @@
-// -*- lsst-c++ -*-
 /*
- * LSST Data Management System
- * Copyright 2008-2014 LSST Corporation.
+ * This file is part of pex_exceptions.
  *
- * This product includes software developed by the
- * LSST Project (http://www.lsst.org/).
+ * Developed for the LSST Data Management System.
+ * This product includes software developed by the LSST Project
+ * (https://www.lsst.org).
+ * See the COPYRIGHT file at the top-level directory of this distribution
+ * for details of code ownership.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +17,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the LSST License Statement and
- * the GNU General Public License along with this program.  If not,
- * see <http://www.lsstcorp.org/LegalNotices/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef __GNUC__
-#  define __attribute__(x) /*NOTHING*/
+#define __attribute__(x) /*NOTHING*/
 #endif
 
 #include <cstring>
@@ -32,29 +32,21 @@
 
 #include "lsst/pex/exceptions/Exception.h"
 
-namespace lsst { namespace pex { namespace exceptions {
+namespace lsst {
+namespace pex {
+namespace exceptions {
 
-Tracepoint::Tracepoint(
-    char const* file, int line, char const* func,
-    std::string const& message
-) :
-    _file(file), _line(line), _func(func), _message(message)
-{}
+Tracepoint::Tracepoint(char const* file, int line, char const* func, std::string const& message)
+        : _file(file), _line(line), _func(func), _message(message) {}
 
-Exception::Exception(
-    char const* file, int line, char const* func,
-    std::string const& message
-) : _message(message), _traceback(1, Tracepoint(file, line, func, message)) {}
+Exception::Exception(char const* file, int line, char const* func, std::string const& message)
+        : _message(message), _traceback(1, Tracepoint(file, line, func, message)) {}
 
-Exception::Exception(
-    std::string const& message
-) : _message(message), _traceback() {}
+Exception::Exception(std::string const& message) : _message(message), _traceback() {}
 
-Exception::~Exception(void) throw() {}
+Exception::~Exception(void) noexcept {}
 
-void Exception::addMessage(
-    char const* file, int line, char const* func, std::string const& message
-) {
+void Exception::addMessage(char const* file, int line, char const* func, std::string const& message) {
     std::ostringstream stream;
     stream << _message;
     if (_traceback.empty()) {
@@ -82,13 +74,9 @@ void Exception::addMessage(
         _traceback.push_back(Tracepoint(file, line, func, message));
     }
     _message = stream.str();
-
 }
 
-Traceback const&
-    Exception::getTraceback(void) const throw() {
-    return _traceback;
-}
+Traceback const& Exception::getTraceback(void) const noexcept { return _traceback; }
 
 std::ostream& Exception::addToStream(std::ostream& stream) const {
     if (_traceback.empty()) {
@@ -96,11 +84,10 @@ std::ostream& Exception::addToStream(std::ostream& stream) const {
         // newlines, because Python will print those itself.
         stream << _message;
     } else {
-        stream << std::endl; // Start with a newline to separate our stuff from Pythons "<type>: " prefix.
+        stream << std::endl;  // Start with a newline to separate our stuff from Pythons "<type>: " prefix.
         for (std::size_t i = 0; i != _traceback.size(); ++i) {
-            stream << "  File \"" << _traceback[i]._file
-                   << "\", line " << _traceback[i]._line
-                   << ", in " << _traceback[i]._func << std::endl;
+            stream << "  File \"" << _traceback[i]._file << "\", line " << _traceback[i]._line << ", in "
+                   << _traceback[i]._func << std::endl;
             stream << "    " << _traceback[i]._message << " {" << i << "}" << std::endl;
         }
         std::string type(getType(), 0, std::strlen(getType()) - 2);
@@ -109,21 +96,14 @@ std::ostream& Exception::addToStream(std::ostream& stream) const {
     return stream;
 }
 
-char const* Exception::what(void) const throw() {
-    return _message.c_str();
-}
+char const* Exception::what(void) const noexcept { return _message.c_str(); }
 
-char const* Exception::getType(void) const throw() {
-    return "lsst::pex::exceptions::Exception *";
-}
+char const* Exception::getType(void) const noexcept { return "lsst::pex::exceptions::Exception *"; }
 
-Exception* Exception::clone(void) const {
-    return new Exception(*this);
-}
+Exception* Exception::clone(void) const { return new Exception(*this); }
 
-std::ostream& operator<<(
-    std::ostream& stream, Exception const& e) {
-    return e.addToStream(stream);
-}
+std::ostream& operator<<(std::ostream& stream, Exception const& e) { return e.addToStream(stream); }
 
-}}} // namespace lsst::pex::exceptions
+}  // namespace exceptions
+}  // namespace pex
+}  // namespace lsst

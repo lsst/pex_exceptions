@@ -1,3 +1,26 @@
+/*
+ * This file is part of pex_exceptions.
+ *
+ * Developed for the LSST Data Management System.
+ * This product includes software developed by the LSST Project
+ * (https://www.lsst.org).
+ * See the COPYRIGHT file at the top-level directory of this distribution
+ * for details of code ownership.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #include "pybind11/pybind11.h"
 
 #include <sstream>
@@ -23,16 +46,20 @@ void tryLsstExceptionWarn(const char *message) {
     }
 }
 
-// Raise a Python exception that wraps the given C++ exception instance.
-//
-// Most of the work is delegated to the pure-Python function pex.exceptions.wrappers.translate(),
-// which looks up the appropriate Python exception class from a dict that maps C++ exception
-// types to their custom Python wrappers.  Everything else here is basically just importing that
-// module, preparing the arguments, and calling that function, along with the very verbose error
-// handling required by the Python C API.
-//
-// If any point we fail to translate the exception, we print a Python warning and raise the built-in
-// Python RuntimeError exception with the same message as the C++ exception.
+/**
+ * Raise a Python exception that wraps the given C++ exception instance.
+ *
+ * Most of the work is delegated to the pure-Python function pex.exceptions.wrappers.translate(),
+ * which looks up the appropriate Python exception class from a dict that maps C++ exception
+ * types to their custom Python wrappers.  Everything else here is basically just importing that
+ * module, preparing the arguments, and calling that function, along with the very verbose error
+ * handling required by the Python C API.
+ *
+ * If any point we fail to translate the exception, we print a Python warning and raise the built-in
+ * Python RuntimeError exception with the same message as the C++ exception.
+ *
+ * @param pyex a wrapped instance of pex::exceptions::Exception
+ */
 void raiseLsstException(py::object &pyex) {
     static auto module =
             py::reinterpret_borrow<py::object>(PyImport_ImportModule("lsst.pex.exceptions.wrappers"));
@@ -58,7 +85,7 @@ void raiseLsstException(py::object &pyex) {
         }
     }
 }
-}  // <anonymous>
+}  // namespace
 
 PYBIND11_PLUGIN(exceptions) {
     py::module mod("exceptions");
@@ -110,7 +137,7 @@ PYBIND11_PLUGIN(exceptions) {
     py::class_<RangeError, RuntimeError> clsRangeError(mod, "RangeError");
     clsRangeError.def(py::init<std::string const &>());
 
-    py::class_<TypeError, RuntimeError> clsTypeError(mod, "TypeError");
+    py::class_<TypeError, LogicError> clsTypeError(mod, "TypeError");
     clsTypeError.def(py::init<std::string const &>());
 
     py::class_<UnderflowError, RuntimeError> clsUnderflowError(mod, "UnderflowError");
@@ -141,6 +168,6 @@ PYBIND11_PLUGIN(exceptions) {
     return mod.ptr();
 }
 
-}  // exceptions
-}  // pex
-}  // lsst
+}  // namespace exceptions
+}  // namespace pex
+}  // namespace lsst

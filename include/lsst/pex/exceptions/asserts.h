@@ -1,10 +1,11 @@
-// -*- lsst-c++ -*-
 /*
- * LSST Data Management System
- * Copyright 2008-2013 LSST Corporation.
+ * This file is part of pex_exceptions.
  *
- * This product includes software developed by the
- * LSST Project (http://www.lsst.org/).
+ * Developed for the LSST Data Management System.
+ * This product includes software developed by the LSST Project
+ * (https://www.lsst.org).
+ * See the COPYRIGHT file at the top-level directory of this distribution
+ * for details of code ownership.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +17,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the LSST License Statement and
- * the GNU General Public License along with this program.  If not,
- * see <http://www.lsstcorp.org/LegalNotices/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "boost/format.hpp"
@@ -26,13 +26,14 @@
 #include "lsst/pex/exceptions/Exception.h"
 
 /**
- *  Check whether the given values are equal, and throw an LSST Exception with the given message
- *  (which must include two Boost.Format placeholders for the two numbers) if they are not.
+ * Check whether the given values are equal, and throw an LSST Exception if they are not.
  *
- *  For example:
- *  @code
- *  LSST_ASSERT_EQUAL(3, 4, "size of foo (%d) is not equal to size of bar (%d)", LengthError);
- *  @endcode
+ * The given message must include two Boost.Format placeholders for the two numbers.
+ *
+ * For example:
+ *
+ *     LSST_THROW_IF_NE(3, 4, LengthError, "size of foo (%d) is not equal to size of bar (%d)");
+ *
  */
-#define LSST_THROW_IF_NE(N1, N2, EXC_CLASS, MSG)                        \
+#define LSST_THROW_IF_NE(N1, N2, EXC_CLASS, MSG) \
     if ((N1) != (N2)) throw LSST_EXCEPT(EXC_CLASS, (boost::format(MSG) % (N1) % (N2)).str())
