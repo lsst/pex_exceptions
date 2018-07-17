@@ -87,9 +87,7 @@ void raiseLsstException(py::object &pyex) {
 }
 }  // namespace
 
-PYBIND11_PLUGIN(exceptions) {
-    py::module mod("exceptions");
-
+PYBIND11_MODULE(exceptions, mod) {
     py::class_<Tracepoint> clsTracepoint(mod, "Tracepoint");
 
     clsTracepoint.def(py::init<char const *, int, char const *, std::string const &>())
@@ -164,8 +162,6 @@ PYBIND11_PLUGIN(exceptions) {
             raiseLsstException(current_exception);
         }
     });
-
-    return mod.ptr();
 }
 
 }  // namespace exceptions

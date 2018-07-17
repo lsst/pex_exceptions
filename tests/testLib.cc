@@ -54,9 +54,7 @@ void fail2(std::string const &message1, std::string const &message2) {
         fail2<name>(message1, message2);                                                     \
     });
 
-PYBIND11_PLUGIN(_testLib) {
-    pybind11::module mod("_testLib", "Tests for the pex_exceptions library");
-
+PYBIND11_MODULE(_testLib, mod) {
     auto cls = python::declareException<TestError>(mod, "TestError", "RuntimeError");
     cls.def(pybind11::init<std::string const &>());
 
@@ -74,6 +72,4 @@ PYBIND11_PLUGIN(_testLib) {
     LSST_FAIL_TEST(NotFoundError)
     LSST_FAIL_TEST(RuntimeError)
     LSST_FAIL_TEST(Exception)
-
-    return mod.ptr();
 }
