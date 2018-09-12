@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 
+#include "lsst/base.h"
 #include "boost/current_function.hpp"
 
 namespace lsst {
@@ -66,7 +67,7 @@ namespace exceptions {
  * @param[in] c C++ class of the exception (fully specified).
  */
 #define LSST_EXCEPTION_TYPE(t, b, c)                                                          \
-    class t : public b {                                                                      \
+    class LSST_EXPORT t : public b {                                                                      \
     public:                                                                                   \
         t(LSST_EARGS_TYPED) : b(LSST_EARGS_UNTYPED){};                                        \
         t(std::string const& message) : b(message){};                                         \
@@ -103,7 +104,7 @@ typedef std::vector<Tracepoint> Traceback;
  *
  * In Python, this exception inherits from `__builtin__.Exception`.
  */
-class Exception : public std::exception {
+class LSST_EXPORT Exception : public std::exception {
 public:
     /**
      * Standard constructor, intended for C++ use via the LSST_EXCEPT() macro.
