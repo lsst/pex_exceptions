@@ -45,8 +45,8 @@ class ExceptionMeta(type):
     by delegating to the Swig-generated wrapper.
     """
 
-    def __getattr__(self, name):
-        return getattr(self.WrappedClass, name)
+    def __getattr__(cls, name):
+        return getattr(cls.WrappedClass, name)
 
 
 @register
