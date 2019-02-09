@@ -9,5 +9,4 @@ pex_exceptions documentation preview
 .. toctree::
    :maxdepth: 1
 
-   pex_exceptions/index
    lsst.pex.exceptions/index
