@@ -102,7 +102,7 @@ typedef std::vector<Tracepoint> Traceback;
  * in terms of the appropriate subclasses (e.g., catch RuntimeError to handle
  * all unknown errors).
  *
- * In Python, this exception inherits from `__builtin__.Exception`.
+ * In Python, this exception inherits from `builtins.Exception`.
  */
 class LSST_EXPORT Exception : public std::exception {
 public:

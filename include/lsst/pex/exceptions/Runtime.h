@@ -96,7 +96,7 @@ LSST_EXCEPTION_TYPE(OutOfRangeError, LogicError, lsst::pex::exceptions::OutOfRan
  * of calling a function or method even in well-written programs, and should be
  * handled at the appropriate level.
  *
- * In Python, this exception inherits from `__builtin__.RuntimeError`.
+ * In Python, this exception inherits from `builtins.RuntimeError`.
  *
  * @see LogicError
  * @see std::runtime_error
@@ -117,7 +117,7 @@ LSST_EXCEPTION_TYPE(RangeError, RuntimeError, lsst::pex::exceptions::RangeError)
 /**
  * Reports when the result of an arithmetic operation is too large for the destination type.
  *
- * In Python, this exception inherits from `__builtin__.OverflowError`.
+ * In Python, this exception inherits from `builtins.OverflowError`.
  *
  * @see std::overflow_error
  */
@@ -126,7 +126,7 @@ LSST_EXCEPTION_TYPE(OverflowError, RuntimeError, lsst::pex::exceptions::Overflow
 /**
  * Reports when the result of an arithmetic operation is too small for the destination type.
  *
- * In Python, this exception inherits from `__builtin__.ArithmeticError`.
+ * In Python, this exception inherits from `builtins.ArithmeticError`.
  *
  * @see std::underflow_error
  */
@@ -139,7 +139,7 @@ LSST_EXCEPTION_TYPE(UnderflowError, RuntimeError, lsst::pex::exceptions::Underfl
  * maps or Python dictionaries, but it may also be used when the relationship
  * between an identifier and a resource is more abstract.
  *
- * In Python, this exception inherits from `__builtin__.LookupError`.
+ * In Python, this exception inherits from `builtins.LookupError`.
  *
  * @see OutOfRangeError
  *
@@ -153,7 +153,7 @@ LSST_EXCEPTION_TYPE(NotFoundError, Exception, lsst::pex::exceptions::NotFoundErr
 /**
  * Reports errors in external input/output operations.
  *
- * In Python, this exception inherits from `__builtin__.IOError`.
+ * In Python, this exception inherits from `builtins.IOError`.
  *
  * @see std::ios_base::failure
  */
@@ -162,7 +162,7 @@ LSST_EXCEPTION_TYPE(IoError, RuntimeError, lsst::pex::exceptions::IoError)
 /**
  * Reports errors from accepting an object of an unexpected or inappropriate type.
  *
- * In Python, this exception inherits from `__builtin__.TypeError`.
+ * In Python, this exception inherits from `builtins.TypeError`.
  */
 LSST_EXCEPTION_TYPE(TypeError, LogicError, lsst::pex::exceptions::TypeError)
 
