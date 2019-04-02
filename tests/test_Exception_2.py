@@ -124,7 +124,7 @@ class ExceptionTestCase(unittest.TestCase):
                              IOError])
         self.checkHierarchy(testLib.failTypeError1,
                             [lsst.pex.exceptions.TypeError,
-                             lsst.pex.exceptions.RuntimeError,
+                             lsst.pex.exceptions.LogicError,
                              lsst.pex.exceptions.Exception,
                              TypeError])
 
