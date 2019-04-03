@@ -136,7 +136,7 @@ class IoError(RuntimeError, IOError):
 
 
 @register
-class TypeError(RuntimeError, TypeError):
+class TypeError(LogicError, TypeError):
     WrappedClass = exceptions.TypeError
 
 

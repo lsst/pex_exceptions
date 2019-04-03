@@ -49,7 +49,7 @@ namespace python {
  * @param[in] base Python name of base class (from pex::exceptions).
  */
 template <typename T, typename E = lsst::pex::exceptions::Exception>
-pybind11::class_<T> declareException(pybind11::module &mod, const std::string &name,
+pybind11::class_<T, E> declareException(pybind11::module &mod, const std::string &name,
                                      const std::string &base) {
     namespace py = pybind11;
 
