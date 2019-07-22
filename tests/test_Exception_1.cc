@@ -32,6 +32,7 @@ namespace test = boost::test_tools;
 namespace pexExcept = lsst::pex::exceptions;
 
 #include "test_Exception_1.h"
+// THIS LINE IS TO PRESERVE LINE NUMBER OFFSETS IN THE EXCEPTIONS.
 
 // These functions were created to avoid having the output strings, which
 // include function names, depend on the boost::test implementation.  Note
