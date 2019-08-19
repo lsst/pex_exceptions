@@ -26,6 +26,7 @@ __all__ = ["register", "ExceptionMeta", "Exception", "LogicError",
            "translate", "declare"]
 
 import warnings
+import builtins
 
 from . import exceptions
 
@@ -50,7 +51,7 @@ class ExceptionMeta(type):
 
 
 @register
-class Exception(Exception, metaclass=ExceptionMeta):
+class Exception(builtins.Exception, metaclass=ExceptionMeta):
     """The base class for Python-wrapped LSST C++ exceptions.
     """
 
@@ -106,7 +107,7 @@ class OutOfRangeError(LogicError):
 
 
 @register
-class RuntimeError(Exception, RuntimeError):
+class RuntimeError(Exception, builtins.RuntimeError):
     WrappedClass = exceptions.RuntimeError
 
 
@@ -116,27 +117,27 @@ class RangeError(RuntimeError):
 
 
 @register
-class OverflowError(RuntimeError, OverflowError):
+class OverflowError(RuntimeError, builtins.OverflowError):
     WrappedClass = exceptions.OverflowError
 
 
 @register
-class UnderflowError(RuntimeError, ArithmeticError):
+class UnderflowError(RuntimeError, builtins.ArithmeticError):
     WrappedClass = exceptions.UnderflowError
 
 
 @register
-class NotFoundError(Exception, LookupError):
+class NotFoundError(Exception, builtins.LookupError):
     WrappedClass = exceptions.NotFoundError
 
 
 @register
-class IoError(RuntimeError, IOError):
+class IoError(RuntimeError, builtins.IOError):
     WrappedClass = exceptions.IoError
 
 
 @register
-class TypeError(LogicError, TypeError):
+class TypeError(LogicError, builtins.TypeError):
     WrappedClass = exceptions.TypeError
 
 
