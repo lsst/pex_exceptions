@@ -21,7 +21,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "pybind11/pybind11.h"
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include <sstream>
 
@@ -30,7 +31,7 @@
 
 using namespace lsst::pex::exceptions;
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 namespace lsst {
 namespace pex {
@@ -60,26 +61,26 @@ void tryLsstExceptionWarn(const char *message) {
  *
  * @param pyex a wrapped instance of pex::exceptions::Exception
  */
-void raiseLsstException(py::object &pyex) {
+void raiseLsstException(nb::object &pyex) {
     static auto module =
-            py::reinterpret_borrow<py::object>(PyImport_ImportModule("lsst.pex.exceptions.wrappers"));
+            nb::borrow<nb::object>(PyImport_ImportModule("lsst.pex.exceptions.wrappers"));
     if (!module.ptr()) {
         tryLsstExceptionWarn("Failed to import C++ Exception wrapper module.");
     } else {
         static auto translate =
-                py::reinterpret_borrow<py::object>(PyObject_GetAttrString(module.ptr(), "translate"));
+                nb::borrow<nb::object>(PyObject_GetAttrString(module.ptr(), "translate"));
         if (!translate.ptr()) {
             tryLsstExceptionWarn("Failed to find translation function for C++ Exceptions.");
         } else {
             // Calling the Python translate() returns an instance of the appropriate Python
             // exception that wraps the C++ exception instance that we give it.
-            auto instance = py::reinterpret_steal<py::object>(
+            auto instance = nb::steal<nb::object>(
                     PyObject_CallFunctionObjArgs(translate.ptr(), pyex.ptr(), NULL));
             if (!instance.ptr()) {
                 // We actually expect a null return here, as translate() should raise an exception
                 tryLsstExceptionWarn("Failed to translate C++ Exception to Python.");
             } else {
-                auto type = py::reinterpret_borrow<py::object>(PyObject_Type(instance.ptr()));
+                auto type = nb::borrow<nb::object>(PyObject_Type(instance.ptr()));
                 PyErr_SetObject(type.ptr(), instance.ptr());
             }
         }
@@ -87,18 +88,18 @@ void raiseLsstException(py::object &pyex) {
 }
 }  // namespace
 
-PYBIND11_MODULE(exceptions, mod) {
-    py::class_<Tracepoint> clsTracepoint(mod, "Tracepoint");
+NB_MODULE(exceptions, mod) {
+    nb::class_<Tracepoint> clsTracepoint(mod, "Tracepoint");
 
-    clsTracepoint.def(py::init<char const *, int, char const *, std::string const &>())
-            .def_readwrite("_file", &Tracepoint::_file)
-            .def_readwrite("_line", &Tracepoint::_line)
-            .def_readwrite("_func", &Tracepoint::_func)
-            .def_readwrite("_message", &Tracepoint::_message);
+    clsTracepoint.def(nb::init<char const *, int, char const *, std::string const &>())
+            .def_rw("_file", &Tracepoint::_file)
+            .def_rw("_line", &Tracepoint::_line)
+            .def_rw("_func", &Tracepoint::_func)
+            .def_rw("_message", &Tracepoint::_message);
 
-    py::class_<Exception> clsException(mod, "Exception");
+    nb::class_<Exception> clsException(mod, "Exception");
 
-    clsException.def(py::init<std::string const &>())
+    clsException.def(nb::init<std::string const &>())
             .def("addMessage", &Exception::addMessage)
             .def("getTraceback", &Exception::getTraceback)
             .def("addToStream", &Exception::addToStream)
@@ -117,48 +118,48 @@ PYBIND11_MODULE(exceptions, mod) {
                 return s.str();
             });
 
-    py::class_<LogicError, Exception> clsLogicError(mod, "LogicError");
-    clsLogicError.def(py::init<std::string const &>());
+    nb::class_<LogicError, Exception> clsLogicError(mod, "LogicError");
+    clsLogicError.def(nb::init<std::string const &>());
 
-    py::class_<NotFoundError, Exception> clsNotFoundError(mod, "NotFoundError");
-    clsNotFoundError.def(py::init<std::string const &>());
+    nb::class_<NotFoundError, Exception> clsNotFoundError(mod, "NotFoundError");
+    clsNotFoundError.def(nb::init<std::string const &>());
 
-    py::class_<RuntimeError, Exception> clsRuntimeError(mod, "RuntimeError");
-    clsRuntimeError.def(py::init<std::string const &>());
+    nb::class_<RuntimeError, Exception> clsRuntimeError(mod, "RuntimeError");
+    clsRuntimeError.def(nb::init<std::string const &>());
 
-    py::class_<IoError, RuntimeError> clsIoError(mod, "IoError");
-    clsIoError.def(py::init<std::string const &>());
+    nb::class_<IoError, RuntimeError> clsIoError(mod, "IoError");
+    clsIoError.def(nb::init<std::string const &>());
 
-    py::class_<OverflowError, RuntimeError> clsOverflowError(mod, "OverflowError");
-    clsOverflowError.def(py::init<std::string const &>());
+    nb::class_<OverflowError, RuntimeError> clsOverflowError(mod, "OverflowError");
+    clsOverflowError.def(nb::init<std::string const &>());
 
-    py::class_<RangeError, RuntimeError> clsRangeError(mod, "RangeError");
-    clsRangeError.def(py::init<std::string const &>());
+    nb::class_<RangeError, RuntimeError> clsRangeError(mod, "RangeError");
+    clsRangeError.def(nb::init<std::string const &>());
 
-    py::class_<TypeError, LogicError> clsTypeError(mod, "TypeError");
-    clsTypeError.def(py::init<std::string const &>());
+    nb::class_<TypeError, LogicError> clsTypeError(mod, "TypeError");
+    clsTypeError.def(nb::init<std::string const &>());
 
-    py::class_<UnderflowError, RuntimeError> clsUnderflowError(mod, "UnderflowError");
-    clsUnderflowError.def(py::init<std::string const &>());
+    nb::class_<UnderflowError, RuntimeError> clsUnderflowError(mod, "UnderflowError");
+    clsUnderflowError.def(nb::init<std::string const &>());
 
-    py::class_<DomainError, LogicError> clsDomainError(mod, "DomainError");
-    clsDomainError.def(py::init<std::string const &>());
+    nb::class_<DomainError, LogicError> clsDomainError(mod, "DomainError");
+    clsDomainError.def(nb::init<std::string const &>());
 
-    py::class_<InvalidParameterError, LogicError> clsInvalidParameterError(mod, "InvalidParameterError");
-    clsInvalidParameterError.def(py::init<std::string const &>());
+    nb::class_<InvalidParameterError, LogicError> clsInvalidParameterError(mod, "InvalidParameterError");
+    clsInvalidParameterError.def(nb::init<std::string const &>());
 
-    py::class_<LengthError, LogicError> clsLengthError(mod, "LengthError");
-    clsLengthError.def(py::init<std::string const &>());
+    nb::class_<LengthError, LogicError> clsLengthError(mod, "LengthError");
+    clsLengthError.def(nb::init<std::string const &>());
 
-    py::class_<OutOfRangeError, LogicError> clsOutOfRangeError(mod, "OutOfRangeError");
-    clsOutOfRangeError.def(py::init<std::string const &>());
+    nb::class_<OutOfRangeError, LogicError> clsOutOfRangeError(mod, "OutOfRangeError");
+    clsOutOfRangeError.def(nb::init<std::string const &>());
 
-    py::register_exception_translator([](std::exception_ptr p) {
+    nb::register_exception_translator([](const std::exception_ptr &p, void *) {
         try {
-            if (p) std::rethrow_exception(p);
+            std::rethrow_exception(p);
         } catch (const Exception &e) {
-            py::object current_exception;
-            current_exception = py::cast(e.clone(), py::return_value_policy::take_ownership);
+            nb::object current_exception;
+            current_exception = nb::cast(e.clone(), nb::rv_policy::take_ownership);
             raiseLsstException(current_exception);
         }
     });

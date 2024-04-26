@@ -26,7 +26,7 @@
 
 #include <string>
 
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
 
 #include "lsst/pex/exceptions/Exception.h"
 
@@ -36,10 +36,10 @@ namespace exceptions {
 namespace python {
 
 /**
- * Helper function for pybind11, used to define new types of exceptions.
+ * Helper function for nanobind, used to define new types of exceptions.
  *
  * While this function creates the class wrapper, the user is still responsible
- * for adding all constructor and member wrappers to the returned `py::class_` object.
+ * for adding all constructor and member wrappers to the returned `nb::class_` object.
  *
  * @tparam T The C++ exception to wrap.
  * @tparam E The C++ base class of `T`.
@@ -49,50 +49,46 @@ namespace python {
  * @param[in] base Python name of base class (from pex::exceptions).
  */
 template <typename T, typename E = lsst::pex::exceptions::Exception>
-pybind11::class_<T, E> declareException(pybind11::module &mod, const std::string &name,
+nanobind::class_<T, E> declareException(nanobind::module_ &mod, const std::string &name,
                                      const std::string &base) {
-    namespace py = pybind11;
+    namespace nb = nanobind;
 
     // Wrap T as a new Python exception type with *name* and add it to the module
     //
     // Note that all created C++ wrapped type derive from Exception here.
     // It is only in the pure Python wrapper layer that they get embedded in
     // a subclass of the requested base.
-    py::class_<T, E> cls(mod, name.c_str());
+   nb::class_<T, E> cls(mod, name.c_str());
 
     // Declare T wrapped by cls as a pex exception and register it
     // this relies on the pure Python function "declare" defined in "wrappers"
     // to create a corresponding Python type derived from Python standard Exception
     auto exceptions =
-            py::reinterpret_steal<py::object>(PyImport_ImportModule("lsst.pex.exceptions.wrappers"));
+           nb::steal<nb::object>(PyImport_ImportModule("lsst.pex.exceptions.wrappers"));
     if (!exceptions.ptr()) {
-        PyErr_SetString(PyExc_SystemError, "import failed");
-        throw py::error_already_set();
+        throw nb::import_error("import failed");
     }
 
-    auto declare = py::reinterpret_steal<py::object>(PyObject_GetAttrString(exceptions.ptr(), "declare"));
+    auto declare =nb::steal<nb::object>(PyObject_GetAttrString(exceptions.ptr(), "declare"));
     if (!declare.ptr()) {
-        PyErr_SetString(PyExc_SystemError, "could not get declare function from Python");
-        throw py::error_already_set();
+        throw nb::attribute_error("could not get declare function from Python");
     }
 
-    auto baseCls = py::reinterpret_steal<py::object>(PyObject_GetAttrString(exceptions.ptr(), base.c_str()));
+    auto baseCls =nb::steal<nb::object>(PyObject_GetAttrString(exceptions.ptr(), base.c_str()));
     if (!baseCls.ptr()) {
-        PyErr_SetString(PyExc_SystemError, "could not get base class");
-        throw py::error_already_set();
+        throw nb::attribute_error("could not get base class");
     }
 
-    auto exceptionName = py::reinterpret_steal<py::object>(PYBIND11_FROM_STRING(name.c_str()));
+    auto exceptionName =nb::steal<nb::object>(PyUnicode_FromString(name.c_str()));
     if (!exceptionName.ptr()) {
-        PyErr_SetString(PyExc_SystemError, "could not create name string");
-        throw py::error_already_set();
+        throw std::string("could not create name string");
     }
 
-    auto result = py::reinterpret_steal<py::object>(PyObject_CallFunctionObjArgs(
+    auto result =nb::steal<nb::object>(PyObject_CallFunctionObjArgs(
             declare.ptr(), mod.ptr(), exceptionName.ptr(), baseCls.ptr(), cls.ptr(), NULL));
     if (!result.ptr()) {
         PyErr_SetString(PyExc_SystemError, "could not declare exception");
-        throw py::error_already_set();
+        throw std::string("could not declare exception");
     }
 
     return cls;
