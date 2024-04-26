@@ -23,7 +23,8 @@
 
 #include <string>
 
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include "lsst/pex/exceptions/Exception.h"
 #include "lsst/pex/exceptions/Runtime.h"
@@ -54,9 +55,9 @@ void fail2(std::string const &message1, std::string const &message2) {
         fail2<name>(message1, message2);                                                     \
     });
 
-PYBIND11_MODULE(_testLib, mod) {
+NB_MODULE(_testLib, mod) {
     auto cls = python::declareException<TestError>(mod, "TestError", "RuntimeError");
-    cls.def(pybind11::init<std::string const &>());
+    cls.def(nanobind::init<std::string const &>());
 
     LSST_FAIL_TEST(TestError)
     LSST_FAIL_TEST(IoError)
