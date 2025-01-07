@@ -21,3 +21,4 @@ tests/.tests
 python/lsst/pex/exceptions/version.py
 tests/test_Exception_1
 tests/failer.py
+python/*.dist-info/
