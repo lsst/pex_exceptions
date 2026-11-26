@@ -1,0 +1,13 @@
+prefix=${pcfiledir}/../..
+includedir=${prefix}/include
+libdir=${prefix}/lib
+doxygen_tag=${prefix}/doc/pex_exceptions.tag
+doxygen_include=${prefix}/doc/pex_exceptions.inc
+lsst_build_requires=boost_test python3 pybind11
+
+Name: lsst_pex_exceptions
+Description: LSST Science Pipelines exception classes
+Version: @VERSION@
+Requires: boost lsst_base
+Cflags: -I${includedir}
+Libs: -L${libdir} -lpex_exceptions
